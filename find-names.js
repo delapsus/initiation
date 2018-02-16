@@ -130,8 +130,7 @@ exports.execute = () => {
             return initiation.save(init).then(saveNext);
         }
 
-        return saveNext();
-
+        return database.beginTransaction().then(saveNext).then(database.commit);
     });
 
     function findPerson(first, middle, last) {

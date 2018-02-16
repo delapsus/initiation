@@ -25,7 +25,7 @@ function execute() {
     let persons = data.map(fieldMap.createPersonFromFileMakerProRecord);
     console.log('person count: ' + persons.length);
 
-    return database.init()
+    return database.init(database.storageType.file)
         .then(person.createTable)
         .then(degree.createTable)
         .then(officer.createTable)
@@ -62,8 +62,7 @@ function execute() {
                 return saveInitiations(record).then(next);
             }
 
-            return next();
-
+            return database.beginTransaction().then(next).then(database.commit);
         })
         .then(() => {
             return Promise.all([

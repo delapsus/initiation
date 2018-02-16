@@ -2,10 +2,12 @@ let sqlite3 = require('sqlite3').verbose();
 
 let db = null;
 
-//let filename = ':memory:';
-let filename = 'initiation.db';
+exports.storageType = {
+    file: 'initiation.db',
+    memory: ':memory:'
+};
 
-exports.init = () => {
+exports.init = filename => {
 
     return new Promise((resolve, reject) => {
         // just init in memory for now
@@ -119,16 +121,22 @@ exports.query = (sql) => {
     });
 };
 
-//()
+
 exports.beginTransaction = () => {
     return new Promise((resolve, reject) => {
-        db.run("BEGIN TRANSACTION", resolve);
+        db.run("BEGIN TRANSACTION", err => {
+            if (!!err) return reject(err);
+            resolve();
+        });
     });
 };
 
 exports.commit = () => {
     return new Promise((resolve, reject) => {
-        db.run("COMMIT", resolve);
+        db.run("COMMIT", err => {
+            if (!!err) return reject(err);
+            resolve();
+        });
     });
 };
 
