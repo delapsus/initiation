@@ -8,6 +8,21 @@ database.init(database.storageType.file);
 
 let server = http.createServer(function (req, res) {
 
+    if (req.method === 'OPTIONS') {
+        console.log('!OPTIONS');
+        var headers = {};
+        // IE8 does not allow domains to be specified, just the *
+        // headers["Access-Control-Allow-Origin"] = req.headers.origin;
+        headers["Access-Control-Allow-Origin"] = "*";
+        headers["Access-Control-Allow-Methods"] = "POST, GET, PUT, DELETE, OPTIONS";
+        headers["Access-Control-Allow-Credentials"] = false;
+        headers["Access-Control-Max-Age"] = '86400'; // 24 hours
+        headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept";
+        res.writeHead(200, headers);
+        res.end();
+        return;
+    }
+
     if (req.method === 'POST') {
         let body = '';
         req.on('data', function (data) {
@@ -27,7 +42,9 @@ let server = http.createServer(function (req, res) {
                 return;
             }
 
-            handleRequest(req.url, req, res, post);
+            handleRequest(req.url, req, res, post).then(result => {
+                writeJsonResponse(res, JSON.stringify(result));
+            });
         });
     }
 
@@ -35,13 +52,10 @@ let server = http.createServer(function (req, res) {
 
 let handleRequest = function(url, req, res, post) {
     if (url === '/person') {
-        try {
-            processProductSearch(req, res, post);
-        }
-        catch (e) {
-            console.log(e.stack);
-            writeJsonResponse(res, '{"message": "Error", "e":' + e.message + '}');
-        }
+        return getPerson(post);
+    }
+    else if (url === '/people') {
+        return getPeople(post);
     }
 };
 
@@ -55,10 +69,15 @@ function getIpAddress(req) {
         req.connection.socket.remoteAddress;
 }
 
-let processProductSearch = function(req, res, post) {
+let getPerson = function(post) {
+    return person.selectOne(250);
+};
 
-    return person.selectOne(250).then(result => {
-        writeJsonResponse(res, JSON.stringify(result));
+let getPeople = post => {
+
+    return person.selectAll().then(result => {
+        if (result.length > 20) return result.slice(0, 20);
+        return result.slice(0, result.length-1);
     });
 
 };
