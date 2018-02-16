@@ -3,13 +3,13 @@ let fs = require('fs');
 let excel = require('./import-excel');
 let fieldMap = require('./fieldmap');
 
-let database = require('./data/database');
-let location = require('./data/location');
-let person = require('./data/person');
-let degree = require('./data/degree');
-let officer = require('./data/officer');
-let initiation = require('./data/initiation');
-let initiationOfficer = require('./data/initiation-officer');
+let database = require('../data/database');
+let location = require('../data/location');
+let person = require('../data/person');
+let degree = require('../data/degree');
+let officer = require('../data/officer');
+let initiation = require('../data/initiation');
+let initiationOfficer = require('../data/initiation-officer');
 
 function execute() {
     let data = excel.loadWorkbook();

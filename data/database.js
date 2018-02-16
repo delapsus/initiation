@@ -1,9 +1,10 @@
 let sqlite3 = require('sqlite3').verbose();
+let path = require('path');
 
 let db = null;
 
 exports.storageType = {
-    file: 'initiation.db',
+    file: path.resolve(__dirname, '../initiation.db'), //, //'initiation.db',
     memory: ':memory:'
 };
 
