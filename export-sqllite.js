@@ -46,7 +46,7 @@ function execute() {
                 return person.save(record).then(next);
             }
 
-            return next();
+            return database.beginTransaction().then(next).then(database.commit);
         })
 
         .then(() => {

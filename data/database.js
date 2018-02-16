@@ -2,11 +2,14 @@ let sqlite3 = require('sqlite3').verbose();
 
 let db = null;
 
+//let filename = ':memory:';
+let filename = 'initiation.db';
+
 exports.init = () => {
 
     return new Promise((resolve, reject) => {
         // just init in memory for now
-        db = new sqlite3.Database(':memory:', e => {
+        db = new sqlite3.Database(filename, e => {
             if (!!e) return reject(e);
             resolve();
         });
@@ -117,6 +120,18 @@ exports.query = (sql) => {
 };
 
 //()
+exports.beginTransaction = () => {
+    return new Promise((resolve, reject) => {
+        db.run("BEGIN TRANSACTION", resolve);
+    });
+};
+
+exports.commit = () => {
+    return new Promise((resolve, reject) => {
+        db.run("COMMIT", resolve);
+    });
+};
+
 
 exports.save = (table, fields, o) => {
     let primaryKey = null;
@@ -154,6 +169,16 @@ exports.save = (table, fields, o) => {
 
         if (isInsert) {
             let sql = `INSERT INTO ${table} (${fieldNames.join(',')}) VALUES (${valueHolders.join(',')})`;
+            db.run(sql, values, err => {
+                if (!!err) return reject(err);
+
+                exports.getLastInsertRowid().then(rowid => {
+                    o[primaryKey] = rowid;
+                    resolve();
+                });
+
+            });
+            /*
             let stmt = db.prepare(sql);
 
             stmt.run(values, e => {
@@ -168,6 +193,7 @@ exports.save = (table, fields, o) => {
 
                 });
             });
+            */
         }
         else {
             let updateFields = [];
