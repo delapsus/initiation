@@ -55,3 +55,7 @@ exports.save = o => {
 exports.selectOne = degreeId => {
     return database.selectOne(tableName, fields, 'degreeId', degreeId);
 };
+
+exports.selectAll = () => {
+    return database.selectAll(tableName, fields);
+};

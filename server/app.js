@@ -3,6 +3,7 @@
 let http = require('http');
 let database = require('../data/database');
 let person = require('../data/person');
+let peopleSearch = require('./people-search');
 
 database.init(database.storageType.file);
 
@@ -50,15 +51,6 @@ let server = http.createServer(function (req, res) {
 
 });
 
-let handleRequest = function(url, req, res, post) {
-    if (url === '/person') {
-        return getPerson(post);
-    }
-    else if (url === '/people') {
-        return getPeople(post);
-    }
-};
-
 function getIpAddress(req) {
 
     if (req.headers.hasOwnProperty('x-forwarded-for'))
@@ -68,19 +60,6 @@ function getIpAddress(req) {
         req.socket.remoteAddress ||
         req.connection.socket.remoteAddress;
 }
-
-let getPerson = function(post) {
-    return person.selectOne(250);
-};
-
-let getPeople = post => {
-
-    return person.selectAll().then(result => {
-        if (result.length > 20) return result.slice(0, 20);
-        return result.slice(0, result.length-1);
-    });
-
-};
 
 let writeJsonResponse = function(res, msg) {
 
@@ -95,7 +74,18 @@ let writeJsonResponse = function(res, msg) {
     res.end(msg);
 };
 
+let handleRequest = function(url, req, res, post) {
+    if (url === '/person') {
+        return getPerson(post);
+    }
+    else if (url === '/people') {
+        return peopleSearch.getPeople(post);
+    }
+};
 
+let getPerson = function(post) {
+    return person.selectOne(post.personId);
+};
 
 
 let getPort = function () {
