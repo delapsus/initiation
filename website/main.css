@@ -5,3 +5,18 @@ html {
 .indent {
     margin-left: 1em;
 }
+
+
+
+
+
+.personPage .initiation .field {
+    display: inline-block;
+}
+.personPage .initiation .degree {
+    width: 5em;
+}
+.personPage .initiation .locationName {
+    width: 12em;
+}
+

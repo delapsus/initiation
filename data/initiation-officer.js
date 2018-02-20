@@ -24,3 +24,6 @@ exports.save = o => {
     return database.save(tableName, fields, o);
 };
 
+exports.selectByInitiationId = initiationId => {
+    return database.selectMany(tableName, fields, {initiationId: initiationId});
+};
