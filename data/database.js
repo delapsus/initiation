@@ -3,6 +3,8 @@ let path = require('path');
 
 let db = null;
 
+
+
 exports.storageType = {
     file: path.resolve(__dirname, '../initiation.db'), //, //'initiation.db',
     memory: ':memory:'
@@ -73,6 +75,28 @@ exports.selectOne = (table, fields, idKey, id) => {
             resolve(exports.convertRecordToObject(fields, row));
         });
     });
+};
+
+exports.selectMany = (table, fields, where) => {
+
+    let keys = [];
+    let values = [];
+    for (let key in where) {
+        keys.push(key + "=?");
+        values.push(where[key]);
+    }
+
+    // err, row
+    return new Promise((resolve, reject) => {
+        db.all(`select * from ${table} where ${keys.join(',')}`, values, (err, rows) => {
+            if (err) return reject(err);
+            let a = rows.map(row => {
+                return exports.convertRecordToObject(fields, row);
+            });
+            resolve(a);
+        });
+    });
+
 };
 
 exports.selectAll = (table, fields) => {

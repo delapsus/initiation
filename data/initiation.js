@@ -66,3 +66,7 @@ exports.save = o => {
 exports.selectAll = () => {
     return database.selectAll(tableName, fields);
 };
+
+exports.getByPersonId = personId => {
+    return database.selectMany(tableName, fields, {personId:personId});
+};

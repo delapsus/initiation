@@ -3,6 +3,7 @@
 let http = require('http');
 let database = require('../data/database');
 let person = require('../data/person');
+let initiation = require('../data/initiation');
 let peopleSearch = require('./people-search');
 
 database.init(database.storageType.file);
@@ -84,7 +85,16 @@ let handleRequest = function(url, req, res, post) {
 };
 
 let getPerson = function(post) {
-    return person.selectOne(post.personId);
+    return person.selectOne(post.personId)
+        .then(personData => {
+
+            // attach initiations
+            return initiation.getByPersonId(post.personId)
+                .then(initData => {
+                    personData.initiations = initData;
+                    return personData;
+                });
+        });
 };
 
 
