@@ -1,7 +1,7 @@
 'use strict';
 
 let database = require('../data/database');
-let person = require('../data/person');
+let Person = require('../data/person');
 let initiation = require('../data/initiation');
 
 function trim(text) {
@@ -18,12 +18,10 @@ exports.execute = () => {
     };
 
     let loading = [
-        person.selectAll().then(result => {
+        Person.selectAll().then(result => {
             persons = result;
 
             personLookup = {};
-
-
 
             persons.forEach(person => {
 
@@ -151,7 +149,7 @@ exports.execute = () => {
 
 };
 
-
+//database.init(database.storageType.file).then(exports.execute);
 
 
 

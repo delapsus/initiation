@@ -39,11 +39,16 @@ exports.createTable = (name, fields) => {
         });
 
         let sql = a.join(', ');
-
-        db.run(`CREATE TABLE ${name} (${sql})`, e => {
-            if (e !== null) return reject(e);
-            resolve();
-        });
+        try {
+            db.run(`CREATE TABLE ${name} (${sql})`, e => {
+                if (e !== null)
+                    return reject(e);
+                resolve();
+            });
+        }
+        catch (e) {
+            reject(e);
+        }
     });
 };
 
@@ -126,6 +131,9 @@ exports.convertRecordToObject = (fields, record) => {
             }
             else if (field.type === 'boolean') {
                 value = value === 1;
+            }
+            else if (field.type === 'number') {
+                value = +value;
             }
 
             o[key] = value;
