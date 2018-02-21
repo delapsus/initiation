@@ -1,4 +1,6 @@
 let database = require('./database');
+let InitiationOfficer = require('./initiation-officer');
+let Person = require('./person');
 
 let tableName = 'Initiation';
 
@@ -69,4 +71,58 @@ exports.selectAll = () => {
 
 exports.getByPersonId = personId => {
     return database.selectMany(tableName, fields, {personId:personId});
+};
+
+exports.loadForPerson = (person, options) => {
+    if (typeof options === 'undefined') options = {};
+
+    return exports.getByPersonId(person.personId).then(initiations => {
+        person.initiations = initiations;
+
+        let loading = [];
+
+        if (options.loadPersons) {
+            // load the person for each sponsor if present
+            person.initiations.forEach(initiation => {
+                if (initiation.sponsor1_personId !== null) {
+                    loading.push(Person.selectOne(initiation.sponsor1_personId).then(result => {
+                        initiation.sponsor1_person = result;
+                    }));
+                }
+                if (initiation.sponsor2_personId !== null) {
+                    loading.push(Person.selectOne(initiation.sponsor2_personId).then(result => {
+                        initiation.sponsor2_person = result;
+                    }));
+                }
+            });
+        }
+
+        if (options.loadOfficers) {
+
+            // load the initiation officer data
+            person.initiations.forEach(initiation => {
+                let load = InitiationOfficer.selectByInitiationId(initiation.initiationId)
+                    .then(officers => {
+                        initiation.officers = officers;
+
+                        // get the person data on each officer if requested
+                        if (options.loadPersons) {
+                            let loadOfficers = initiation.officers.map(officer => {
+                                if (officer.personId === null) return Promise.resolve();
+                                else return Person.selectOne(officer.personId).then(result => {
+                                    officer.person = result;
+                                })
+                            });
+                            return Promise.all(loadOfficers);
+                        }
+                    });
+
+                loading.push(load);
+            });
+
+        }
+
+        // finally return person for chaining
+        return Promise.all(loading).then(() => { return person; });
+    });
 };

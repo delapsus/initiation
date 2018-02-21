@@ -2,9 +2,9 @@
 
 let http = require('http');
 let database = require('../data/database');
-let person = require('../data/person');
-let initiation = require('../data/initiation');
-let initiationOfficer = require('../data/initiation-officer');
+let Person = require('../data/person');
+let Initiation = require('../data/initiation');
+
 let peopleSearch = require('./people-search');
 
 database.init(database.storageType.file);
@@ -86,28 +86,12 @@ let handleRequest = function(url, req, res, post) {
 };
 
 let getPerson = function(post) {
-    return person.selectOne(post.personId)
-        .then(personData => {
+    return Person.selectOne(post.personId)
+        .then(person => {
 
-            // attach initiations
-            return initiation.getByPersonId(post.personId)
-                .then(initData => {
-                    personData.initiations = initData;
+            // attach initiations and officers
+            return Initiation.loadForPerson(person, {loadOfficers:true, loadPersons:true});
 
-                    // load the initiation officer data
-                    let loading = personData.initiations.map(init => {
-                        return initiationOfficer.selectByInitiationId(init.initiationId)
-                            .then(officers => {
-                                init.officers = officers;
-
-                                // get the person data on each officer?
-
-                            });
-                    });
-
-                    return Promise.all(loading);
-                })
-                .then(() => {return personData});
         });
 };
 
