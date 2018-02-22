@@ -26,3 +26,6 @@ exports.selectOne = locationId => {
     return database.selectOne(tableName, fields, 'locationId', locationId);
 };
 
+exports.selectAll = () => {
+    return database.selectAll(tableName, fields);
+};

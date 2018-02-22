@@ -4,6 +4,7 @@ let http = require('http');
 let database = require('../data/database');
 let Person = require('../data/person');
 let Initiation = require('../data/initiation');
+let Location = require('../data/location');
 
 let peopleSearch = require('./people-search');
 
@@ -82,12 +83,17 @@ let writeJsonResponse = function(res, msg) {
 };
 
 let handleRequest = function(url, req, res, post) {
-    if (url === '/person') {
-        return getPerson(post);
-    }
-    else if (url === '/people') {
-        return peopleSearch.getPeople(post);
-    }
+    if (url === '/person') return getPerson(post);
+    else if (url === '/people') return peopleSearch.getPeople(post);
+    else if (url === '/location') return getLocation(post);
+    else if (url === '/locations') return Location.selectAll().then(results => {
+        results.sort((a,b) => {
+            if (a.name < b.name) return -1;
+            if (a.name > b.name) return 1;
+            return 0;
+        });
+        return {locations:results};
+    })
 };
 
 let getPerson = function(post) {
@@ -103,6 +109,14 @@ let getPerson = function(post) {
             secondary.push(Initiation.loadSponsees(person, {loadPersons:true}));
 
             return Promise.all(secondary).then(() => {return person;})
+        });
+};
+
+let getLocation = function(post) {
+    return Location.selectOne(post.locationId)
+        .then(location => {
+
+            return location;
         });
 };
 
