@@ -45,9 +45,14 @@ let server = http.createServer(function (req, res) {
                 return;
             }
 
-            handleRequest(req.url, req, res, post).then(result => {
-                writeJsonResponse(res, JSON.stringify(result));
-            });
+            handleRequest(req.url, req, res, post)
+                .then(result => {
+                    writeJsonResponse(res, JSON.stringify(result));
+                })
+                .catch(e => {
+                    console.error(e);
+                    //throw e;
+                });
         });
     }
 
@@ -89,9 +94,15 @@ let getPerson = function(post) {
     return Person.selectOne(post.personId)
         .then(person => {
 
-            // attach initiations and officers
-            return Initiation.loadForPerson(person, {loadOfficers:true, loadPersons:true});
+            let secondary = [];
 
+            // attach initiations and officers
+            secondary.push(Initiation.loadForPerson(person, {loadPersons:true}));
+
+            // attach the people this person has sponsored
+            secondary.push(Initiation.loadSponsees(person, {loadPersons:true}));
+
+            return Promise.all(secondary).then(() => {return person;})
         });
 };
 

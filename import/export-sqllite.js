@@ -25,6 +25,7 @@ function execute() {
     let persons = data.map(fieldMap.createPersonFromFileMakerProRecord);
     console.log('person count: ' + persons.length);
 
+
     return database.init(database.storageType.file)
         .then(person.createTable)
         .then(degree.createTable)
@@ -43,6 +44,12 @@ function execute() {
                 if (index % 1000 === 0) console.log(`person ${index}`);
 
                 let record = persons[index++];
+
+                if (record.trackingNumber === 'KZT-06709')
+                    console.log('test');
+
+                //Promise.resolve().then(next);
+
                 return person.save(record).then(next);
             }
 

@@ -1,11 +1,44 @@
 html {
-    font-family: helvetica,sans-serif;
+    font-family: monospace, monospace;
+}
+body {
+    margin: 0;
+}
+table {
+    border-collapse: collapse;
+}
+th, td {
+    padding: 0 0.2em;
+}
+#app {
+    width: 55.5em;
+    height: auto;
+    min-height: 100%;
+    background-color: #f8f8f8;
+    border-left: 0.025em solid #ccc;
+    border-right: 0.025em solid #ccc;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0.4em 0.4em 0 0.4em;
+}
+
+input, textarea {
+    font-family: monospace, monospace;
+    font-size: 1em;
+}
+
+.label {
+    font-size: 0.8em;
+
 }
 
 .indent {
     margin-left: 1em;
 }
 
+.test {
+    font-family: helvetica,sans-serif;
+}
 
 
 
@@ -14,9 +47,15 @@ html {
     display: inline-block;
 }
 .personPage .initiation .degree {
-    width: 5em;
+    width: 3em;
+    text-align: center;
 }
 .personPage .initiation .locationName {
     width: 12em;
 }
-
+.personPage .initiation .actualDate {
+    width: 7em;
+}
+.personPage .initiation .person {
+    width: 13em;
+}

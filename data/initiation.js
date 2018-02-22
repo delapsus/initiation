@@ -82,19 +82,7 @@ exports.loadForPerson = (person, options) => {
         let loading = [];
 
         if (options.loadPersons) {
-            // load the person for each sponsor if present
-            person.initiations.forEach(initiation => {
-                if (initiation.sponsor1_personId !== null) {
-                    loading.push(Person.selectOne(initiation.sponsor1_personId).then(result => {
-                        initiation.sponsor1_person = result;
-                    }));
-                }
-                if (initiation.sponsor2_personId !== null) {
-                    loading.push(Person.selectOne(initiation.sponsor2_personId).then(result => {
-                        initiation.sponsor2_person = result;
-                    }));
-                }
-            });
+            loading.push(Person.loadSponsorsInInitiations(person.initiations));
         }
 
         if (options.loadOfficers) {
@@ -111,7 +99,7 @@ exports.loadForPerson = (person, options) => {
                                 if (officer.personId === null) return Promise.resolve();
                                 else return Person.selectOne(officer.personId).then(result => {
                                     officer.person = result;
-                                })
+                                });
                             });
                             return Promise.all(loadOfficers);
                         }
@@ -125,4 +113,37 @@ exports.loadForPerson = (person, options) => {
         // finally return person for chaining
         return Promise.all(loading).then(() => { return person; });
     });
+};
+
+exports.loadSponsees = (person, options) => {
+    if (typeof options === 'undefined') options = {};
+
+    return Promise.all([
+        database.selectMany(tableName, fields, {sponsor1_personId: person.personId}),
+        database.selectMany(tableName, fields, {sponsor2_personId: person.personId})
+        ])
+        .then(results => {
+            person.sponsoredInitiations = results[0].concat(results[1]);
+            person.sponsoredInitiations.sort((a, b) => {
+                if (a.actualDate < b.actualDate) return -1;
+                if (a.actualDate > b.actualDate) return 1;
+                return 0;
+            });
+
+            console.log("sponsored: " + person.sponsoredInitiations.length);
+
+            let loading = [];
+
+            // load the person data
+            loading.push(Person.loadSponsorsInInitiations(person.sponsoredInitiations));
+
+            person.sponsoredInitiations.forEach(init => {
+                loading.push(Person.selectOne(init.personId).then(p => {
+                    init.person = p;
+                }));
+            });
+
+            return Promise.all(loading);
+        });
+
 };

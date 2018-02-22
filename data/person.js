@@ -78,6 +78,26 @@ exports.selectAll = () => {
     return database.selectAll(tableName, fields);
 };
 
+exports.loadSponsorsInInitiations = initiations => {
+
+    let loading = [];
+
+    initiations.forEach(initiation => {
+        if (initiation.sponsor1_personId !== null) {
+            loading.push(exports.selectOne(initiation.sponsor1_personId).then(result => {
+                initiation.sponsor1_person = result;
+            }));
+        }
+        if (initiation.sponsor2_personId !== null) {
+            loading.push(exports.selectOne(initiation.sponsor2_personId).then(result => {
+                initiation.sponsor2_person = result;
+            }));
+        }
+    });
+
+    return Promise.all(loading);
+};
+
 if (module.parent === null) {
     let record;
     database.init()

@@ -38,15 +38,25 @@ export class PersonPage extends React.Component {
         if (this.state.person === null) return <div></div>;
 
         let inits = [];
+        if (this.state.person.initiations) {
+            this.state.person.initiations.forEach((o, i) => {
+                inits.push(<InitiationDisplay initiation={o} key={i} />);
+            });
+        }
 
-        this.state.person.initiations.forEach((o, i) => {
-            inits.push(<InitiationDisplay initiation={o} key={i} />);
-        });
+        // sponsoredInitiations
+        let sponsoredInits = [];
+        if (this.state.person.sponsoredInitiations) {
+            this.state.person.sponsoredInitiations.forEach((o, i) => {
+                sponsoredInits.push(<InitiationDisplay initiation={o} key={i} showPerson={true} dontShowIf={this.state.person} />);
+            });
+        }
 
         let html = {__html: putObjectInLines(this.state.person)};
         return <div className="personPage">
             <PersonInformation person={this.state.person} />
             {inits}
+            {sponsoredInits}
             <br/><br/><br/>
             <div dangerouslySetInnerHTML={html} />
         </div>;
@@ -62,10 +72,10 @@ export class PersonInformation extends React.Component {
             { /* name/motto */ }
             <table><tbody>
             <tr>
-                <td>First Name</td>
-                <td>Middle</td>
-                <td>Last</td>
-                <td>Motto</td>
+                <td className="label">First Name</td>
+                <td className="label">Middle</td>
+                <td className="label">Last</td>
+                <td className="label">Motto</td>
             </tr>
             <tr>
                 <td><input type="text" value={data.firstName} /></td>
@@ -78,15 +88,15 @@ export class PersonInformation extends React.Component {
             { /* contact / misc info */ }
             <table><tbody>
             <tr>
-                <td>Email</td>
-                <td>Phone Main</td>
-                <td>Created</td>
-                <td>Tracking Number</td>
+                <td className="label">Email</td>
+                <td className="label">Phone Main</td>
+                <td className="label">Created</td>
+                <td className="label">Tracking Number</td>
             </tr>
             <tr>
                 <td><input type="text" value={data.email} /></td>
                 <td><input type="text" value={data.phoneMain} /></td>
-                <td><input type="text" value={data.createdDate} /></td>
+                <td><input type="text" value={formatDate(data.createdDate)} /></td>
                 <td><input type="text" value={data.trackingNumber} /></td>
             </tr>
             </tbody></table>
@@ -94,13 +104,15 @@ export class PersonInformation extends React.Component {
              { /* BIRTH INFO */ }
             <table><tbody>
             <tr>
-                <td>Birth Date</td>
-                <td>Birth City</td>
-                <td>Birth State</td>
-                <td>Birth Country</td>
+                <td className="label">Birth Date</td>
+                <td className="label">Birth Time</td>
+                <td className="label">Birth City</td>
+                <td className="label">Birth State</td>
+                <td className="label">Birth Country</td>
             </tr>
             <tr>
-                <td><input type="text" value={data.birthDate} /></td>
+                <td><input type="text" value={formatDate(data.birthDate)} /></td>
+                <td><input type="text" value={formatTime(data.birthTime)} /></td>
                 <td><input type="text" value={data.birthCity} /></td>
                 <td><input type="text" value={data.birthPrincipality} /></td>
                 <td><input type="text" value={data.birthCountryMinerval} /></td>
@@ -110,11 +122,11 @@ export class PersonInformation extends React.Component {
              { /* Primary Address */ }
             <table><tbody>
             <tr>
-                <td>Address 1</td>
-                <td>Address 2</td>
-                <td>City</td>
-                <td>State</td>
-                <td>Zip</td>
+                <td className="label">Address 1</td>
+                <td className="label">Address 2</td>
+                <td className="label">City</td>
+                <td className="label">State</td>
+                <td className="label">Zip</td>
             </tr>
             <tr>
                 <td><input type="text" value={data.primaryAddress} /></td>
@@ -132,6 +144,11 @@ export class PersonInformation extends React.Component {
 }
 
 function formatDate(d) {
+
+    if (typeof d === 'undefined' || d === null) return;
+
+    if (typeof d === 'string') d = new Date(d);
+
     let year = d.getUTCFullYear().toString();
     let month = (d.getUTCMonth() + 1).toString();
     let day = d.getUTCDate().toString();
@@ -142,6 +159,21 @@ function formatDate(d) {
     return `${year}-${month}-${day}`;
 }
 
+function formatTime(time) {
+
+    if (time === null) return;
+
+    let d = new Date(time * 24*60*60*1000);
+
+    let hour = d.getUTCHours().toString();
+    let minute = d.getMinutes().toString();
+
+    if (hour.length === 1) hour = "0" + hour;
+    if (minute.length === 1) minute = "0" + minute;
+
+    return `${hour}:${minute}`;
+}
+
 class InitiationDisplay extends React.Component {
     render() {
         let o = this.props.initiation;
@@ -149,11 +181,46 @@ class InitiationDisplay extends React.Component {
         let degree = getDegreeById(+o.degreeId);
         let actualDate = formatDate(new Date(o.actualDate));
 
+        let personLink = this.props.showPerson ? <div className="field person"><PersonLink person={o.person} /></div> : "";
+        let sponsor1 = <div className="field person"><PersonLink person={o.sponsor1_person} altNameFirst={o.sponsor1First} altNameLast={o.sponsor1Last} /></div>;
+        let sponsor2 = <div className="field person"><PersonLink person={o.sponsor2_person} altNameFirst={o.sponsor2First} altNameLast={o.sponsor2Last} /></div>;
+
+        if (this.props.dontShowIf) {
+            if (o.sponsor1_person && this.props.dontShowIf.personId === o.sponsor1_person.personId) sponsor1 = "";
+            if (o.sponsor2_person && this.props.dontShowIf.personId === o.sponsor2_person.personId) sponsor2 = "";
+        }
+
         return <div className="initiation">
+            {personLink}
             <div className="field degree">{degree.name}</div>
             <div className="field locationName">{o.location}</div>
             <div className="field actualDate">{actualDate}</div>
+            {sponsor1}
+            {sponsor2}
         </div>;
+    }
+}
+
+/*
+ if (o.sponsor1_person) {
+ let link = "index.html?personid=" + o.sponsor1_person.personId;
+ sponsor1 = <a href={link}>{o.sponsor1_person.firstName} {o.sponsor1_person.lastName}</a>;
+ }
+ else if (o.sponsor1First !== null || o.sponsor1Last !== null) {
+ sponsor1 = o.sponsor1First + " " + o.sponsor1Last;
+ }
+ */
+
+class PersonLink extends React.Component {
+    render() {
+        if (this.props.person) {
+            let link = "index.html?personid=" + this.props.person.personId;
+            return <a href={link}>{this.props.person.firstName} {this.props.person.lastName}</a>;
+        }
+        else if (this.props.altNameFirst || this.props.altNameLast) {
+            return <span>{this.props.altNameFirst} {this.props.altNameLast}</span>;
+        }
+        return <span></span>;
     }
 }
 

@@ -1,20 +1,20 @@
 let values = [
-    {name:'Minerval', rank:0},
-    {name:'First', rank:1},
-    {name:'Second', rank:2},
-    {name:'Third', rank:3},
-    {name:'Fourth', rank:4},
+    {name:'0', rank:0},
+    {name:'1', rank:1},
+    {name:'2', rank:2},
+    {name:'3', rank:3},
+    {name:'4', rank:4},
     {name:'PI', rank:5},
     {name:'KEW', rank:6},
-    {name:'Fifth', rank:7},
+    {name:'5', rank:7},
     {name:'KRE', rank:8},
-    {name:'Sixth', rank:9},
+    {name:'6', rank:9},
     {name:'GIC', rank:10},
     {name:'PRS', rank:11},
-    {name:'Seventh', rank:12},
-    {name:'Eighth', rank:13},
-    {name:'Ninth', rank:14},
-    {name:'Tenth', rank:15}
+    {name:'7', rank:12},
+    {name:'8', rank:13},
+    {name:'9', rank:14},
+    {name:'10', rank:15}
 ];
 
 
