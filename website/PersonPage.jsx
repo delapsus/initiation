@@ -1,7 +1,7 @@
 import React from 'react';
 import {postAjax} from './http';
-import {getDegreeById} from './degree';
-
+import {formatDate, formatTime, putObjectInLines} from './common.js';
+import {InitiationDisplay} from './InitiationDisplay.jsx';
 
 function getPerson(personId) {
     return new Promise((resolve, reject) => {
@@ -141,112 +141,4 @@ export class PersonInformation extends React.Component {
 
         </div>;
     }
-}
-
-function formatDate(d) {
-
-    if (typeof d === 'undefined' || d === null) return;
-
-    if (typeof d === 'string') d = new Date(d);
-
-    let year = d.getUTCFullYear().toString();
-    let month = (d.getUTCMonth() + 1).toString();
-    let day = d.getUTCDate().toString();
-
-    if (month.length === 1) month = "0" + month;
-    if (day.length === 1) day = "0" + day;
-
-    return `${year}-${month}-${day}`;
-}
-
-function formatTime(time) {
-
-    if (time === null) return;
-
-    let d = new Date(time * 24*60*60*1000);
-
-    let hour = d.getUTCHours().toString();
-    let minute = d.getMinutes().toString();
-
-    if (hour.length === 1) hour = "0" + hour;
-    if (minute.length === 1) minute = "0" + minute;
-
-    return `${hour}:${minute}`;
-}
-
-class InitiationDisplay extends React.Component {
-    render() {
-        let o = this.props.initiation;
-
-        let degree = getDegreeById(+o.degreeId);
-        let actualDate = formatDate(new Date(o.actualDate));
-
-        let personLink = this.props.showPerson ? <div className="field person"><PersonLink person={o.person} /></div> : "";
-        let sponsor1 = <div className="field person"><PersonLink person={o.sponsor1_person} altNameFirst={o.sponsor1First} altNameLast={o.sponsor1Last} /></div>;
-        let sponsor2 = <div className="field person"><PersonLink person={o.sponsor2_person} altNameFirst={o.sponsor2First} altNameLast={o.sponsor2Last} /></div>;
-
-        if (this.props.dontShowIf) {
-            if (o.sponsor1_person && this.props.dontShowIf.personId === o.sponsor1_person.personId) sponsor1 = "";
-            if (o.sponsor2_person && this.props.dontShowIf.personId === o.sponsor2_person.personId) sponsor2 = "";
-        }
-
-        return <div className="initiation">
-            {personLink}
-            <div className="field degree">{degree.name}</div>
-            <div className="field locationName">{o.location}</div>
-            <div className="field actualDate">{actualDate}</div>
-            {sponsor1}
-            {sponsor2}
-        </div>;
-    }
-}
-
-/*
- if (o.sponsor1_person) {
- let link = "index.html?personid=" + o.sponsor1_person.personId;
- sponsor1 = <a href={link}>{o.sponsor1_person.firstName} {o.sponsor1_person.lastName}</a>;
- }
- else if (o.sponsor1First !== null || o.sponsor1Last !== null) {
- sponsor1 = o.sponsor1First + " " + o.sponsor1Last;
- }
- */
-
-class PersonLink extends React.Component {
-    render() {
-        if (this.props.person) {
-            let link = "index.html?personid=" + this.props.person.personId;
-            return <a href={link}>{this.props.person.firstName} {this.props.person.lastName}</a>;
-        }
-        else if (this.props.altNameFirst || this.props.altNameLast) {
-            return <span>{this.props.altNameFirst} {this.props.altNameLast}</span>;
-        }
-        return <span></span>;
-    }
-}
-
-function putObjectInLines(o) {
-    let lines = [];
-
-    //lines.push('<div>{</div>');
-    for (let key in o) {
-        if (o[key] === null) {
-
-        }
-        else if (typeof o[key] === 'object' && Array.isArray(o[key])) {
-            lines.push(`<div class="indent">${key}: [</div>`);
-            lines.push(`<div class="indent">${putObjectInLines(o[key])}</div>`);
-            lines.push(`<div class="indent">}]</div>`);
-        }
-        else if (typeof o[key] === 'object') {
-            lines.push(`<div class="indent">${key}: {</div>`);
-            lines.push(`<div class="indent">${putObjectInLines(o[key])}</div>`);
-            lines.push(`<div class="indent">}</div>`);
-        }
-        else {
-            lines.push(`<div class="indent">${key}: ${o[key]}</div>`);
-        }
-
-    }
-    //lines.push('<div>}</div>');
-    return lines.join('\n');
 }
