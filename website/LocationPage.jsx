@@ -42,10 +42,12 @@ export class LocationPage extends React.Component {
                 inits.push(<InitiationDisplay initiation={o} key={i} />);
             });
         }
-        // <LocationInformation location={this.state.location} />
+
+
+
         let html = {__html: putObjectInLines(this.state.location)};
         return <div className="locationPage">
-
+            <LocationInformation location={this.state.location} />
             {inits}
             <br/><br/><br/>
             <div dangerouslySetInnerHTML={html} />
@@ -62,16 +64,16 @@ export class LocationInformation extends React.Component {
             { /* name/motto */ }
             <table><tbody>
             <tr>
-                <td className="label">First Name</td>
-                <td className="label">Middle</td>
-                <td className="label">Last</td>
-                <td className="label">Motto</td>
+                <td className="label">Name</td>
+                <td className="label">Type</td>
+                <td className="label">City</td>
+                <td className="label">State</td>
             </tr>
             <tr>
-                <td><input type="text" value={data.firstName} /></td>
-                <td><input type="text" value={data.middleName} /></td>
-                <td><input type="text" value={data.lastName} /></td>
-                <td><input type="text" value={data.motto} /></td>
+                <td><input type="text" value={data.name} /></td>
+                <td><input type="text" value={data.type} /></td>
+                <td><input type="text" value={data.city} /></td>
+                <td><input type="text" value={data.state} /></td>
             </tr>
             </tbody></table>
 

@@ -43,19 +43,19 @@ input, textarea {
 
 
 
-.personPage .initiation .field {
+.initiation .field {
     display: inline-block;
 }
-.personPage .initiation .degree {
+.initiation .degree {
     width: 3em;
     text-align: center;
 }
-.personPage .initiation .locationName {
+.initiation .locationName {
     width: 12em;
 }
-.personPage .initiation .actualDate {
+.initiation .actualDate {
     width: 7em;
 }
-.personPage .initiation .person {
+.initiation .person {
     width: 13em;
 }

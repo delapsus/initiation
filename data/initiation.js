@@ -73,6 +73,10 @@ exports.getByPersonId = personId => {
     return database.selectMany(tableName, fields, {personId:personId});
 };
 
+exports.getByLocationId = locationId => {
+    return database.selectMany(tableName, fields, {locationId:locationId});
+};
+
 exports.loadForPerson = (person, options) => {
     if (typeof options === 'undefined') options = {};
 
@@ -112,6 +116,23 @@ exports.loadForPerson = (person, options) => {
 
         // finally return person for chaining
         return Promise.all(loading).then(() => { return person; });
+    });
+};
+
+function sortActualDate(a, b) {
+    if (a.actualDate < b.actualDate) return -1;
+    if (a.actualDate > b.actualDate) return 1;
+    return 0;
+}
+
+exports.loadForLocation = (location, options) => {
+    if (typeof options === 'undefined') options = {};
+
+    return exports.getByLocationId(location.locationId).then(initiations => {
+
+        initiations.sort(sortActualDate);
+
+        location.initiations = initiations;
     });
 };
 

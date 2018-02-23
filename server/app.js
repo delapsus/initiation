@@ -115,8 +115,8 @@ let getPerson = function(post) {
 let getLocation = function(post) {
     return Location.selectOne(post.locationId)
         .then(location => {
-
-            return location;
+            return Initiation.loadForLocation(location, {loadPersons:true})
+                .then(() => {return location;});
         });
 };
 
