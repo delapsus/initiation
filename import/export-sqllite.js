@@ -4,7 +4,7 @@ let excel = require('./import-excel');
 let fieldMap = require('./fieldmap');
 
 let database = require('../data/database');
-let location = require('../data/location');
+let Location = require('../data/location');
 let person = require('../data/person');
 let degree = require('../data/degree');
 let officer = require('../data/officer');
@@ -30,7 +30,7 @@ function execute() {
         .then(person.createTable)
         .then(degree.createTable)
         .then(officer.createTable)
-        .then(location.createTable)
+        .then(Location.createTable)
         .then(initiation.createTable)
         .then(initiationOfficer.createTable)
         .then(() => {
@@ -102,12 +102,12 @@ let officers = [
     {key:'grandMarshal', id:13},
 ];
 
-let localBody = {};
+let locationCache = {}; // localBody
 
 function saveInitiations(person) {
 
     let inits = [];
-    let bodySave = [];
+    let locationSave = [];
     let officerSave = [];
 
     for (let degreeId in person.initiations) {
@@ -135,30 +135,35 @@ function saveInitiations(person) {
         // process lookup fields
         data.temp = {};
 
+        if (data.personId === 5256) {
+            console.log('test');
+        }
+
+
         // *** LOCAL BODY ***
-        let localBodyName = data.localBody || data.location || null;
-        if (localBodyName !== null && localBodyName.length > 0) {
+        let locationName = data.localBody || data.location || null;
+        if (locationName !== null && locationName.length > 0) {
 
-            localBodyName = localBodyName.toLowerCase();
-            localBodyName = localBodyName.replace(/(?:lodge|oasis|camp|encampment|chapter|temple|consistory|senate)/g, '');
-            localBodyName = localBodyName.replace(/[-.]/g, ' ');
-            localBodyName = localBodyName.replace(/[?]/g, '');
-            while (localBodyName.match(/\s\s/)) {
-                localBodyName = localBodyName.replace(/\s\s/g, ' ');
+            locationName = locationName.toLowerCase();
+            locationName = locationName.replace(/(?:lodge|oasis|camp|encampment|chapter|temple|consistory|senate)/g, '');
+            locationName = locationName.replace(/[-.]/g, ' ');
+            locationName = locationName.replace(/[?]/g, '');
+            while (locationName.match(/\s\s/)) {
+                locationName = locationName.replace(/\s\s/g, ' ');
             }
-            localBodyName = localBodyName.trim();
+            locationName = locationName.trim();
 
-            if (localBody.hasOwnProperty(localBodyName)) {
-                data.temp.location = localBody[localBodyName];
+            if (locationCache.hasOwnProperty(locationName)) {
+                data.temp.location = locationCache[locationName];
             }
             else {
-                let lb = location.create({
-                    name: localBodyName
+                let record = Location.create({
+                    name: locationName
                 });
-                localBody[localBodyName] = lb;
-                data.temp.location = lb;
+                locationCache[locationName] = record;
+                data.temp.location = record;
 
-                bodySave.push(location.save(lb));
+                locationSave.push(record);
             }
         }
 
@@ -178,8 +183,17 @@ function saveInitiations(person) {
         inits.push(data);
     }
 
+    let saveIndex = 0;
+    function saveNextLocation() {
+        if (saveIndex === locationSave.length) return Promise.resolve();
+
+        let record = locationSave[saveIndex++];
+        return Location.save(record).then(saveNextLocation);
+    }
+
+
     // allow bodies to finish saving
-    return Promise.all(bodySave)
+    return saveNextLocation()
         .then(() => {
 
             // save the initiations
