@@ -6,6 +6,8 @@ import {PersonPage} from './PersonPage.jsx';
 import {LocationPage} from './LocationPage.jsx';
 import {LocationList} from './LocationList.jsx';
 import {PeopleSearch} from './PeopleSearch.jsx';
+import {PersonSelect} from './PersonSelect.jsx';
+
 
 class Index extends React.Component {
     constructor(props) {
@@ -35,6 +37,7 @@ class Index extends React.Component {
         else if (this.state.page === 'person') return <PersonPage personId={this.state.personId} />;
         else if (this.state.page === 'location') return <LocationPage locationId={this.state.locationId} />;
         else if (this.state.page === 'locations') return <LocationList />;
+        else return <PersonSelect />;
     }
 }
 
