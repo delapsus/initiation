@@ -1,10 +1,10 @@
 'use strict';
 
 let http = require('http');
-let database = require('../data/database');
-let Person = require('../data/person');
-let Initiation = require('../data/initiation');
-let Location = require('../data/location');
+let database = require('./data/database');
+let Person = require('./data/person');
+let Initiation = require('./data/initiation');
+let Location = require('./data/location');
 
 let peopleSearch = require('./people-search');
 

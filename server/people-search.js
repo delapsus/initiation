@@ -1,6 +1,6 @@
-let person = require('../data/person');
-let initiation = require('../data/initiation');
-let degree = require('../data/degree');
+let person = require('./data/person');
+let initiation = require('./data/initiation');
+let degree = require('./data/degree');
 
 let sortMethods = {
     lastName: function(a, b) {

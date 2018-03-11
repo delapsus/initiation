@@ -8,7 +8,7 @@ var APP_DIR = path.resolve(__dirname, '');
 var BUILD_DIR = APP_DIR;
 
 var config = {
-    entry: APP_DIR + '/website/index.jsx',
+    entry: APP_DIR + '/src/index.jsx',
     output: {
         path: BUILD_DIR,
         filename: 'bundle.js'
