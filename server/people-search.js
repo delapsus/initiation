@@ -129,11 +129,31 @@ exports.suggestPeople = post => {
     return person.selectAll().then(people => {
         let textSearch = post.textSearch;
 
+        let tokens = textSearch.split(' ').map(text => {
+            return new RegExp('(?:^|\W)' + text, 'i');
+        });
+
         let matches = people.filter(person => {
-            if (person.lastName.indexOf(textSearch) !== -1 || person.firstName.indexOf(textSearch) !== -1) {
-                return true;
+
+            let matchAll = true;
+
+            let a = [];
+            if (person.firstName !== null) a.push(person.firstName);
+            if (person.middleName !== null) a.push(person.middleName);
+            if (person.lastName !== null) a.push(person.lastName);
+
+            for (let i = 0; i < tokens.length && matchAll; i++) {
+                let found = false;
+                for (let j = 0; j < a.length; j++) {
+                    if (a[j] !== null && a[j].match(tokens[i])) {
+                        found = true;
+                        a[j] = null;
+                    }
+                }
+                if (!found) matchAll = false;
             }
-            return false;
+
+            return matchAll;
         });
 
         return matches.slice(0, 10);

@@ -79,7 +79,7 @@ const getSuggestionValue = suggestion => suggestion.name;
 // Use your imagination to render suggestions.
 const renderSuggestion = suggestion => (
     <div>
-        {suggestion.firstName + " " + suggestion.lastName}
+        {suggestion.firstName + " " + suggestion.middleName + " " + suggestion.lastName}
     </div>
 );
 
@@ -104,17 +104,21 @@ export class PersonSelect extends React.Component {
         // and they are initially empty because the Autosuggest is closed.
         this.state = {
             value: '',
-            suggestions: []
+            suggestions: [],
+            personId: -1
         };
+
+        this.incr = 0;
 
         this.onChange = this.onChange.bind(this);
         this.onSuggestionsFetchRequested = this.onSuggestionsFetchRequested.bind(this);
         this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this);
+        this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
     }
 
     onChange(event, { newValue }) {
         this.setState({
-            value: newValue
+            value: newValue || ""
         });
     }
 
@@ -122,12 +126,15 @@ export class PersonSelect extends React.Component {
     // You already implemented this logic above, so just use it.
     onSuggestionsFetchRequested({ value }) {
 
+        let last = ++this.incr;
+
         getPeople(value).then(results => {
+            // don't apply this result if it isn't the last one
+            if (last !== this.incr) return;
             this.setState({
                 suggestions: results
             });
         });
-
 
     }
 
@@ -137,6 +144,14 @@ export class PersonSelect extends React.Component {
             suggestions: []
         });
     };
+
+    onSuggestionSelected(event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) {
+        //let person = this.state.suggestions[sectionIndex];
+        this.setState({
+            personId: suggestion.personId,
+            value: suggestion.firstName + " " + suggestion.lastName
+        });
+    }
 
     render() {
         const { value, suggestions } = this.state;
@@ -150,14 +165,16 @@ export class PersonSelect extends React.Component {
 
         // Finally, render it!
         return (
-            <Autosuggest
+            <div><Autosuggest
                 suggestions={suggestions}
                 onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
                 onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                onSuggestionSelected={this.onSuggestionSelected}
                 getSuggestionValue={getSuggestionValue}
                 renderSuggestion={renderSuggestion}
                 inputProps={inputProps}
-            />
+                focusInputOnSuggestionClick={false}
+            /><span>{this.state.personId}</span></div>
         );
     }
 }
