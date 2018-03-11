@@ -119,4 +119,25 @@ exports.getPeople = post => {
         return value;
     });
 
+
+
 };
+
+
+
+exports.suggestPeople = post => {
+    return person.selectAll().then(people => {
+        let textSearch = post.textSearch;
+
+        let matches = people.filter(person => {
+            if (person.lastName.indexOf(textSearch) !== -1 || person.firstName.indexOf(textSearch) !== -1) {
+                return true;
+            }
+            return false;
+        });
+
+        return matches.slice(0, 10);
+    });
+};
+
+

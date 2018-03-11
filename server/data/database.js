@@ -6,7 +6,7 @@ let db = null;
 
 
 exports.storageType = {
-    file: path.resolve(__dirname, '../initiation.db'), //, //'initiation.db',
+    file: path.resolve(__dirname, '../../initiation.db'),
     memory: ':memory:'
 };
 

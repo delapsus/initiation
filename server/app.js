@@ -85,6 +85,7 @@ let writeJsonResponse = function(res, msg) {
 let handleRequest = function(url, req, res, post) {
     if (url === '/person') return getPerson(post);
     else if (url === '/people') return peopleSearch.getPeople(post);
+    else if (url === '/person-select') return peopleSearch.suggestPeople(post);
     else if (url === '/location') return getLocation(post);
     else if (url === '/locations') return Location.selectAll().then(results => {
         results.sort((a,b) => {

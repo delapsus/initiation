@@ -1,6 +1,6 @@
 import React from 'react';
 import Autosuggest from 'react-autosuggest';
-
+import {postAjax} from './http';
 
 // Imagine you have a list of languages that you'd like to autosuggest.
 const languages = [
@@ -79,9 +79,19 @@ const getSuggestionValue = suggestion => suggestion.name;
 // Use your imagination to render suggestions.
 const renderSuggestion = suggestion => (
     <div>
-        {suggestion.name}
+        {suggestion.firstName + " " + suggestion.lastName}
     </div>
 );
+
+function getPeople(value) {
+    const inputValue = value.trim().toLowerCase();
+    return new Promise((resolve, reject) => {
+        postAjax("http://localhost:2020/person-select", {textSearch: inputValue}, result => {
+            result = JSON.parse(result);
+            resolve(result);
+        });
+    });
+}
 
 export class PersonSelect extends React.Component {
     constructor() {
@@ -111,9 +121,14 @@ export class PersonSelect extends React.Component {
     // Autosuggest will call this function every time you need to update suggestions.
     // You already implemented this logic above, so just use it.
     onSuggestionsFetchRequested({ value }) {
-        this.setState({
-            suggestions: getSuggestions(value)
+
+        getPeople(value).then(results => {
+            this.setState({
+                suggestions: results
+            });
         });
+
+
     }
 
     // Autosuggest will call this function every time you need to clear suggestions.
