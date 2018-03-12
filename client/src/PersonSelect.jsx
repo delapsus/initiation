@@ -118,7 +118,8 @@ export class PersonSelect extends React.Component {
 
     onChange(event, { newValue }) {
         this.setState({
-            value: newValue || ""
+            value: newValue || "",
+            personId: -1
         });
     }
 
@@ -163,6 +164,25 @@ export class PersonSelect extends React.Component {
             onChange: this.onChange
         };
 
+        let status = this.state.personId === -1 ? 'grey' : 'green';
+
+        let theme = {
+            container:                'react-autosuggest__container',
+            containerOpen:            'react-autosuggest__container--open',
+            input:                    'react-autosuggest__input ' + status,
+            inputOpen:                'react-autosuggest__input--open',
+            inputFocused:             'react-autosuggest__input--focused',
+            suggestionsContainer:     'react-autosuggest__suggestions-container',
+            suggestionsContainerOpen: 'react-autosuggest__suggestions-container--open',
+            suggestionsList:          'react-autosuggest__suggestions-list',
+            suggestion:               'react-autosuggest__suggestion',
+            suggestionFirst:          'react-autosuggest__suggestion--first',
+            suggestionHighlighted:    'react-autosuggest__suggestion--highlighted',
+            sectionContainer:         'react-autosuggest__section-container',
+            sectionContainerFirst:    'react-autosuggest__section-container--first',
+            sectionTitle:             'react-autosuggest__section-title'
+        };
+
         // Finally, render it!
         return (
             <div><Autosuggest
@@ -174,6 +194,7 @@ export class PersonSelect extends React.Component {
                 renderSuggestion={renderSuggestion}
                 inputProps={inputProps}
                 focusInputOnSuggestionClick={false}
+                theme={theme}
             /><span>{this.state.personId}</span></div>
         );
     }

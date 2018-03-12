@@ -1,4 +1,4 @@
-let person = require('./data/person');
+let Person = require('./data/person');
 let initiation = require('./data/initiation');
 let degree = require('./data/degree');
 
@@ -21,7 +21,7 @@ let peopleCache = null;
 
 function getAllPeopleWithInits() {
     return Promise.all([
-        person.selectAll(),
+        Person.selectAll(),
         initiation.selectAll(),
         degree.selectAll()
     ]).then(results => {
@@ -123,10 +123,19 @@ exports.getPeople = post => {
 
 };
 
+let cache = null;
 
+function getPeopleCache() {
+    if (cache !== null) return Promise.resolve(cache);
+
+    return Person.selectAll().then(records => {
+        cache = records;
+        return cache;
+    });
+}
 
 exports.suggestPeople = post => {
-    return person.selectAll().then(people => {
+    return getPeopleCache().then(people => {
         let textSearch = post.textSearch;
 
         let tokens = textSearch.split(' ').map(text => {

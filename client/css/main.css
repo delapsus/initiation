@@ -69,7 +69,12 @@ input, textarea {
 
 
 
-
+.green {
+    background-color: #59B934;
+}
+.grey {
+    background-color: #9faeaa;
+}
 
 .react-autosuggest__container {
     position: relative;
