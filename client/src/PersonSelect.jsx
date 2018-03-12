@@ -79,7 +79,7 @@ const getSuggestionValue = suggestion => suggestion.name;
 // Use your imagination to render suggestions.
 const renderSuggestion = suggestion => (
     <div>
-        {suggestion.firstName + " " + suggestion.middleName + " " + suggestion.lastName}
+        {calcDisplayName(suggestion)}
     </div>
 );
 
@@ -91,6 +91,14 @@ function getPeople(value) {
             resolve(result);
         });
     });
+}
+
+function calcDisplayName(person) {
+    let a = [];
+    if (person.firstName !== null) a.push(person.firstName);
+    if (person.middleName !== null) a.push(person.middleName);
+    if (person.lastName !== null) a.push(person.lastName);
+    return a.join(' ');
 }
 
 export class PersonSelect extends React.Component {
@@ -150,7 +158,7 @@ export class PersonSelect extends React.Component {
         //let person = this.state.suggestions[sectionIndex];
         this.setState({
             personId: suggestion.personId,
-            value: suggestion.firstName + " " + suggestion.lastName
+            value: calcDisplayName(suggestion)
         });
     }
 

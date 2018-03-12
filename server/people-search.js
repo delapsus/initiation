@@ -129,36 +129,40 @@ function getPeopleCache() {
     if (cache !== null) return Promise.resolve(cache);
 
     return Person.selectAll().then(records => {
+
+        records.forEach(person => {
+            let a = [];
+            if (person.firstName !== null) a.push(person.firstName.replace(reNonChar, ' '));
+            if (person.middleName !== null) a.push(person.middleName.replace(reNonChar, ' '));
+            if (person.lastName !== null) a.push(person.lastName.replace(reNonChar, ' '));
+            person.searchName = a.join(' ');
+        });
+
         cache = records;
         return cache;
     });
 }
 
+let reNonChar = /[^a-zA-Z]/g;
+
 exports.suggestPeople = post => {
+
+    let textSearch = post.textSearch;
+
+    textSearch = textSearch.replace(reNonChar, ' ');
+
     return getPeopleCache().then(people => {
-        let textSearch = post.textSearch;
 
         let tokens = textSearch.split(' ').map(text => {
-            return new RegExp('(?:^|\W)' + text, 'i');
+            return new RegExp('(?:^|\s)' + text, 'i');
         });
 
         let matches = people.filter(person => {
 
             let matchAll = true;
 
-            let a = [];
-            if (person.firstName !== null) a.push(person.firstName);
-            if (person.middleName !== null) a.push(person.middleName);
-            if (person.lastName !== null) a.push(person.lastName);
-
             for (let i = 0; i < tokens.length && matchAll; i++) {
-                let found = false;
-                for (let j = 0; j < a.length; j++) {
-                    if (a[j] !== null && a[j].match(tokens[i])) {
-                        found = true;
-                        a[j] = null;
-                    }
-                }
+                let found = person.searchName.match(tokens[i]);
                 if (!found) matchAll = false;
             }
 
