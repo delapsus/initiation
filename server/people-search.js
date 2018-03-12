@@ -135,7 +135,7 @@ function getPeopleCache() {
             if (person.firstName !== null) a.push(person.firstName.replace(reNonChar, ' '));
             if (person.middleName !== null) a.push(person.middleName.replace(reNonChar, ' '));
             if (person.lastName !== null) a.push(person.lastName.replace(reNonChar, ' '));
-            person.searchName = a.join(' ');
+            person.searchName = a.join(' ').toLowerCase();
         });
 
         cache = records;
@@ -143,19 +143,19 @@ function getPeopleCache() {
     });
 }
 
-let reNonChar = /[^a-zA-Z]/g;
+let reNonChar = /[^a-zA-Z ]/g;
 
 exports.suggestPeople = post => {
 
-    let textSearch = post.textSearch;
+    let textSearch = post.textSearch.toLowerCase();
 
     textSearch = textSearch.replace(reNonChar, ' ');
 
-    return getPeopleCache().then(people => {
+    let tokens = textSearch.split(' ').map(text => {
+        return new RegExp('(?:^|\\W)' + text, 'i');
+    });
 
-        let tokens = textSearch.split(' ').map(text => {
-            return new RegExp('(?:^|\s)' + text, 'i');
-        });
+    return getPeopleCache().then(people => {
 
         let matches = people.filter(person => {
 
