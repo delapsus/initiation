@@ -9,8 +9,8 @@ let fields = [
     {name:'degreeId', type:'number'},
     {name:'personId', type:'number'},
     {name:'locationId', type:'number'},
-    {name:'location'},
-    {name:'localBody'},
+    {name:'location'},  // location of initiation
+    {name:'localBody'}, // membership
     {name:'localBodyDate', type:'datetime'},
     {name:'signedDate', type:'datetime'},
     {name:'approvedDate', type:'datetime'},

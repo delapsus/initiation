@@ -30,3 +30,26 @@ export class InitiationDisplay extends React.Component {
         </div>;
     }
 }
+
+export class InitiationDisplayHeader extends React.Component {
+    render() {
+
+        let personLink = this.props.showPerson ? <div className="field person">Initiate</div> : "";
+        let sponsor1 = <div className="field person">Sponsor 1</div>;
+        let sponsor2 = <div className="field person">Sponsor 2</div>;
+
+        if (this.props.showOnlyOneSponsor) {
+            sponsor1 = <div className="field person">Other Sponsor</div>;
+            sponsor2 = "";
+        }
+
+        return <div className="initiation">
+            {personLink}
+            <div className="field degree">°</div>
+            <div className="field locationName">Location</div>
+            <div className="field actualDate">Actual Date</div>
+            {sponsor1}
+            {sponsor2}
+        </div>;
+    }
+}

@@ -7,6 +7,8 @@ import {LocationPage} from './LocationPage.jsx';
 import {LocationList} from './LocationList.jsx';
 import {PeopleSearch} from './PeopleSearch.jsx';
 import {PersonSelect} from './PersonSelect.jsx';
+import {ApplicationFirst} from "./ApplicationFirst.jsx";
+import {Home} from "./Home.jsx";
 
 
 class Index extends React.Component {
@@ -15,7 +17,8 @@ class Index extends React.Component {
 
         let parsed = queryString.parse(location.search);
         this.state = {
-            page: 'people-search'
+            //page: 'people-search'
+            page: 'home'
         };
 
         if (parsed.personid) {
@@ -34,10 +37,12 @@ class Index extends React.Component {
     }
     render() {
         if (this.state.page === 'people') return <PeopleSearch />;
+        if (this.state.page === 'person-select') return <PersonSelect />;
         else if (this.state.page === 'person') return <PersonPage personId={this.state.personId} />;
         else if (this.state.page === 'location') return <LocationPage locationId={this.state.locationId} />;
         else if (this.state.page === 'locations') return <LocationList />;
-        else return <PersonSelect />;
+        else if (this.state.page === 'application') return <ApplicationFirst />;
+        else return <Home />;
     }
 }
 
