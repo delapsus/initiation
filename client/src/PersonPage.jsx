@@ -1,11 +1,12 @@
 import React from 'react';
 import {postAjax} from './http';
 import {formatDate, formatTime, putObjectInLines} from './common.js';
-import {InitiationDisplay} from './InitiationDisplay.jsx';
+import {InitiationDisplay, InitiationDisplayHeader} from './InitiationDisplay.jsx';
+
 
 function getPerson(personId) {
     return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/person", {personId: personId}, result => {
+        postAjax("http://localhost:2020/data/person", {personId: personId}, result => {
             result = JSON.parse(result);
             resolve(result);
         });
@@ -16,7 +17,8 @@ export class PersonPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            person: null
+            person: null,
+            showRawData: false
         };
     }
 
@@ -52,13 +54,25 @@ export class PersonPage extends React.Component {
             });
         }
 
-        let html = {__html: putObjectInLines(this.state.person)};
+        let rawHtml = {__html: putObjectInLines(this.state.person)};
+        let raw = <input type="button" value="show raw data" onClick={() => {this.setState({showRawData: true})}}/>;
+        if (this.state.showRawData) raw = <div dangerouslySetInnerHTML={rawHtml} />;
+
         return <div className="personPage">
             <PersonInformation person={this.state.person} />
+
+            <h3>Initiations</h3>
+            <InitiationDisplayHeader showPerson={false} />
             {inits}
+
+            <h3>Candidates Sponsored</h3>
+            <InitiationDisplayHeader showPerson={true} showOnlyOneSponsor={true}/>
             {sponsoredInits}
+
             <br/><br/><br/>
-            <div dangerouslySetInnerHTML={html} />
+
+            {raw}
+
         </div>;
     }
 

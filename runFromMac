@@ -1,0 +1,3 @@
+#!/bin/bash
+open http://localhost:2020/client/index.html
+node app.js

@@ -12,7 +12,7 @@ export function postAjax(url, data, success) {
         if (xhr.readyState>3 && xhr.status==200) { success(xhr.responseText); }
     };
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify(data)); // params
     return xhr;
 }

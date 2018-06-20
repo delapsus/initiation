@@ -3,7 +3,7 @@ import {postAjax} from './http';
 
 function getLocations() {
     return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/locations", {}, result => {
+        postAjax("http://localhost:2020/data/locations", {}, result => {
             result = JSON.parse(result);
             resolve(result);
         });

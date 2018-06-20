@@ -5,7 +5,7 @@ import {InitiationDisplay} from './InitiationDisplay.jsx';
 
 function getLocation(locationId) {
     return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/location", {locationId: locationId}, result => {
+        postAjax("http://localhost:2020/data/location", {locationId: locationId}, result => {
             result = JSON.parse(result);
             resolve(result);
         });
