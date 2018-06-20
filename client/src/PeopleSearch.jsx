@@ -3,7 +3,7 @@ import {postAjax} from './http';
 
 function getPeople(pageSize, pageIndex, textSearch) {
     return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/people", {pageSize:pageSize, index: pageIndex, textSearch: textSearch}, result => {
+        postAjax("http://localhost:2020/data/people", {pageSize:pageSize, index: pageIndex, textSearch: textSearch}, result => {
             result = JSON.parse(result);
             resolve(result);
         });
