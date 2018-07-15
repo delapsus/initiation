@@ -1,0 +1,1 @@
+#!/bin/shcd ~/Desktopgit clone https://otoinitiation:h4bixKTYeWh3@github.com/asicath/initiation.gitcd ~/Desktop/initiation/servernpm installcd ~/Desktop/initiation/clientnpm installnpm run build
