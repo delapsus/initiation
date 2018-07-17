@@ -33,6 +33,35 @@ exports.close = () => {
     });
 };
 
+exports.query = (sql) => {
+    // err, row
+    return new Promise((resolve, reject) => {
+        db.all(sql, (err, rows) => {
+            if (err) return reject(err);
+            resolve(rows);
+        });
+    });
+};
+
+
+exports.beginTransaction = () => {
+    return new Promise((resolve, reject) => {
+        db.run("BEGIN TRANSACTION", err => {
+            if (!!err) return reject(err);
+            resolve();
+        });
+    });
+};
+
+exports.commit = () => {
+    return new Promise((resolve, reject) => {
+        db.run("COMMIT", err => {
+            if (!!err) return reject(err);
+            resolve();
+        });
+    });
+};
+
 
 
 if (module.parent === null) {

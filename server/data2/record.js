@@ -1,6 +1,6 @@
 const database = require('./database');
 
-exports.createRecord = (fields, defaultValues) => {
+exports.createRecord = (fields, defaultValues, dataFields) => {
     if (typeof defaultValues === 'undefined') defaultValues = null;
 
     let o = {};
@@ -11,20 +11,36 @@ exports.createRecord = (fields, defaultValues) => {
         else o[key] = null;
     });
 
+    // setup data fields
+    dataFields.forEach(field => {
+
+        // don't overwrite
+        if (o.data.hasOwnProperty(field.name)) return;
+
+        let val = null;
+
+        if (field.type === 'boolean') val = false;
+        if (field.type === 'array') val = [];
+
+        o.data[field.name] = val;
+    });
+
     return o;
 };
 
-exports.selectOne = (table, fields, idKey, id) => {
+exports.selectOne = (table, fields, idKey, id, convert) => {
     // err, row
     return new Promise((resolve, reject) => {
         database.db.get(`select * from ${table} where ${idKey}=?`, id, (err, row) => {
             if (err) return reject(err);
-            resolve(exports.convertRecordToObject(fields, row));
+            let o = exports.convertRecordToObject(fields, row);
+            if (convert !== null) o = convert(o);
+            resolve(o);
         });
     });
 };
 
-exports.selectMany = (table, fields, where) => {
+exports.selectMany = (table, fields, where, convert) => {
 
     let keys = [];
     let values = [];
@@ -38,7 +54,9 @@ exports.selectMany = (table, fields, where) => {
         database.db.all(`select * from ${table} where ${keys.join(',')}`, values, (err, rows) => {
             if (err) return reject(err);
             let a = rows.map(row => {
-                return exports.convertRecordToObject(fields, row);
+                let o = exports.convertRecordToObject(fields, row);
+                if (convert !== null) o = convert(o);
+                return o
             });
             resolve(a);
         });
@@ -46,13 +64,15 @@ exports.selectMany = (table, fields, where) => {
 
 };
 
-exports.selectAll = (table, fields) => {
+exports.selectAll = (table, fields, convert) => {
     // err, row
     return new Promise((resolve, reject) => {
         database.db.all(`select * from ${table}`, (err, rows) => {
             if (err) return reject(err);
             let a = rows.map(row => {
-                return exports.convertRecordToObject(fields, row);
+                let o = exports.convertRecordToObject(fields, row);
+                if (convert !== null) o = convert(o);
+                return o;
             });
             resolve(a);
         });
