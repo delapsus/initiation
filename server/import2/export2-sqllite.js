@@ -154,9 +154,9 @@ function saveInitiations(person) {
 }
 
 let findNames = require('./find-names');
+let findLocations = require('./find-locations');
 
-
-execute().then(findNames.execute).catch(e => {
+execute().then(findLocations.execute).then(findNames.execute).catch(e => {
     throw e;
 }).then(process.exit);
 

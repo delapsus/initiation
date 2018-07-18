@@ -110,7 +110,9 @@ exports.execute = () => {
                         return record.personId;
                     })
                 }
-                else if (Array.isArray(p)) status.dupe++;
+                else if (Array.isArray(p)) {
+                    status.dupe++;
+                }
                 else {
                     status.found++;
                     personId = p.personId;
@@ -143,6 +145,8 @@ exports.execute = () => {
             init.data.officers.forEach(officer => {
                 // TODO - Loop through each officer and apply the same as above
 
+                // typed name to just alpha chars, compare against firstlast and firstmiddlelast and firstmiddleIlast
+
                 // del campo, Bonnie Henderson - Winnie, Lon Milo Du Quette
                 // du
 
@@ -157,7 +161,7 @@ exports.execute = () => {
                 */
 
             });
-            
+
             return Promise.all(finding).then(processNextInit);
         }
 
@@ -189,7 +193,31 @@ exports.execute = () => {
         if (!personLookup.hasOwnProperty(key)) return null;
 
         let person = personLookup[key];
-        //if (Array.isArray(person)) return null; // no support for middle initial yet
+
+        // multiples found, try to find by middle
+        if (Array.isArray(person)) {
+
+            // no middle to filter by, just return them all
+            if (middle === null || middle.length === 0) return person;
+
+            // first by initial
+            let a = [];
+            person.forEach(p => {
+                if (p.middleName[0] === middle[0]) a.push(p);
+            });
+
+            if (a.length === 0) return person;
+            if (a.length === 1) return a[0];
+
+            // more than one initial match, try to match whole name
+            let b = [];
+            person.forEach(p => {
+                if (p.middleName === middle) b.push(p);
+            });
+
+            if (b.length === 0) return person;
+            if (b.length === 1) return b[0];
+        }
 
         return person;
     }
