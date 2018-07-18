@@ -63,6 +63,10 @@ exports.selectOne = initiationId => {
     return record.selectOne(tableName, fields, 'initiationId', initiationId, convert);
 };
 
+exports.selectAll = () => {
+    return record.selectAll(tableName, fields, convert);
+};
+
 const convert = o => {
     o.data.localBodyDate = fixDateString(o.data.localBodyDate);
     o.data.signedDate = fixDateString(o.data.signedDate);

@@ -107,7 +107,7 @@ exports.selectMany = (table, fields, where) => {
 exports.selectAll = (table, fields) => {
     // err, row
     return new Promise((resolve, reject) => {
-        db.all(`select * from ${table}`, (err, rows) => {
+        exports.db.all(`select * from ${table}`, (err, rows) => {
             if (err) return reject(err);
             let a = rows.map(row => {
                 return exports.convertRecordToObject(fields, row);

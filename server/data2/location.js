@@ -33,6 +33,10 @@ exports.selectOne = locationId => {
     return record.selectOne(tableName, fields, 'locationId', locationId, null);
 };
 
+exports.selectAll = () => {
+    return record.selectAll(tableName, fields, null);
+};
+
 
 if (module.parent === null) {
     let record;

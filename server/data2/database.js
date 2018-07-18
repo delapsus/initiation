@@ -62,7 +62,15 @@ exports.commit = () => {
     });
 };
 
-
+exports.getRecordCount = table => {
+    // err, row
+    return new Promise((resolve, reject) => {
+        exports.db.get(`select count(*) as count from ${table}`, (err, row) => {
+            if (err) return reject(err);
+            resolve(row['count']);
+        });
+    });
+};
 
 if (module.parent === null) {
     let record;

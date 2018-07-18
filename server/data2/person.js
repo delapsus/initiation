@@ -63,7 +63,9 @@ let dataFields = [
     {name:'isFelon', type:'boolean'},
     {name:'isDuesInactive', type:'boolean'},
     {name:'isInternationalBadReport', type:'boolean'},
-    {name:'isResigned', type:'boolean'}
+    {name:'isResigned', type:'boolean'},
+
+    {name:'importSource'},
 ];
 
 exports.createTable = () => {
@@ -82,6 +84,11 @@ exports.create = values => {
 exports.selectOne = personId => {
     return record.selectOne(tableName, fields, 'personId', personId, convert);
 };
+
+exports.selectAll = () => {
+    return record.selectAll(tableName, fields, convert);
+};
+
 
 const convert = o => {
     if (o.data.createdDate !== null) o.data.createdDate = new Date(o.data.createdDate);

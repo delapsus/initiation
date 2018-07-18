@@ -6,8 +6,6 @@ let fieldMap = require('./fieldmap');
 let database = require('../data2/database');
 let location = require('../data2/location');
 let person = require('../data2/person');
-let degree = require('../data2/degree');
-let officer = require('../data2/officer');
 let initiation = require('../data2/initiation');
 
 function execute() {
@@ -53,6 +51,8 @@ function execute() {
                 }
                 data = o;
 
+                data.importSource = "main";
+
                 let record = person.create({data: data});
 
                 record.initiations = initiations;
@@ -83,10 +83,7 @@ function execute() {
             return Promise.all([
                 database.getRecordCount('Location').then(count => { console.log("Location: " + count); }),
                 database.getRecordCount('Person').then(count => { console.log("Person: " + count); }),
-                database.getRecordCount('Initiation').then(count => { console.log("Initiation: " + count); }),
-                database.getRecordCount('InitiationOfficer').then(count => { console.log("InitiationOfficer: " + count); }),
-                database.getRecordCount('Degree').then(count => { console.log("Degree: " + count); }),
-                database.getRecordCount('Officer').then(count => { console.log("Officer: " + count); })
+                database.getRecordCount('Initiation').then(count => { console.log("Initiation: " + count); })
             ]);
         });
 
@@ -110,19 +107,15 @@ let officers = [
     {key:'grandMarshal', id:13},
 ];
 
-let locationCache = {}; // localBody
-
 function saveInitiations(person) {
 
-    let inits = [];
-    let locationSave = [];
-    let officerSave = [];
+    let saving = [];
 
     for (let degreeId in person.initiations) {
 
-        let initiation = person.initiations[degreeId];
-        // {key:"Tracking Number", type:"string", db:"PersonId"},
+        let init = person.initiations[degreeId];
 
+        // get the field mapping
         let degreeInfo = fieldMap.fields.initiations.reduce(function(result, info) {
             if (info.degreeId === +degreeId) return info;
             return result;
@@ -130,108 +123,38 @@ function saveInitiations(person) {
 
         // map the data
         let data = {
-            //initiationId: initiationId++,
             degreeId: +degreeId
         };
         degreeInfo.fields.forEach(function(field) {
-            if (field.hasOwnProperty('db')) data[field.db] = initiation[field.db];
+            if (field.hasOwnProperty('db')) data[field.db] = init[field.db];
         });
 
         // link to parent
         data.personId = person.personId;
 
-        // process lookup fields
-        data.temp = {};
-
-        // *** LOCAL BODY ***
-        let locationName = data.localBody || data.location || null;
-        if (locationName !== null && locationName.length > 0) {
-
-            locationName = locationName.toLowerCase();
-            locationName = locationName.replace(/(?:lodge|oasis|camp|encampment|chapter|temple|consistory|senate)/g, '');
-            locationName = locationName.replace(/[-.]/g, ' ');
-            locationName = locationName.replace(/[?]/g, '');
-            while (locationName.match(/\s\s/)) {
-                locationName = locationName.replace(/\s\s/g, ' ');
-            }
-            locationName = locationName.trim();
-
-            if (locationCache.hasOwnProperty(locationName)) {
-                data.temp.location = locationCache[locationName];
-            }
-            else {
-                let record = location.create({
-                    name: locationName
-                });
-                locationCache[locationName] = record;
-                data.temp.location = record;
-
-                locationSave.push(record);
-            }
-        }
-
         // *** INITIATION OFFICERS ***
+        data.officers = [];
+
+        // look through each potential officer
         officers.forEach(office => {
             if (data.hasOwnProperty(office.key) && data[office.key] !== null && data[office.key].length > 0) {
-                officerSave.push({
+                data.officers.push({
                     officerId: office.id,
-                    name: data[office.key],
-                    temp: {
-                        initiation: data
-                    }
+                    name: data[office.key] // we will link these up to personId in a post import process
                 });
             }
         });
 
-        inits.push(data);
+        // finally create the record
+        let record = initiation.create({data: data});
+        saving.push(initiation.save(record));
     }
 
-    let saveIndex = 0;
-    function saveNextLocation() {
-        if (saveIndex === locationSave.length) return Promise.resolve();
-
-        let record = locationSave[saveIndex++];
-        return location.save(record).then(saveNextLocation);
-    }
-
-
-    // allow bodies to finish saving
-    return saveNextLocation()
-        .then(() => {
-
-            // save the initiations
-            let index = 0;
-
-            function next() {
-                if (index === inits.length)
-                    return Promise.resolve();
-
-                let data = inits[index++];
-
-                // first link the location
-                if (data.temp.hasOwnProperty('location')) {
-                    data.locationId = data.temp.location.locationId;
-                }
-
-                let record = location.create({data: data});
-
-                return initiation.save(record).then(next);
-            }
-
-            return next();
-        })
-        .then(() => {
-            let saving = [];
-            officerSave.forEach(data => {
-                data.initiationId = data.temp.initiation.initiationId;
-                saving.push(initiationOfficer.save(data));
-            });
-            return Promise.all(saving);
-        });
-
+    return Promise.all(saving);
 }
 
 let findNames = require('./find-names');
+
 
 execute().then(findNames.execute).catch(e => {
     throw e;
