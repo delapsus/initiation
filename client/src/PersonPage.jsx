@@ -6,7 +6,7 @@ import {InitiationDisplay, InitiationDisplayHeader} from './InitiationDisplay.js
 
 function getPerson(personId) {
     return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/person", {personId: personId}, result => {
+        postAjax("http://localhost:2020/data/person", {personId: personId}, result => {
             result = JSON.parse(result);
             resolve(result);
         });
