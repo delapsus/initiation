@@ -11,7 +11,7 @@ exports.loadWorkbook = function() {
 };
 
 function loadWorkbook() {
-    let raw = fs.readFileSync('exported.xlsx');
+    let raw = fs.readFileSync('../../import/exported.xlsx');
 
     // convert data to binary string
     let data = new Uint8Array(raw);

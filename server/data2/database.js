@@ -5,7 +5,7 @@ exports.db = null;
 
 
 exports.storageType = {
-    file: path.resolve(__dirname, '../../initiation-test.db'),
+    file: path.resolve(__dirname, '../../initiation2.db'),
     memory: ':memory:'
 };
 
@@ -36,7 +36,7 @@ exports.close = () => {
 exports.query = (sql) => {
     // err, row
     return new Promise((resolve, reject) => {
-        db.all(sql, (err, rows) => {
+        exports.db.all(sql, (err, rows) => {
             if (err) return reject(err);
             resolve(rows);
         });
@@ -46,7 +46,7 @@ exports.query = (sql) => {
 
 exports.beginTransaction = () => {
     return new Promise((resolve, reject) => {
-        db.run("BEGIN TRANSACTION", err => {
+        exports.db.run("BEGIN TRANSACTION", err => {
             if (!!err) return reject(err);
             resolve();
         });
@@ -55,7 +55,7 @@ exports.beginTransaction = () => {
 
 exports.commit = () => {
     return new Promise((resolve, reject) => {
-        db.run("COMMIT", err => {
+        exports.db.run("COMMIT", err => {
             if (!!err) return reject(err);
             resolve();
         });
