@@ -26,35 +26,56 @@ exports.execute = () => {
         entry.middleName = trim(person.data.middleName);
         entry.lastName = trim(person.data.lastName);
 
+        // clean middle name
+        entry.middleName = entry.middleName.replace(/[^0-9a-z\s]/gi, ' ').toLowerCase();
+        while (entry.middleName.match(/\s\s/)) { entry.middleName = entry.middleName.replace(/\s\s/g, ' '); } // remove double space
+        entry.middleName = entry.middleName.trim();
+
         // ignore empty names
         if (entry.firstName.length === 0 && entry.lastName.length === 0) {
             counts.empty.push(entry);
             return;
         }
 
-        // create the key
-        let key = entry.lastName + "-" + entry.firstName;
-        if (personLookup.hasOwnProperty(key)) {
-            let existing = personLookup[key];
+        function addToLookup(key, entry) {
+            if (personLookup.hasOwnProperty(key)) {
+                let existing = personLookup[key];
 
-            // convert to array if not already
-            if (!Array.isArray(existing)) {
-                personLookup[key] = [existing];
-                existing = personLookup[key];
+                // convert to array if not already
+                if (!Array.isArray(existing)) {
+                    personLookup[key] = [existing];
+                    existing = personLookup[key];
+                }
+
+                // store into the array for this key
+                existing.push(entry);
+
+                // check middle initial?
+                //if (other.middleName.length > 0 && person.middleName.length > 0)
+
+                //console.log('duplicate: ' + key);
+                counts.duplicate.push(entry);
             }
-
-            // store into the array for this key
-            existing.push(entry);
-
-            // check middle initial?
-            //if (other.middleName.length > 0 && person.middleName.length > 0)
-
-            //console.log('duplicate: ' + key);
-            counts.duplicate.push(entry);
+            else {
+                personLookup[key] = entry;
+            }
         }
-        else {
-            personLookup[key] = entry;
-        }
+
+        // create the key
+        let key1 = entry.firstName + " " + entry.lastName;
+        addToLookup(key1, entry);
+
+        if (entry.middleName.length === 0) return;
+
+        // add with middle initial
+        let key2 = entry.firstName + " " + entry.middleName[0] + " " + entry.lastName;
+        addToLookup(key2, entry);
+
+        if (entry.middleName.length === 1) return;
+
+        // add with full middle
+        let key3 = entry.firstName + " " + entry.middleName + " " + entry.lastName;
+        addToLookup(key3, entry);
     }
 
     let loading = [
@@ -81,7 +102,11 @@ exports.execute = () => {
             found: 0,
             notFound: 0,
             empty: 0,
-            dupe: 0
+            dupe: 0,
+
+            officersFound: 0,
+            officersNotFound: 0,
+            officersDupe: 0
         };
 
         let newPeople = [];
@@ -128,7 +153,7 @@ exports.execute = () => {
         function processNextInit() {
 
             if (initIndex === initiations.length) {
-                console.log('found: ' + status.found + ", not found: " + status.notFound + ", empty: " + status.empty + ", dupe: " + status.dupe);
+                console.log('found: ' + status.found + ", not found: " + status.notFound + ", empty: " + status.empty + ", dupe: " + status.dupe + ", officersFound: " + status.officersFound + ", officersNotFound: " + status.officersNotFound + ", officersDupe: " + status.officersDupe);
                 return Promise.resolve();
             }
 
@@ -143,7 +168,41 @@ exports.execute = () => {
 
             // *** OFFICERS ***
             init.data.officers.forEach(officer => {
-                // TODO - Loop through each officer and apply the same as above
+
+
+                let key = officer.name.replace(/[^0-9a-z\s]/gi, '').toLowerCase();
+                while (key.match(/\s\s/)) { key = key.replace(/\s\s/g, ' '); } // remove double space
+                key = key.trim();
+
+
+                let result = findPersonByKey(key);
+                if (result !== null) {
+                    if (!Array.isArray(result)) {
+                        officer.personId = result.personId;
+                        status.officersFound++;
+                    }
+                    else {
+                        status.officersDupe++;
+                    }
+                }
+                else {
+                    // TODO person not found, create a new record
+                    status.officersNotFound++;
+
+                    // if just a first and last name, lets go ahead and create it
+                    let parts = key.split(' ');
+                    if (parts.length === 2) {
+
+                        if (parts[0].length > 2 && parts[1].length > 2) {
+                            finding.push(findByName(parts[0], "", parts[1]).then(id => {officer.personId = id;}));
+                        }
+
+                    }
+                    else {
+                        console.log(key);
+                    }
+                }
+
 
                 // typed name to just alpha chars, compare against firstlast and firstmiddlelast and firstmiddleIlast
 
@@ -188,11 +247,11 @@ exports.execute = () => {
         middle = trim(middle);
         last = trim(last);
 
-        let key = last + "-" + first;
+        middle = middle.replace(/[^0-9a-z\s]/gi, ' ').toLowerCase();
+        while (middle.match(/\s\s/)) { middle = middle.replace(/\s\s/g, ' '); } // remove double space
 
-        if (!personLookup.hasOwnProperty(key)) return null;
-
-        let person = personLookup[key];
+        let key1 = first + " " + last;
+        let person = findPersonByKey(key1);
 
         // multiples found, try to find by middle
         if (Array.isArray(person)) {
@@ -220,6 +279,11 @@ exports.execute = () => {
         }
 
         return person;
+    }
+
+    function findPersonByKey(key) {
+        if (!personLookup.hasOwnProperty(key)) return null;
+        return personLookup[key];
     }
 
 };
