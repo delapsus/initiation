@@ -1,0 +1,538 @@
+5	
+4	0=2
+2	11
+1	13
+1	15
+5	2
+1	23
+2	25
+1	317
+338	418
+1	5
+1	7
+7	718
+1	774 8750
+1	777
+1	8
+320	93
+1	949 9587
+1	a c|aleister crowley
+1	a h b h|ahbh
+1	aabrahadabra|abrahadabra
+1	abiegnus
+1	abrahadaba|abrahadabra
+95	abrahadabra
+3	abrahadraba|abrahadabra
+4	abrahadrabra|abrahadabra
+6	abrahdabra|abrahadabra
+127	ad astra
+1	adonis|adonis apophis
+1	adonis aphois|adonis apophis
+15	adonis apophis
+26	agape
+13	agape consistory
+1	agape conssitory|agape consistory
+5	agape senate
+19	agape temple
+2	agape (at serpentine splendour) senate
+2	agape (in austin) consistory
+2	agape (in dc) consistory
+1	agape (in long beach) consistory
+2	agape (in long beach) temple
+5	agape , austin, tx senate
+1	agape conssitory
+2	agape glenn alcorn consistory
+4	agape in portland, or temple
+20	agartha
+1	ahahata|anahata chapter
+49	ahbh
+19	aiwass
+1	aiwasss|aiwass
+6	alambrados
+17	aleister crowley
+1	aleister crowley (black sun)
+1	aleister crowley by pyramid
+1	almobrados|alombrados
+6	alombados|alombrados
+1	alombardos|alombrados
+213	alombrados
+4	alostael|alostrael
+50	alostrael
+3	alpha
+13	alpha  chapter
+1	ameth
+2	amon ra
+4	anabasis
+11	anahata|anahata chapter
+13	anahata chapter
+7	anahata randc chapter|anahata chapter
+1	anaitis
+1	ananke
+2	aparita|ararita
+1	apophis adonis|adonis apophis
+49	apotheosis
+6	apothesis|apotheosis
+1	aptheosis|apotheosis
+8	ararita
+5	ararita  chapter
+3	ararita  temple
+24	arcanum
+21	astrum inculta
+3	astrum magicum
+1	astrun inculta|astrum inculta
+1	asturn inculta|astrum inculta
+1	at starry arch under auspices of heru ra ha
+4	auga odins
+533	aum ha
+3	aum ha (black sun)
+2	aumha|aum ha
+1	aurora eos
+2	ayin
+11	azul nox
+1	babalon
+3	babalon chapter
+1	bafomet (argentina)
+54	baphomet
+5	baphomet chapter
+3	baphomet chapter randc|baphomet chapter
+1	baphomet chapter rose croix|baphomet chapter
+1	bazing star|blazing star
+548	black sun
+1	black sun 93
+1	bland (sekhet maat ap)
+2	blank|left blank
+1	blank (seattle)
+337	blazing star
+1	blazing start|blazing star
+3	blcak sun|black sun
+227	blue equinox
+2	blue equnox|blue equinox
+152	blue horizon
+1	blueequinox|blue equinox
+1	blur horizon|blue horizon
+2	boleskine
+1	bso (khephra rising)
+1	bubastics|bubastis
+308	bubastis
+1	bubastsi|bubastis
+1	bubustis|bubastis
+1	bue equinox|blue equinox
+1	by lola de wolfe
+3	c w hoopsnake|christabel whorton hoopsnake
+1	caduceus (tokyo)
+1	calix sanctus (ukgl)
+9	chango
+2	christabel whorton hoopsnake
+1	christobel warton hoopsnake|christabel whorton hoopsnake
+7	cif anchorage
+10	circle of stars
+7	collegium 93
+2	continuous one of heaven
+320	coph nia
+4	cophnia|coph nia
+1	cristabel whorton hoopsnake|christabel whorton hoopsnake
+1	crux anasata|crux ansata
+21	crux anasta|crux ansata
+109	crux ansata
+2	crux anstata|crux ansata
+1	dands|dove and serpent
+1	date: 5
+8	dayton|dayton cif
+4	dayton cif
+8	dionysos
+6	dionysos  chapter
+5	domina nostra astrorum
+1	dove + serpent
+2	dove and sepent|dove and serpent
+384	dove and serpent
+1	dove andserpent|dove and serpent
+1	dover and serpent|dove and serpent
+1	equalibrium|equilibrium
+14	equilibrium
+1	euilibrium|equilibrium
+21	eulis
+1	first
+6	formless fire mystic  temple
+2	g alcorn|glenn alcorn
+3	glenn alcorn
+7	glory of the stars
+1	golde lotus|golden lotus
+392	golden lotus
+1	golden lotus 93
+1	golden ltus|golden lotus
+13	golden thread
+1	golden tread|golden thread
+17	goldon lotus|golden lotus
+1	golen lotus|golden lotus
+36	grand|usgl
+1	grand (in dallas)|usgl (in dallas)
+8	hagia sophia
+4	hagia sophia (in oklahoma city)|hagia sophia
+5	hagia sophia in okc|hagia sophia
+1	hagia sophia in okc chapter|hagia sophia
+1	hagia sophia chapter in okc|hagia sophia
+2	hassan i sabbah
+1	hawk head mystical lord|hawk headed mystical lord
+1	hawk headed mystical|hawk headed mystical lord
+8	hawk headed mystical lord
+2	helena  chapter
+3	heliopolis
+2	her ra ha|heru ra ha
+3	heru behtet|heru behutet
+200	heru behutet
+130	heru ra ha
+5	heru ra ha (in denver)
+2	heru ra ha in chicago
+45	hidden spring
+63	hidden springs|hidden spring
+3	hidden srings|hidden spring
+1	hodo chamelionis|hodos chamelionis
+4	hodos camelionis|hodos chamelionis
+1	hodos chameleonis|hodos chamelionis
+1	hodos chamelioinis|hodos chamelionis
+45	hodos chamelionis
+2	hoor :paar kraat
+82	hoor paar kraat
+6	hoor paar kraut|hoor paar kraat
+5	hoor par kraat|hoor paar kraat
+1	hoor seth
+637	horizon
+342	horus
+1	horzon|horizon
+5	hours|horus
+1	hpk|hoor paar kraat
+3	hroizon|horizon
+50	hrumachis
+1	hugin and munin
+1	i a o abraxas|iao abraxas
+1	iacobus b m
+63	iao
+14	iao abraxas
+8	ihq
+1	ihq (in new york)
+1	in london by h b
+2	infinite stars
+5	infinite stars  chapter
+1	io pan
+9	iona
+3	iron youth|iron youth cif
+4	iron youth cif
+2	isis nephsis|isis nepthys
+1	isis nephtys|isis nepthys
+1	isis nepthys
+1	ivnv
+1	james nobles
+1	jim greab 1999 non reported initiation
+1	jim nobles
+13	joshua a norton
+3	joshua norton|joshua a norton
+31	kali
+1	kali ldoge|kali
+1	kallah i nur
+3	kallisti
+1	kallisti 23|kallisti
+2	katherine ball jones
+1	kensu ra|khensu ra
+5	kephale
+1	kephele|kephale
+1	kephra (dublin)
+1	khaallaah i nur|khaallah i nur
+23	khaallah i nur
+9	khallah i nur|khaallah i nur
+49	khensu ra
+4	khephra rising
+4	khephra rising (sml)
+1	khnesu ra|khensu ra
+1	khnosu thoth|khonsu thoth
+1	khonso|khonsu
+6	khonsu
+34	khonsu thoth
+1	kinghts templar|knights templar
+2	knight tempar|knights templar
+2	knight templar|knights templar
+3	knights r temple|knights templar
+391	knights templar
+1	knights templar and horus
+3	knights templer|knights templar
+1	knonsu thoth|khonsu thoth
+1	kollegium 93
+13	kom om bo
+1	kpk
+4	kto|knights templar
+23	l v x|lvx
+1	lapis lazuili|lapis lazuli
+99	lapis lazuli
+13	laughing serpent
+1	leaoing laughter|leaping laughter
+1	leapig laughter|leaping laughter
+3	leaping laugher|leaping laughter
+462	leaping laughter
+1	leaping lauhter|leaping laughter
+1	left balnk|left blank
+43	left blank
+1	left blank (dove and serpent)|dove and serpent
+1	lifted lance
+15	lilith
+15	living flame
+1	lon du quette @ i a o
+1	lon milo du quette
+2	london
+407	lvx
+1	lvx blue horizon golden lotus
+3	maat
+13	madimi
+6	madimi c|madimi
+1	makashane
+2	makhashanah
+1	makhashanah, hamburg
+21	midnight sun
+2	mimers brunn
+1	mirthras|mithras
+1	mission viejo by vere chappell
+85	mithras
+7	mitra varuna
+2	mon abiegnus|mons abiegnus
+5	mons abeignus|mons abiegnus
+1	mons abiegenus|mons abiegnus
+81	mons abiegnus
+1	mons agiegnus|mons abiegnus
+1	montsalvat (craig berry)
+1	murfreesboro in
+2	mws kent finne; officiers r stein and c leahu
+19	netemet ankh netemet
+6	netmet ankh netmet|netemet ankh netemet
+1	nihil in japan
+1	none listed|left blank
+1	not filled in|left blank
+118	nox
+5	noxuluxon
+10	nu aeon
+39	nu babalon
+1	nu bablon|nu babalon
+1	nuit urania
+3	nv babalon|nu babalon
+2	nv bablon|nu babalon
+6	o thien tao|thien tao
+3	oai
+6	obeah and wanga
+5	obeah wanga|obeah and wanga
+8	obelisk
+4	obelisk chapter m w s norman fleck h p content knowles g m robert stein|obelisk
+1	obilisk|obelisk
+3	oceania
+1	oceania (au)
+3	oceania by agape
+3	of the golden lotus|golden lotus
+50	old ap|old app
+111	old app
+3	old app (aum ha)
+1	old app (star sapphire)
+4	old app (swirling star)
+2	old app (warrior island)
+1	old app star sapphire
+1	old application|old app
+1	old apps|old app
+2	onnophoris|onnophris
+1	onnophorus|onnophris
+265	onnophris
+1	onnopphris|onnophris
+1	onnorphis|onnophris
+3	onnorphris|onnophris
+8	onophris|onnophris
+3	oroboros|ouroboros
+1	orouborus|ouroboros
+1	oto
+4	ouarda|ouarda chapter
+9	ouarda chapter
+29	ouroboros|ouroboros
+1	ouroborous|ouroboros
+1	ourobourus|ouroboros
+1	p of the golden lotus|golden lotus
+1	pan urge|panurge
+8	pangenator|pangenetor
+11	pangenetor
+52	panurge
+1	pora lucia|porta lucis
+2	porta lucia|porta lucis
+1	porta lucis
+5	portland
+1	portland me
+8	proserpente|proserpente chapter
+13	proserpente chapter
+1	proserpente chapter rose coixr|proserpente chapter
+3	proserpente chapter rose croix|proserpente chapter
+19	psyche eros|psyche eros chapter
+6	psyche eros chapter
+1	ptah sekhet
+241	pyramid
+1	pyrmidis|pyramid
+66	queen of heaven
+1	r christopher feldman
+6	r p s t o v a l|rpstoval
+4	r p stoval|rpstoval
+2	ra harahkte|ra harakhte
+21	ra harakhte
+1	ra harkhte|ra harakhte
+22	ra heru behutet
+1	ra heru nehutet|ra heru behutet
+1	ra hoor
+1	ra hoor khuit
+5	rising aeon
+5	roar of rapture
+4	rosslyn
+12	rpstoval
+1	rpstovxl|rpstoval
+1	rsptoval|rpstoval
+1	s o f|subtlety or force
+1	sadadin|saladin
+1	said "none"|left blank
+1	saimadhi cif|samadi cif
+107	saladin
+1	samadi cif
+1	samhadi (cif)|samadi cif
+3	san antonio cif
+15	sangraal|sangraal chapter
+7	sangraal chapter
+1	sb us grand ahaha
+7	sbr|sekhet bast ra
+1	scalet woman|scarlet woman
+1	scarket woman|scarlet woman
+1	scarlet|scarlet woman
+793	scarlet woman
+2	scarlet women|scarlet woman
+1	scarlett woman|scarlet woman
+2	scarltett woman|scarlet woman
+3	scartlet woman|scarlet woman
+1	secret
+22	secret centre
+4	sehket bast ra|sekhet bast ra
+3	seket bast ra|sekhet bast ra
+2	seket maat|sekhet maat
+1	sekhet bast|sekhet bast ra
+444	sekhet bast ra
+1	sekhet bastra|sekhet bast ra
+698	sekhet maat
+1	sekhet mat|sekhet maat
+1	sekhetbast ra|sekhet bast ra
+3	sekhetmaat|sekhet maat
+5	sekhmet uraeus
+3	sekmet  chapter
+2	sekmet maat|sekhet maat
+3	sekmet uraeus|sekhmet uraeus
+1	selene
+1	sepentine splendour|serpentine splendour
+22	serpent and lion
+53	serpent in balance
+8	serpentand lion|serpent and lion
+1	serpentine spendour|serpentine splendour
+5	serpentine splendor|serpentine splendour
+156	serpentine splendour
+1	serpentine splenour|serpentine splendour
+1	serpentinne splendour|serpentine splendour
+1	serpetine splendour|serpentine splendour
+15	set triumphant
+25	seven gates
+9	seven spirit|seven spirits
+116	seven spirits
+1	seven spirts|seven spirits
+1	seven sprits|seven spirits
+2	shemesh
+1	shemesh ( england)
+1	shemesh (u k )
+1	sherri mclaughlin
+28	sirius
+1	sirius (in wa)
+1	skekhet bast ra|sekhet bast ra
+87	sol invictus
+1	solinvictus|sol invictus
+38	solve coagula
+4	solve congula|solve coagula
+2	solve et coagula|solve coagula
+14	soul of desert|soul of the desert
+54	soul of the desert
+1	spring ec meeting
+4	star of babalon
+2	star of babylon|star of babalon
+2	star sapphhire|star sapphire
+373	star sapphire
+10	starr sapphire|star sapphire
+43	starry arch
+52	starry bayou
+1	starry wisdom
+1	steilacoom
+9	sublety and force|subtlety or force
+32	sublety or force|subtlety or force
+2	subtlety an force|subtlety or force
+1	subtlety and force|subtlety or force
+79	subtlety or force
+1	summerhawk pyramid
+6	sun and moon
+1	swirking star|swirling star
+2	swirliing star|swirling star
+393	swirling star
+1	swl|scarlet woman
+1	sword and sepent|sword and serpent
+194	sword and serpent
+3	swordand serpent|sword and serpent
+39	syntaxis|syntaxiss
+57	syntaxiss
+2	syntaxsis|syntaxiss
+1	syntaxxis|syntaxiss
+1	tahit|tahuti
+1071	tahuti
+11	tahuti chapter
+1	tahuti rc|tahuti chapter
+3	tahuti mystic  temple
+1	tahuti or heru ra ha
+1	tahuti rc
+2	templum amoris (u k )
+1	the queen of heaven|queen of heaven
+7	the star and the snake
+12	thein tao|thien tao
+293	thelema
+1	thelema (james graeb)
+468	thelesis
+5	thelesis ( william blake)
+2	thelsis|thelesis
+1	theorte|theorte ekstasis
+5	theorte ecstasis|theorte ekstasis
+32	theorte ekstasis
+1	theorte exstasis|theorte ekstasis
+35	therion babalon
+231	thien tao
+1	thien tao (formal ceremony of kre given by sabazius just prior to john's vi*)
+2	tien tao|thien tao
+2	twelve rays|twelve rays temple
+8	twelve rays temple
+1	twelve raystemple|twelve rays temple
+1	twin star
+1	u s g l in austin by glenn alcorn|usgl in austin by glenn alcorn
+12	u s grand|usgl
+2	u s grand by lon du quette|usgl by lon du quette
+1	uk
+13	us grand|usgl
+1	us grand loge|usgl
+1	us grand tribunal
+1	usg|usgl
+33	usgl
+1	usgl @ m lisa faulkner, sgig
+4	usgl @ scarlet woman
+1	usgl alan greenfield
+1	usgl david shoemaker
+1	usgl done at dionysos  chapter
+1	usure|left blank
+8	victorious city
+1	victorious city (canada)|victorious city
+4	victorius city|victorious city
+95	vortex
+1	vortex and horizon
+59	warrior island
+17	watchtower
+31	whiskey rebellion
+4	wiliam blake|william blake
+4	willaim blake|william blake
+488	william blake
+1	william blake301|william blake
+41	xanadu|xandu
+2	xandu
+41	yggdrasil
