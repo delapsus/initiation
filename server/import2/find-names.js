@@ -176,6 +176,7 @@ exports.execute = () => {
         key = key.replace(/stephen saint john o day/, 'stephen saint john oday');
         key = key.replace(/stephen st john oday/, 'stephen saint john oday');
         key = key.replace(/steven saint john oday/, 'stephen saint john oday');
+        key = key.replace(/stephen st john o day/, 'stephen saint john oday');
         key = key.replace(/jm nobles/, 'jim nobles');
         key = key.replace(/marlenecornelius/, 'marlene cornelius');
         key = key.replace(/roncelin v/, 'roncelin');
