@@ -8,239 +8,33 @@ function trim(text) {
     return (text || "").toLowerCase().trim();
 }
 
+let counts = {
+    empty: [],
+    duplicate: []
+};
+
+let status = {
+    found: 0,
+    notFound: 0,
+    empty: 0,
+    dupe: 0,
+
+    officersFound: 0,
+    officersNotFound: 0,
+    officersDupe: 0
+};
+
 exports.execute = () => {
 
-    let persons, initiations, personLookup;
+    let personLookup;
 
-    let counts = {
-        empty: [],
-        duplicate: []
-    };
-
-    function addToLookup(person) {
-
-        let entry = {personId: person.personId};
-
-        // trim the names
-        entry.firstName = trim(person.data.firstName);
-        entry.middleName = trim(person.data.middleName);
-        entry.lastName = trim(person.data.lastName);
-
-        // clean middle name
-        entry.middleName = entry.middleName.replace(/[^0-9a-z\s]/gi, ' ').toLowerCase();
-        while (entry.middleName.match(/\s\s/)) { entry.middleName = entry.middleName.replace(/\s\s/g, ' '); } // remove double space
-        entry.middleName = entry.middleName.trim();
-
-        // ignore empty names
-        if (entry.firstName.length === 0 && entry.lastName.length === 0) {
-            counts.empty.push(entry);
-            return;
-        }
-
-        function addToLookup(key, entry) {
-            if (personLookup.hasOwnProperty(key)) {
-                let existing = personLookup[key];
-
-                // convert to array if not already
-                if (!Array.isArray(existing)) {
-                    personLookup[key] = [existing];
-                    existing = personLookup[key];
-                }
-
-                // store into the array for this key
-                existing.push(entry);
-
-                // check middle initial?
-                //if (other.middleName.length > 0 && person.middleName.length > 0)
-
-                //console.log('duplicate: ' + key);
-                counts.duplicate.push(entry);
-            }
-            else {
-                personLookup[key] = entry;
-            }
-        }
-
-        // create the key
-        let key1 = entry.firstName + " " + entry.lastName;
-        addToLookup(key1, entry);
-
-        if (entry.middleName.length === 0) return;
-
-        // add with middle initial
-        let key2 = entry.firstName + " " + entry.middleName[0] + " " + entry.lastName;
-        addToLookup(key2, entry);
-
-        if (entry.middleName.length === 1) return;
-
-        // add with full middle
-        let key3 = entry.firstName + " " + entry.middleName + " " + entry.lastName;
-        addToLookup(key3, entry);
+    // read only - find person from personLookup by key
+    function findPersonByKey(key) {
+        if (!personLookup.hasOwnProperty(key)) return null;
+        return personLookup[key];
     }
 
-    let loading = [
-        Person.selectAll().then(result => {
-            persons = result;
-
-            // create lookup
-            personLookup = {};
-            persons.forEach(person => {
-                addToLookup(person);
-            });
-
-        }),
-        initiation.selectAll().then(result => {
-            initiations = result;
-        })
-    ];
-
-    return Promise.all(loading).then(() => {
-        console.log('data loaded, Persons: ' + persons.length + ", Initiations: " + initiations.length);
-        console.log('empty: ' + counts.empty.length + ", duplicate: " + counts.duplicate.length);
-
-        let status = {
-            found: 0,
-            notFound: 0,
-            empty: 0,
-            dupe: 0,
-
-            officersFound: 0,
-            officersNotFound: 0,
-            officersDupe: 0
-        };
-
-        let newPeople = [];
-
-        function findByName(first, middle, last) {
-            let personId = null;
-
-            if (trim(first).length === 0 && trim(last).length === 0) {
-                status.empty++;
-            }
-            else {
-                let p = findPerson(first, middle, last);
-
-                if (p === null) {
-
-                    status.notFound++;
-
-                    // create a new person entry
-                    let data = {firstName: first, middleName: middle, lastName: last, createdDate:new Date(), importSource: "sponsor"};
-                    let record = Person.create({data: data});
-                    newPeople.push(record);
-
-                    return Person.save(record).then(() => {
-                        // add to the lookup
-                        addToLookup(record);
-                        return record.personId;
-                    })
-                }
-                else if (Array.isArray(p)) {
-                    status.dupe++;
-                }
-                else {
-                    status.found++;
-                    personId = p.personId;
-                }
-            }
-
-            return Promise.resolve(personId);
-        }
-
-
-        let initIndex = 0;
-
-        function processNextInit() {
-
-            if (initIndex === initiations.length) {
-                console.log('found: ' + status.found + ", not found: " + status.notFound + ", empty: " + status.empty + ", dupe: " + status.dupe + ", officersFound: " + status.officersFound + ", officersNotFound: " + status.officersNotFound + ", officersDupe: " + status.officersDupe);
-                return Promise.resolve();
-            }
-
-            let init = initiations[initIndex++];
-
-            let finding = [
-                // *** SPONSOR 1 ***
-                findByName(init.data.sponsor1First, init.data.sponsor1Middle, init.data.sponsor1Last).then(id => {init.data.sponsor1_personId = id;}),
-                // *** SPONSOR 2 ***
-                findByName(init.data.sponsor2First, init.data.sponsor2Middle, init.data.sponsor2Last).then(id => {init.data.sponsor2_personId = id;})
-                ];
-
-            // *** OFFICERS ***
-            init.data.officers.forEach(officer => {
-
-
-                let key = officer.name.replace(/[^0-9a-z\s]/gi, '').toLowerCase();
-                while (key.match(/\s\s/)) { key = key.replace(/\s\s/g, ' '); } // remove double space
-                key = key.trim();
-
-
-                let result = findPersonByKey(key);
-                if (result !== null) {
-                    if (!Array.isArray(result)) {
-                        officer.personId = result.personId;
-                        status.officersFound++;
-                    }
-                    else {
-                        status.officersDupe++;
-                    }
-                }
-                else {
-                    // TODO person not found, create a new record
-                    status.officersNotFound++;
-
-                    // if just a first and last name, lets go ahead and create it
-                    let parts = key.split(' ');
-                    if (parts.length === 2) {
-
-                        if (parts[0].length > 2 && parts[1].length > 2) {
-                            finding.push(findByName(parts[0], "", parts[1]).then(id => {officer.personId = id;}));
-                        }
-
-                    }
-                    else {
-                        console.log(key);
-                    }
-                }
-
-
-                // typed name to just alpha chars, compare against firstlast and firstmiddlelast and firstmiddleIlast
-
-                // del campo, Bonnie Henderson - Winnie, Lon Milo Du Quette
-                // du
-
-                /*
-                let parts = officer.name.split(' ');
-                if (parts.length === 2) {
-                    finding.push(findByName(parts[0], '', parts[1]).then(id => {officer.personId = id;}));
-                }
-                else {
-                    console.log(officer.name);
-                }
-                */
-
-            });
-
-            return Promise.all(finding).then(processNextInit);
-        }
-
-
-        // save!
-        let index = 0;
-
-        function saveNext() {
-
-            if (index === initiations.length) return Promise.resolve();
-
-            if (index % 1000 === 0) console.log("update init " + index);
-
-            let init = initiations[index++];
-            return initiation.save(init).then(saveNext);
-        }
-
-        return processNextInit().then(database.beginTransaction).then(saveNext).then(database.commit);
-    });
-
+    // read only - find person from personLookup by first, middle, last
     function findPerson(first, middle, last) {
         // trim the names
         first = trim(first);
@@ -281,14 +75,228 @@ exports.execute = () => {
         return person;
     }
 
-    function findPersonByKey(key) {
-        if (!personLookup.hasOwnProperty(key)) return null;
-        return personLookup[key];
+    // expects raw name
+    // tries to find existing record from lookup
+    // if not found, will add a new record to database and lookup
+    function findOrAddByName(first, middle, last) {
+
+        // ignore empty names
+        if (trim(first).length === 0 && trim(last).length === 0) {
+            status.empty++;
+            return Promise.resolve(null);
+        }
+
+        // perform lookup
+        let record = findPerson(first, middle, last);
+
+        // something was found
+        if (record !== null) {
+
+            // too many records found, no way to resolve
+            if (Array.isArray(record)) {
+                status.dupe++;
+                return Promise.resolve(null);
+            }
+
+            // record was found, return the id
+            status.found++;
+            return Promise.resolve(record.personId);
+        }
+
+        // no record found, create a new one
+        status.notFound++;
+
+        // create a new person entry
+        let data = {firstName: first, middleName: middle, lastName: last, createdDate:new Date(), importSource: "sponsor"};
+        record = Person.create({data: data});
+
+        // save and return
+        return Person.save(record).then(() => {
+            // add the newly created record to the lookup
+            addPersonToLookup(record);
+            return record.personId;
+        });
     }
+
+
+
+    function addKeyToLookup(key, entry) {
+        if (personLookup.hasOwnProperty(key)) {
+            let existing = personLookup[key];
+
+            // convert to array if not already
+            if (!Array.isArray(existing)) {
+                personLookup[key] = [existing];
+                existing = personLookup[key];
+            }
+
+            // store into the array for this key
+            existing.push(entry);
+
+            // check middle initial?
+            //if (other.middleName.length > 0 && person.middleName.length > 0)
+
+            //console.log('duplicate: ' + key);
+            counts.duplicate.push(entry);
+        }
+        else {
+            personLookup[key] = entry;
+        }
+    }
+
+    function addPersonToLookup(person) {
+
+        let entry = {personId: person.personId};
+
+        // trim the names
+        entry.firstName = trim(person.data.firstName);
+        entry.middleName = trim(person.data.middleName);
+        entry.lastName = trim(person.data.lastName);
+
+        // clean middle name
+        entry.middleName = entry.middleName.replace(/[^0-9a-z\s]/gi, ' ').toLowerCase();
+        while (entry.middleName.match(/\s\s/)) { entry.middleName = entry.middleName.replace(/\s\s/g, ' '); } // remove double space
+        entry.middleName = entry.middleName.trim();
+
+        // ignore empty names
+        if (entry.firstName.length === 0 && entry.lastName.length === 0) {
+            counts.empty.push(entry);
+            return;
+        }
+
+        // create the key
+        let key1 = entry.firstName + " " + entry.lastName;
+        addKeyToLookup(key1, entry);
+
+        if (entry.middleName.length === 0) return;
+
+        // add with middle initial
+        let key2 = entry.firstName + " " + entry.middleName[0] + " " + entry.lastName;
+        addKeyToLookup(key2, entry);
+
+        if (entry.middleName.length === 1) return;
+
+        // add with full middle
+        let key3 = entry.firstName + " " + entry.middleName + " " + entry.lastName;
+        addKeyToLookup(key3, entry);
+    }
+
+
+
+    // *** START THE PROCESS ***
+
+    let persons, initiations;
+
+    let loading = [
+        Person.selectAll().then(result => {
+            persons = result;
+
+            // create lookup
+            personLookup = {};
+            persons.forEach(person => {
+                addPersonToLookup(person);
+            });
+
+        }),
+        initiation.selectAll().then(result => {
+            initiations = result;
+        })
+    ];
+
+    return Promise.all(loading).then(() => {
+        console.log('data loaded, Persons: ' + persons.length + ", Initiations: " + initiations.length);
+        console.log('records with empty names: ' + counts.empty.length + ", duplicate names on add: " + counts.duplicate.length);
+
+        let initIndex = 0;
+
+        function processNextInit() {
+
+            if (initIndex === initiations.length) {
+                console.log('found: ' + status.found + ", not found: " + status.notFound + ", empty: " + status.empty + ", dupe (ignored): " + status.dupe);
+                console.log("officersFound: " + status.officersFound + ", officersNotFound: " + status.officersNotFound + ", officersDupe: " + status.officersDupe);
+                return Promise.resolve();
+            }
+
+            let init = initiations[initIndex++];
+
+            // find each sponsor, or add a person record if not found
+            let finding = [
+                // *** SPONSOR 1 ***
+                findOrAddByName(init.data.sponsor1First, init.data.sponsor1Middle, init.data.sponsor1Last).then(id => {init.data.sponsor1_personId = id;}),
+                // *** SPONSOR 2 ***
+                findOrAddByName(init.data.sponsor2First, init.data.sponsor2Middle, init.data.sponsor2Last).then(id => {init.data.sponsor2_personId = id;})
+                ];
+
+            // *** OFFICERS ***
+            // officers don't have names split up, so this gets difficult
+            init.data.officers.forEach(officer => {
+
+                // first clean the name of all but alpha numeric, dash is also allowed
+                let key = officer.name.replace(/[^0-9a-z\s-]/gi, '').toLowerCase();
+                while (key.match(/\s\s/)) { key = key.replace(/\s\s/g, ' '); } // remove double space
+                key = key.trim();
+
+                // then try to find by direct key
+                let result = findPersonByKey(key);
+
+                // something was found in the existing records
+                if (result !== null) {
+                    // too many records found, ignore
+                    if (Array.isArray(result)) {
+                        status.officersDupe++;
+                    }
+                    // only one record found, ideal
+                    else {
+                        officer.personId = result.personId;
+                        status.officersFound++;
+                    }
+                }
+
+                // person not found, create a new record if possible
+                else {
+
+                    status.officersNotFound++;
+
+                    // if just a first and last name, lets go ahead and create it
+                    let parts = key.split(' ');
+                    if (parts.length === 2) {
+
+                        if (parts[0].length > 2 && parts[1].length > 2) {
+                            finding.push(findOrAddByName(parts[0], "", parts[1]).then(id => {officer.personId = id;}));
+                        }
+
+                    }
+
+                    // too many parts, just log...
+                    else {
+                        console.log(key);
+                    }
+                }
+
+            });
+
+            return Promise.all(finding).then(processNextInit);
+        }
+
+
+        // save!
+        let index = 0;
+
+        function saveNext() {
+
+            if (index === initiations.length) return Promise.resolve();
+
+            if (index % 1000 === 0) console.log("update init " + index);
+
+            let init = initiations[index++];
+            return initiation.save(init).then(saveNext);
+        }
+
+        return processNextInit().then(database.beginTransaction).then(saveNext).then(database.commit);
+    });
 
 };
 
-//database.init(database.storageType.file).then(exports.execute);
 
 
 
