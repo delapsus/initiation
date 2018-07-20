@@ -1,5 +1,6 @@
 'use strict';
 
+let fs = require('fs');
 let database = require('../data2/database');
 let Person = require('../data2/person');
 let initiation = require('../data2/initiation');
@@ -21,7 +22,8 @@ let status = {
 
     officersFound: 0,
     officersNotFound: 0,
-    officersDupe: 0
+    officersDupe: 0,
+    officersAdded: 0
 };
 
 exports.execute = () => {
@@ -118,6 +120,148 @@ exports.execute = () => {
         });
     }
 
+    // expects raw name
+    // tries to find existing record from lookup
+    // if not found, will add a new record to database and lookup
+    function findOrAddByFullNameString(name) {
+
+        // first clean the name of all but alpha numeric, dash is also allowed
+        let key = name.replace(/[^0-9a-z\s-]/gi, '').toLowerCase();
+        while (key.match(/\s\s/)) { key = key.replace(/\s\s/g, ' '); } // remove double space
+        key = key.trim();
+
+        // some cleanup
+        key = key.replace('syntaxiss 370 ', '');
+        key = key.replace('i i i', 'iii');
+        key = key.replace(' iii', '');
+        key = key.replace(/^t /, '');
+        key = key.replace(/\n/, ' ');
+        key = key.replace(/\r/, ' ');
+        key = key.replace(/^m dion/, 'matthew dion');
+        key = key.replace(/^le roy/, 'leroy');
+        key = key.replace(/ - /, '-');
+        key = key.replace(/- /, '-');
+        key = key.replace(/^fra /, '');
+        key = key.replace(/^dr /, '');
+        key = key.replace(/ jr$/, '');
+        key = key.replace(/ sr$/, '');
+        key = key.replace(/^2nd /, '');
+        key = key.replace(/^3rd /, '');
+        key = key.replace(/^asst /, '');
+        key = key.replace(/m dioysos rogers/, 'matthew dionysos rogers');
+        key = key.replace(/matthew dionysius rogers/, 'matthew dionysos rogers');
+        key = key.replace(/matt dionysos rogers/, 'matthew dionysos rogers');
+        key = key.replace(/matt d rogers/, 'matthew dionysos rogers');
+        key = key.replace(/matthew dionysus rogers/, 'matthew dionysos rogers');
+        key = key.replace(/polyphylus/, 'matthew dionysos rogers');
+        key = key.replace(/d rogers/, 'matthew dionysos rogers');
+        key = key.replace(/l page brunner/, 'linda page brunner');
+        key = key.replace(/l p brunner/, 'linda page brunner');
+        key = key.replace(/l pagebrunner/, 'linda page brunner');
+        key = key.replace(/l page bruner/, 'linda page brunner');
+        key = key.replace(/l page brunnner/, 'linda page brunner');
+        key = key.replace(/l page kaczynski/, 'l page kacznski');
+        key = key.replace(/l page kacznski/, 'linda page kacznski');
+        key = key.replace(/john robin bohumil/, 'john douglas bohumil');
+        key = key.replace(/jp lund/, 'j p lund');
+        key = key.replace(/j p lund/, 'john peter lund');
+        key = key.replace(/john peter lund/, 'john peter martin lund');
+        key = key.replace(/cs hyatt/, 'c s hyatt');
+        key = key.replace(/c s hyatt/, 'christopher s hyatt');
+        key = key.replace(/m lisa faulkner/, 'marie lisa faulkner');
+        key = key.replace(/suzanne fk torchia/, 'suzanne francoise kovacs torchia');
+        key = key.replace(/suzanne f k torchia/, 'suzanne francoise kovacs torchia');
+        key = key.replace(/suzanne francoise kovacs torchia/, 'suzanne francoise kovacs torchia');
+        key = key.replace(/sangrovanni williams/, 'sangrovanni-williams');
+        key = key.replace(/stephen saint john o day/, 'stephen saint john oday');
+        key = key.replace(/stephen st john oday/, 'stephen saint john oday');
+        key = key.replace(/steven saint john oday/, 'stephen saint john oday');
+        key = key.replace(/jm nobles/, 'jim nobles');
+        key = key.replace(/marlenecornelius/, 'marlene cornelius');
+        key = key.replace(/roncelin v/, 'roncelin');
+        key = key.replace(/roncelinii/, 'roncelin');
+        key = key.replace(/thomascaldwell/, 'thomas caldwell');
+        key = key.replace(/no emir listed/, '');
+        key = key.replace(/s john baner/, 's john banner');
+        key = key.replace(/jillbellanger/, 'jill bellanger');
+        key = key.replace(/megansschulze/, 'megan s schulze');
+        key = key.replace(/melissaholm/, 'melissa holm');
+        key = key.replace(/augustlascola/, 'august lascola');
+        key = key.replace(/emilylawson/, 'emily lawson');
+        key = key.replace(/carlbrickner/, 'carl brickner');
+        key = key.replace(/d o delodge/, 'dan de lage');
+        key = key.replace(/^na$/, '');
+        key = key.replace(/no signature doug james/, 'doug james');
+        key = key.replace(/edwardlawson/, 'edward lawson');
+        key = key.replace(/xx/, '');
+        key = key.replace(/xx/, '');
+        key = key.replace(/xx/, '');
+
+        key = key.trim();
+
+        if (key.length === 0) {
+            return Promise.resolve(null);
+        }
+
+        // then try to find by direct key
+        let result = findPersonByKey(key);
+
+        // something was found in the existing records
+        if (result !== null) {
+            // too many records found, ignore
+            if (Array.isArray(result)) {
+                status.officersDupe++;
+            }
+            // only one record found, ideal
+            else {
+                status.officersFound++;
+                return Promise.resolve(result.personId);
+            }
+        }
+
+        // person not found, create a new record if possible
+        else {
+
+
+
+            // if just a first and last name, lets go ahead and create it
+            let parts = key.split(' ');
+
+            // special cases
+            if (key === 'john peter martin lund') parts = ['john peter', 'martin', 'lund'];
+            if (key === 'lon milo du quette') parts = ['lon', 'milo', 'du quette'];
+            if (key === 'stephen saint john oday') parts = ['stephen', 'saint john', 'oday'];
+            if (key === 'howard joseph john wuelfing') parts = ['howard', 'joseph john', 'wuelfing'];
+            if (key === 'dan de lage') parts = ['dan', 'de lage'];
+            if (key === 'leanne marie mason brooks') parts = ['leanne', 'marie mason', 'brooks'];
+            if (key === 'constance du quette') parts = ['constance', 'du quette'];
+            //if (key === '') parts = ['', '', ''];
+
+
+            if (parts.length === 2) {
+                if (parts[0].length > 2 && parts[1].length > 2) {
+                    status.officersAdded++;
+                    return findOrAddByName(parts[0], "", parts[1]);
+                }
+            }
+
+            if (parts.length === 3) {
+                if (parts[0].length > 2 && parts[2].length > 2) {
+                    status.officersAdded++;
+                    return findOrAddByName(parts[0], parts[1], parts[2]);
+                }
+            }
+
+            // name can't be processed, log it
+            if (officerCheck.hasOwnProperty(key)) officerCheck[key]++;
+            else officerCheck[key] = 1;
+            status.officersNotFound++;
+
+        }
+
+        return Promise.resolve(null);
+    }
+
 
 
     function addKeyToLookup(key, entry) {
@@ -186,6 +330,7 @@ exports.execute = () => {
     // *** START THE PROCESS ***
 
     let persons, initiations;
+    let officerCheck = {};
 
     let loading = [
         Person.selectAll().then(result => {
@@ -211,11 +356,7 @@ exports.execute = () => {
 
         function processNextInit() {
 
-            if (initIndex === initiations.length) {
-                console.log('found: ' + status.found + ", not found: " + status.notFound + ", empty: " + status.empty + ", dupe (ignored): " + status.dupe);
-                console.log("officersFound: " + status.officersFound + ", officersNotFound: " + status.officersNotFound + ", officersDupe: " + status.officersDupe);
-                return Promise.resolve();
-            }
+            if (initIndex === initiations.length) return Promise.resolve();
 
             let init = initiations[initIndex++];
 
@@ -227,52 +368,9 @@ exports.execute = () => {
                 findOrAddByName(init.data.sponsor2First, init.data.sponsor2Middle, init.data.sponsor2Last).then(id => {init.data.sponsor2_personId = id;})
                 ];
 
-            // *** OFFICERS ***
             // officers don't have names split up, so this gets difficult
             init.data.officers.forEach(officer => {
-
-                // first clean the name of all but alpha numeric, dash is also allowed
-                let key = officer.name.replace(/[^0-9a-z\s-]/gi, '').toLowerCase();
-                while (key.match(/\s\s/)) { key = key.replace(/\s\s/g, ' '); } // remove double space
-                key = key.trim();
-
-                // then try to find by direct key
-                let result = findPersonByKey(key);
-
-                // something was found in the existing records
-                if (result !== null) {
-                    // too many records found, ignore
-                    if (Array.isArray(result)) {
-                        status.officersDupe++;
-                    }
-                    // only one record found, ideal
-                    else {
-                        officer.personId = result.personId;
-                        status.officersFound++;
-                    }
-                }
-
-                // person not found, create a new record if possible
-                else {
-
-                    status.officersNotFound++;
-
-                    // if just a first and last name, lets go ahead and create it
-                    let parts = key.split(' ');
-                    if (parts.length === 2) {
-
-                        if (parts[0].length > 2 && parts[1].length > 2) {
-                            finding.push(findOrAddByName(parts[0], "", parts[1]).then(id => {officer.personId = id;}));
-                        }
-
-                    }
-
-                    // too many parts, just log...
-                    else {
-                        console.log(key);
-                    }
-                }
-
+                finding.push(findOrAddByFullNameString(officer.name).then(id => {officer.personId = id;}));
             });
 
             return Promise.all(finding).then(processNextInit);
@@ -292,7 +390,29 @@ exports.execute = () => {
             return initiation.save(init).then(saveNext);
         }
 
-        return processNextInit().then(database.beginTransaction).then(saveNext).then(database.commit);
+        return processNextInit()
+            .then(() => {
+                console.log('found: ' + status.found + ", not found: " + status.notFound + ", empty: " + status.empty + ", dupe (ignored): " + status.dupe);
+                console.log("officersFound: " + status.officersFound + ", officersAdded: " + status.officersAdded + ", officersNotFound: " + status.officersNotFound + ", officersDupe: " + status.officersDupe);
+
+
+                let a = [];
+                for (let key in officerCheck) {
+                    a.push({key: key, count: officerCheck[key]});
+                }
+
+                a.sort((a, b) => {
+                    return a.count > b.count ? -1 : 1;
+                });
+
+                let lines = [];
+                a.forEach(item => {
+                    lines.push([item.count, item.key].join('\t'));
+                });
+
+                fs.writeFileSync('officersNotFound.txt', lines.join('\n'));
+            })
+            .then(database.beginTransaction).then(saveNext).then(database.commit);
     });
 
 };
