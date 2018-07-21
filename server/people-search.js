@@ -1,6 +1,6 @@
-let Person = require('./data/person');
-let initiation = require('./data/initiation');
-let degree = require('./data/degree');
+let Person = require('./data2/person');
+let Initiation = require('./data2/initiation');
+let degreeLookup = require('./data2/degree').lookup;
 
 let sortMethods = {
     lastName: function(a, b) {
@@ -19,64 +19,73 @@ let sortMethods = {
 
 let peopleCache = null;
 
-function getAllPeopleWithInits() {
+function loadAllPeopleWithInits() {
     return Promise.all([
         Person.selectAll(),
-        initiation.selectAll(),
-        degree.selectAll()
+        Initiation.selectAll()
     ]).then(results => {
-        let o = {
-            people: results[0]
-        };
 
+        let people = results[0];
+        let initiations = results[1];
+
+        // add the people to the lookup by id
         let peopleLookup = {};
-        o.people.forEach(p => {
+        people.forEach(p => {
             peopleLookup[p.personId] = p;
             p.initiations = [];
         });
 
-        let degreeLookup = {};
-        results[2].forEach(d => {
-            degreeLookup[d.degreeId] = d;
+        // give the initiations to the people
+        initiations.forEach(init => {
+            peopleLookup[init.data.personId].initiations.push(init);
+            init.degree = degreeLookup[init.data.degreeId]; // to allow sorting by rank
         });
 
-        results[1].forEach(init => {
-            peopleLookup[init.personId].initiations.push(init);
-            init.degree = degreeLookup[init.degreeId];
-        });
-
-        o.people.forEach(p => {
-            p.initiations.sort((a, b) => {
+        // sort each person's initiations
+        people.forEach(person => {
+            person.initiations.sort((a, b) => {
                 if (a.degree.rank < b.degree.rank) return -1;
                 else if (a.degree.rank > b.degree.rank) return 1;
                 else return 0;
             });
         });
 
-        return o.people;
+        // now calculate a searchName
+        people.forEach(person => {
+            let a = [];
+            if (person.data.firstName !== null) a.push(person.data.firstName.replace(reNonChar, ' '));
+            if (person.data.middleName !== null) a.push(person.data.middleName.replace(reNonChar, ' '));
+            if (person.data.lastName !== null) a.push(person.data.lastName.replace(reNonChar, ' '));
+            person.searchName = a.join(' ').toLowerCase();
+        });
+
+        // sort the people
+        people.sort(sortMethods.lastName);
+
+        return people;
     });
+}
+
+function getPeopleCache() {
+    if (peopleCache === null) return loadAllPeopleWithInits().then(result => {
+        peopleCache = result;
+        return peopleCache;
+    });
+    return Promise.resolve(peopleCache);
 }
 
 exports.getPeople = post => {
 
-    let select = null;
-    if (peopleCache === null) select = getAllPeopleWithInits().then(result => {
-        result.sort(sortMethods.lastName);
-        peopleCache = result;
-        return peopleCache;
-    });
-    else select = Promise.resolve(peopleCache);
-
-    return select.then(result => {
+    return getPeopleCache().then(people => {
 
         if (post.textSearch && post.textSearch.length > 0) {
             let parts = post.textSearch.toLowerCase().split(' ');
 
             let matching = [];
-            result.forEach(p => {
+            people.forEach(person => {
                 let possible = [];
-                if (p.firstName) possible.push(p.firstName.toLowerCase());
-                if (p.lastName) possible.push(p.lastName.toLowerCase());
+                if (person.data.firstName) possible.push(person.data.firstName.toLowerCase());
+                if (person.data.lastName) possible.push(person.data.lastName.toLowerCase());
 
                 let allMatch = true;
                 parts.forEach(part => {
@@ -91,15 +100,15 @@ exports.getPeople = post => {
                     }
                     if (!match) allMatch = false;
                 });
-                if (allMatch) matching.push(p);
+                if (allMatch) matching.push(person);
             });
 
-            result = matching;
+            people = matching;
 
         }
 
         let value = {
-            count: result.length,
+            count: people.length,
             people: null
         };
 
@@ -108,40 +117,19 @@ exports.getPeople = post => {
         let start = pageSize * index;
 
         // outside the bounds
-        if (result.length <= start) value.people = [];
+        if (people.length <= start) value.people = [];
 
         // page is completely within bounds
-        else if (result.length >= start + pageSize) value.people = result.slice(start, start + pageSize);
+        else if (people.length >= start + pageSize) value.people = people.slice(start, start + pageSize);
 
         // just the end records
-        else value.people = result.slice(start, result.length);
+        else value.people = people.slice(start, people.length);
 
         return value;
     });
 
-
-
 };
 
-let cache = null;
-
-function getPeopleCache() {
-    if (cache !== null) return Promise.resolve(cache);
-
-    return Person.selectAll().then(records => {
-
-        records.forEach(person => {
-            let a = [];
-            if (person.firstName !== null) a.push(person.firstName.replace(reNonChar, ' '));
-            if (person.middleName !== null) a.push(person.middleName.replace(reNonChar, ' '));
-            if (person.lastName !== null) a.push(person.lastName.replace(reNonChar, ' '));
-            person.searchName = a.join(' ').toLowerCase();
-        });
-
-        cache = records;
-        return cache;
-    });
-}
 
 let reNonChar = /[^a-zA-Z ]/g;
 

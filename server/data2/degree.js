@@ -26,3 +26,7 @@ exports.values = [
     {name:'Tenth', rank:16, degreeId:16}
 ];
 
+exports.lookup = {};
+exports.values.forEach(d => {
+    exports.lookup[d.degreeId] = d;
+});

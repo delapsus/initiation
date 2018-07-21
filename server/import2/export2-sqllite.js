@@ -24,7 +24,7 @@ function execute() {
     console.log('person count: ' + persons.length);
 
 
-    return database.init(database.storageType.memory)
+    return database.init(database.storageType.file)
         .then(person.createTable)
         .then(location.createTable)
         .then(initiation.createTable)

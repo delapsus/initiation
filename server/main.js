@@ -1,10 +1,10 @@
 'use strict';
 
 let path = require('path');
-let database = require('./data/database');
-let Person = require('./data/person');
-let Initiation = require('./data/initiation');
-let Location = require('./data/location');
+let database = require('./data2/database');
+let Person = require('./data2/person');
+let Initiation = require('./data2/initiation');
+let Location = require('./data2/location');
 let peopleSearch = require('./people-search');
 
 let express = require('express');
@@ -57,7 +57,8 @@ function getPort() {
 // people search
 app.post('/data/people', function (req, res) {
     peopleSearch.getPeople(req.body)
-        .then(value => { res.send(JSON.stringify(value)); });
+        .then(value => { res.send(JSON.stringify(value)); })
+        .catch(console.error);
 });
 
 app.post('/data/person', function (req, res) {
@@ -74,7 +75,8 @@ app.post('/data/person', function (req, res) {
 
             return Promise.all(secondary).then(() => {return person;})
         })
-        .then(value => { res.send(JSON.stringify(value)); });
+        .then(value => { res.send(JSON.stringify(value)); })
+        .catch(console.error);
 });
 
 
@@ -88,7 +90,8 @@ app.post('/data/locations', function (req, res) {
             });
             return {locations:results};
         })
-        .then(value => { res.send(JSON.stringify(value)); });
+        .then(value => { res.send(JSON.stringify(value)); })
+        .catch(console.error);
 });
 
 app.post('/data/location', function (req, res) {
@@ -97,7 +100,8 @@ app.post('/data/location', function (req, res) {
             return Initiation.loadForLocation(location, {loadPersons:true})
                 .then(() => {return location;});
         })
-        .then(value => { res.send(JSON.stringify(value)); });
+        .then(value => { res.send(JSON.stringify(value)); })
+        .catch(console.error);
 });
 
 

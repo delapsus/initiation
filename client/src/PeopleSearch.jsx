@@ -80,14 +80,14 @@ class PeopleDisplay extends React.Component {
             if (person.initiations.length > 0) {
                 let lastInit = person.initiations[person.initiations.length-1];
                 maxDegree = lastInit.degree.name;
-                when = lastInit.actualDate === null ? "" : ago(new Date(lastInit.actualDate));
+                when = lastInit.data.actualDate === null ? "" : ago(new Date(lastInit.data.actualDate));
             }
 
 
             a.push(<tr key={i}>
                 <td><a href={"?personid=" + person.personId}>view</a></td>
-                <td>{person.firstName}</td>
-                <td>{person.lastName}</td>
+                <td>{person.data.firstName}</td>
+                <td>{person.data.lastName}</td>
                 <td>{maxDegree}</td>
                 <td>{when}</td>
             </tr>);
