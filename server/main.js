@@ -62,6 +62,12 @@ app.post('/data/people', function (req, res) {
 });
 
 app.post('/data/person', function (req, res) {
+
+    peopleSearch.getPersonWithFullData(req.body.personId)
+        .then(value => { res.send(JSON.stringify(value)); })
+        .catch(console.error);
+
+    /*
     Person.selectOne(req.body.personId)
         .then(person => {
 
@@ -77,6 +83,7 @@ app.post('/data/person', function (req, res) {
         })
         .then(value => { res.send(JSON.stringify(value)); })
         .catch(console.error);
+        */
 });
 
 

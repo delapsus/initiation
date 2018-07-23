@@ -1,5 +1,6 @@
 let Person = require('./data2/person');
 let Initiation = require('./data2/initiation');
+let Location = require('./data2/location');
 let degreeLookup = require('./data2/degree').lookup;
 
 let sortMethods = {
@@ -17,7 +18,7 @@ let sortMethods = {
     }
 };
 
-let peopleCache = null;
+
 
 function loadAllPeopleWithInits() {
     return Promise.all([
@@ -29,15 +30,15 @@ function loadAllPeopleWithInits() {
         let initiations = results[1];
 
         // add the people to the lookup by id
-        let peopleLookup = {};
+        let lookup = {};
         people.forEach(p => {
-            peopleLookup[p.personId] = p;
+            lookup[p.personId] = p;
             p.initiations = [];
         });
 
         // give the initiations to the people
         initiations.forEach(init => {
-            peopleLookup[init.data.personId].initiations.push(init);
+            lookup[init.data.personId].initiations.push(init);
             init.degree = degreeLookup[init.data.degreeId]; // to allow sorting by rank
         });
 
@@ -62,21 +63,34 @@ function loadAllPeopleWithInits() {
         // sort the people
         people.sort(sortMethods.lastName);
 
-        return people;
+        return { peopleList:people, peopleLookup: lookup };
     });
 }
 
-function getPeopleCache() {
-    if (peopleCache === null) return loadAllPeopleWithInits().then(result => {
-        peopleCache = result;
-        return peopleCache;
+let peopleList = null;
+let peopleLookup = null;
+
+function getPeopleList() {
+    if (peopleList === null) return loadAllPeopleWithInits().then(result => {
+        peopleList = result.peopleList;
+        peopleLookup = result.peopleLookup;
+        return peopleList;
     });
-    return Promise.resolve(peopleCache);
+    return Promise.resolve(peopleList);
+}
+
+function getPeopleLookup() {
+    if (peopleLookup === null) return loadAllPeopleWithInits().then(result => {
+        peopleList = result.peopleList;
+        peopleLookup = result.peopleLookup;
+        return peopleLookup;
+    });
+    return Promise.resolve(peopleLookup);
 }
 
 exports.getPeople = post => {
 
-    return getPeopleCache().then(people => {
+    return getPeopleList().then(people => {
 
         if (post.textSearch && post.textSearch.length > 0) {
             let parts = post.textSearch.toLowerCase().split(' ');
@@ -131,6 +145,25 @@ exports.getPeople = post => {
 };
 
 
+let locations = null;
+let locationsLookup = null;
+
+function getLocations() {
+    if (locations !== null) return Promise.resolve(locations);
+
+    return Location.selectAll().then(result => {
+        locations = result;
+
+        locationsLookup = {};
+        locations.forEach(loc => {
+            locationsLookup[loc.locationId.toString()] = loc;
+        });
+
+        return locations;
+    });
+}
+
+
 let reNonChar = /[^a-zA-Z ]/g;
 
 exports.suggestPeople = post => {
@@ -143,7 +176,7 @@ exports.suggestPeople = post => {
         return new RegExp('(?:^|\\W)' + text, 'i');
     });
 
-    return getPeopleCache().then(people => {
+    return getPeopleList().then(people => {
 
         let matches = people.filter(person => {
 
@@ -161,4 +194,65 @@ exports.suggestPeople = post => {
     });
 };
 
+function luPerson(personId) {
+    if (typeof personId === 'undefined' || personId === null) return null;
+    let key = personId.toString();
+    return peopleLookup[key];
+}
+function luLocation(locationId) {
+    if (typeof locationId === 'undefined' || locationId === null) return null;
+    let key = locationId.toString();
+    return locationsLookup[key];
+}
+function addPersonAndLocation(init) {
+    init.sponsor1_person = luPerson(init.data.sponsor1_personId);
+    init.sponsor2_person = luPerson(init.data.sponsor2_personId);
+    init.location = luLocation(init.data.performedAt_locationId);
+}
 
+exports.getPersonWithFullData = function(personId) {
+
+    return Promise.all([getPeopleLookup(), getLocations()]).then(() => {
+        let person = copy(peopleLookup[personId]);
+
+        // attach initiations and officers
+        person.initiations.forEach(init => {
+            addPersonAndLocation(init);
+        });
+
+        // attach the people this person has sponsored
+        person.sponsoredInitiations = [];
+        peopleList.forEach(p => {
+            p.initiations.forEach(init => {
+                if (init.data.sponsor1_personId === personId) {
+                    let i = copy(init);
+                    i.person = copy(p);
+                    addPersonAndLocation(i);
+                    person.sponsoredInitiations.push(i);
+                }
+                if (init.data.sponsor2_personId === personId) {
+                    let i = copy(init);
+                    i.person = copy(p);
+                    addPersonAndLocation(i);
+                    person.sponsoredInitiations.push(i);
+                }
+            });
+        });
+
+        person.sponsoredInitiations.sort((a, b) => {
+            let aVal = a.data.actualDate || a.data.proposedDate || a.data.signedDate || a.data.localBodyDate;
+            let bVal = b.data.actualDate || b.data.proposedDate || b.data.signedDate || b.data.localBodyDate;
+            if (aVal < bVal) return -1;
+            else if (aVal > bVal) return 1;
+            else return 0;
+        });
+
+        return person;
+    });
+
+};
+
+function copy(a) {
+    let val = JSON.stringify(a);
+    return JSON.parse(val);
+}

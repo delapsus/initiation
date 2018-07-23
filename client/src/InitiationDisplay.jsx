@@ -2,28 +2,30 @@ import React from 'react';
 import {getDegreeById} from './degree';
 import {formatDate, formatTime, putObjectInLines} from './common.js';
 import {PersonLink} from './PersonLink.jsx';
+import {LocationLink} from './LocationLink.jsx';
 
 
 export class InitiationDisplay extends React.Component {
     render() {
         let o = this.props.initiation;
 
-        let degree = getDegreeById(+o.degreeId);
-        let actualDate = formatDate(o.actualDate);
+        // degree info
+        let degree = getDegreeById(+o.data.degreeId);
+
+        let actualDate = formatDate(o.data.actualDate);
 
         let personLink = this.props.showPerson ? <div className="field person"><PersonLink person={o.person} /></div> : "";
 
         // sponsors
-        let sponsor1 = <div className="field person"><PersonLink person={o.sponsor1_person} altNameFirst={o.sponsor1First} altNameLast={o.sponsor1Last} /></div>;
-        let sponsor2 = <div className="field person"><PersonLink person={o.sponsor2_person} altNameFirst={o.sponsor2First} altNameLast={o.sponsor2Last} /></div>;
+        let sponsor1 = <div className="field person"><PersonLink person={o.sponsor1_person} altNameFirst={o.data.sponsor1First} altNameLast={o.data.sponsor1Last} /></div>;
+        let sponsor2 = <div className="field person"><PersonLink person={o.sponsor2_person} altNameFirst={o.data.sponsor2First} altNameLast={o.data.sponsor2Last} /></div>;
         if (this.props.dontShowIf) {
-            if (o.sponsor1_person && this.props.dontShowIf.personId === o.sponsor1_person.personId) sponsor1 = "";
-            if (o.sponsor2_person && this.props.dontShowIf.personId === o.sponsor2_person.personId) sponsor2 = "";
+            if (this.props.dontShowIf.personId === o.data.sponsor1_personId) sponsor1 = "";
+            if (this.props.dontShowIf.personId === o.data.sponsor2_personId) sponsor2 = "";
         }
 
         // location
-        let locationUrl = 'index.html?locationid=' + o.locationId;
-        let location = <div className="field locationName"><a href={locationUrl}>{o.location}</a></div>;
+        let location = <div className="field locationName"><LocationLink location={o.location} altName={o.data.location}></LocationLink></div>;
 
         return <div className="initiation">
             {personLink}
@@ -58,3 +60,4 @@ export class InitiationDisplayHeader extends React.Component {
         </div>;
     }
 }
+

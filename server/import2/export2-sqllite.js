@@ -25,6 +25,7 @@ function execute() {
 
 
     return database.init(database.storageType.file)
+    //return database.init(database.storageType.memory)
         .then(person.createTable)
         .then(location.createTable)
         .then(initiation.createTable)

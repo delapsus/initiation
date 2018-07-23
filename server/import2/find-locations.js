@@ -33,6 +33,7 @@ exports.execute = () => {
                 .then(id => {
                     init.data.performedAt_locationId = id === null ? null : id[0];
                     if (id !== null && id.length === 2) init.data.performedAt2_locationId = id[1];
+                    return initiation.save(init);
                 })
                 /*
                 // do we really care about membership?

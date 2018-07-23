@@ -17,21 +17,18 @@ let values = [
     {name:'10', rank:15}
 ];
 
+let lookup = {};
+values.forEach(o => {
+    o.degreeId = o.rank + 1;
+    lookup[o.degreeId.toString()] = o;
+});
 
-let lookup = null;
-
-function getDegreeLookup() {
-    if (lookup === null) {
-        lookup = {};
-        values.forEach(o => {
-            o.degreeId = o.rank + 1;
-            lookup[o.degreeId] = o;
-        });
-    }
-    return lookup;
-}
 
 export function getDegreeById(degreeId) {
-    let lu = getDegreeLookup();
-    return lu[degreeId];
+    let key = degreeId.toString();
+    if (!lookup.hasOwnProperty(key))  {
+        console.log('no key: ' + key);
+    }
+
+    return lookup[key];
 }

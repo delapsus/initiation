@@ -361,20 +361,28 @@ exports.execute = () => {
 
             let init = initiations[initIndex++];
 
+            let finding = Promise.resolve();
+
             // find each sponsor, or add a person record if not found
-            let finding = [
-                // *** SPONSOR 1 ***
-                findOrAddByName(init.data.sponsor1First, init.data.sponsor1Middle, init.data.sponsor1Last).then(id => {init.data.sponsor1_personId = id;}),
-                // *** SPONSOR 2 ***
-                findOrAddByName(init.data.sponsor2First, init.data.sponsor2Middle, init.data.sponsor2Last).then(id => {init.data.sponsor2_personId = id;})
-                ];
+            finding = finding.then(() => {
+                return findOrAddByName(init.data.sponsor1First, init.data.sponsor1Middle, init.data.sponsor1Last).then(id => {
+                    init.data.sponsor1_personId = id;
+                });
+            });
+            finding = finding.then(() => {
+                return findOrAddByName(init.data.sponsor2First, init.data.sponsor2Middle, init.data.sponsor2Last).then(id => {
+                    init.data.sponsor2_personId = id;
+                })
+            });
 
             // officers don't have names split up, so this gets difficult
             init.data.officers.forEach(officer => {
-                finding.push(findOrAddByFullNameString(officer.name).then(id => {officer.personId = id;}));
+                finding = finding.then(() => {
+                    return findOrAddByFullNameString(officer.name).then(id => {officer.personId = id;})
+                });
             });
 
-            return Promise.all(finding).then(processNextInit);
+            return finding.then(processNextInit);
         }
 
 
