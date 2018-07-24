@@ -80,7 +80,7 @@ export class PersonPage extends React.Component {
 
 export class PersonInformation extends React.Component {
     render() {
-        let data = this.props.person;
+        let data = this.props.person.data;
         return <div>
 
             { /* name/motto */ }

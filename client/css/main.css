@@ -1,8 +1,19 @@
 html {
-    font-family: monospace, monospace;
+    font-family: 'IBM Plex Sans', sans-serif;
 }
+a, a:visited {
+    color: #440099;
+    font-weight: bold;
+    text-decoration: none;
+}
+a:hover {
+
+    text-decoration: underline;
+}
+
 body {
     margin: 0;
+    background-color: #8ABAD3;
 }
 table {
     border-collapse: collapse;
@@ -14,16 +25,17 @@ th, td {
     width: 55.5em;
     height: auto;
     min-height: 100%;
-    background-color: #f8f8f8;
-    border-left: 0.025em solid #ccc;
-    border-right: 0.025em solid #ccc;
+    background-color: #fff;
+    border-left: 0.025em solid #ffe8ff;
+    border-right: 0.025em solid #ffe8ff;
     margin-left: auto;
     margin-right: auto;
     padding: 0.4em 0.4em 0 0.4em;
 }
 
 input, textarea {
-    font-family: monospace, monospace;
+    border: solid 1px #ffe8ff;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 1em;
 }
 
