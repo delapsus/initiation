@@ -205,9 +205,13 @@ function luLocation(locationId) {
     return locationsLookup[key];
 }
 function addPersonAndLocation(init) {
+    addSponsors(init);
+    init.location = luLocation(init.data.performedAt_locationId);
+}
+
+function addSponsors(init) {
     init.sponsor1_person = luPerson(init.data.sponsor1_personId);
     init.sponsor2_person = luPerson(init.data.sponsor2_personId);
-    init.location = luLocation(init.data.performedAt_locationId);
 }
 
 exports.getPersonWithFullData = function(personId) {
@@ -250,6 +254,35 @@ exports.getPersonWithFullData = function(personId) {
         return person;
     });
 
+};
+
+exports.getLocationWithInitiations = function(locationId) {
+    return Promise.all([getPeopleLookup(), getLocations()]).then(() => {
+        let location = copy(locationsLookup[locationId]);
+
+        // attach the people this person has sponsored
+        location.initiationsPerformed = [];
+        peopleList.forEach(p => {
+            p.initiations.forEach(init => {
+                if (init.data.performedAt_locationId === locationId) {
+                    let i = copy(init);
+                    i.person = copy(p);
+                    addSponsors(i);
+                    location.initiationsPerformed.push(i);
+                }
+            });
+        });
+
+        location.initiationsPerformed.sort((a, b) => {
+            let aVal = a.data.actualDate || a.data.proposedDate || a.data.signedDate || a.data.localBodyDate;
+            let bVal = b.data.actualDate || b.data.proposedDate || b.data.signedDate || b.data.localBodyDate;
+            if (aVal < bVal) return -1;
+            else if (aVal > bVal) return 1;
+            else return 0;
+        });
+
+        return location;
+    });
 };
 
 function copy(a) {

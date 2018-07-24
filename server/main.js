@@ -66,24 +66,6 @@ app.post('/data/person', function (req, res) {
     peopleSearch.getPersonWithFullData(req.body.personId)
         .then(value => { res.send(JSON.stringify(value)); })
         .catch(console.error);
-
-    /*
-    Person.selectOne(req.body.personId)
-        .then(person => {
-
-            let secondary = [];
-
-            // attach initiations and officers
-            secondary.push(Initiation.loadForPerson(person, {loadPersons:true}));
-
-            // attach the people this person has sponsored
-            secondary.push(Initiation.loadSponsees(person, {loadPersons:true}));
-
-            return Promise.all(secondary).then(() => {return person;})
-        })
-        .then(value => { res.send(JSON.stringify(value)); })
-        .catch(console.error);
-        */
 });
 
 
@@ -91,8 +73,8 @@ app.post('/data/locations', function (req, res) {
     Location.selectAll()
         .then(results => {
             results.sort((a,b) => {
-                if (a.name < b.name) return -1;
-                if (a.name > b.name) return 1;
+                if (a.data.name < b.data.name) return -1;
+                if (a.data.name > b.data.name) return 1;
                 return 0;
             });
             return {locations:results};
@@ -102,11 +84,7 @@ app.post('/data/locations', function (req, res) {
 });
 
 app.post('/data/location', function (req, res) {
-    Location.selectOne(req.body.locationId)
-        .then(location => {
-            return Initiation.loadForLocation(location, {loadPersons:true})
-                .then(() => {return location;});
-        })
+    peopleSearch.getLocationWithInitiations(req.body.locationId)
         .then(value => { res.send(JSON.stringify(value)); })
         .catch(console.error);
 });

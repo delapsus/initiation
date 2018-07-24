@@ -78,76 +78,131 @@ export class PersonPage extends React.Component {
 
 }
 
+function areAllEmpty(o, keys) {
+    return keys.reduce((val, key) => {
+        if (o.hasOwnProperty(key) && o[key] !== null && o[key].length > 0) return false;
+        return val;
+    }, true);
+}
+
 export class PersonInformation extends React.Component {
     render() {
         let data = this.props.person.data;
+
+        /*
+
+    {name:'addressComments'},
+
+    {name:'fax'},
+
+    {name:'bodyOfResponsibility'},
+
+    {name:'difficultiesComments'},
+    {name:'difficulty', type:'boolean'},
+    {name:'isMaster', type:'boolean'},
+    {name:'masterOfBody'},
+    {name:'reportComment'},
+    {name:'isFelon', type:'boolean'},
+    {name:'isDuesInactive', type:'boolean'},
+    {name:'isInternationalBadReport', type:'boolean'},
+    {name:'isResigned', type:'boolean'},
+
+    {name:'importSource'},
+        */
+
+        let info = <table><tbody>
+        <tr><td className="label">First Name</td><td>{data.firstName}</td></tr>
+        <tr><td className="label">Middle</td><td>{data.middleName}</td></tr>
+        <tr><td className="label">Last</td><td>{data.lastName}</td></tr>
+        <tr><td className="label">Motto</td><td>{data.motto}</td></tr>
+        <tr><td className="label">Motto Old</td><td>{data.mottoOld}</td></tr>
+        <tr><td className="label">Motto Comment</td><td>{data.mottoComment}</td></tr>
+        <tr><td className="label">Aliases</td><td>{data.aliases}</td></tr>
+        </tbody></table>;
+
+        let contactInfo = <table><tbody>
+        <tr><td className="label">Email</td><td>{data.email}</td></tr>
+        <tr><td className="label">Phone Main</td><td>{data.phoneMain}</td></tr>
+        <tr><td className="label">Phone Main 2</td><td>{data.phoneMain2}</td></tr>
+        <tr><td className="label">Phone Work</td><td>{data.phoneWork}</td></tr>
+        <tr><td className="label">Phone Emergency</td><td>{data.phoneEmergency}</td></tr>
+        <tr><td className="label">Phone Comments</td><td>{data.phoneComments}</td></tr>
+        <tr><td className="label">Created</td><td>{formatDate(data.createdDate)}</td></tr>
+        <tr><td className="label">Tracking Number</td><td>{data.trackingNumber}</td></tr>
+        </tbody></table>;
+
+        let addressPrimary = <div>
+            <div>Primary Address:</div>
+            <table><tbody>
+            <tr><td className="label">Address 1</td><td>{data.primaryAddress}</td></tr>
+            <tr><td className="label">Address 2</td><td>{data.primaryAddress2}</td></tr>
+            <tr><td className="label">City</td><td>{data.primaryCity}</td></tr>
+            <tr><td className="label">State</td><td>{data.primaryPrincipality}</td></tr>
+            <tr><td className="label">Zip</td><td>{data.primaryZip}</td></tr>
+            <tr><td className="label">Country</td><td>{data.primaryCountry}</td></tr>
+            </tbody></table>
+        </div>;
+
+        let addressMail = <div>
+            <div>Mailing Address:</div>
+            <table><tbody>
+            <tr><td className="label">Address 1</td><td>{data.mailAddress}</td></tr>
+            <tr><td className="label">Address 2</td><td>{data.mailAddress2}</td></tr>
+            <tr><td className="label">City</td><td>{data.mailCity}</td></tr>
+            <tr><td className="label">State</td><td>{data.mailPrincipality}</td></tr>
+            <tr><td className="label">Zip</td><td>{data.mailZip}</td></tr>
+            <tr><td className="label">Country</td><td>{data.mailCountry}</td></tr>
+            </tbody></table>
+        </div>;
+
+        let a1 = ['mailAddress', 'mailAddress2', 'mailCity', 'mailPrincipality', 'mailZip', 'mailCountry'];
+        if (areAllEmpty(data, a1)) addressMail = "";
+
+
+        let addressOther = <div>
+            <div>Other Address:</div>
+            <table><tbody>
+            <tr><td className="label">Address 1</td><td>{data.otherAddress}</td></tr>
+            <tr><td className="label">Address 2</td><td>{data.otherAddress2}</td></tr>
+            <tr><td className="label">City</td><td>{data.otherCity}</td></tr>
+            <tr><td className="label">Zip</td><td>{data.otherPrincipality}</td></tr>
+            <tr><td className="label">State</td><td>{data.otherZip}</td></tr>
+            <tr><td className="label">Country</td><td>{data.otherCountry}</td></tr>
+            </tbody></table>
+        </div>;
+
+        let a2 = ['otherAddress', 'otherAddress2', 'otherCity', 'otherPrincipality', 'otherZip', 'otherCountry'];
+        if (areAllEmpty(data, a2)) addressOther = "";
+
+
+        let birthInfo = <table><tbody>
+        <tr><td className="label">Birth Date</td><td>{formatDate(data.birthDate)}</td></tr>
+        <tr><td className="label">Birth Time</td><td>{formatTime(data.birthTime)}</td></tr>
+        <tr><td className="label">Birth City</td><td>{data.birthCity}</td></tr>
+        <tr><td className="label">Birth State</td><td>{data.birthPrincipality}</td></tr>
+        <tr><td className="label">Birth Country 0°</td><td>{data.birthCountryMinerval}</td></tr>
+        <tr><td className="label">Birth Country 1°</td><td>{data.birthCountryFirst}</td></tr>
+        </tbody></table>;
+
         return <div>
 
-            { /* name/motto */ }
             <table><tbody>
             <tr>
-                <td className="label">First Name</td>
-                <td className="label">Middle</td>
-                <td className="label">Last</td>
-                <td className="label">Motto</td>
-            </tr>
-            <tr>
-                <td><input type="text" value={data.firstName} /></td>
-                <td><input type="text" value={data.middleName} /></td>
-                <td><input type="text" value={data.lastName} /></td>
-                <td><input type="text" value={data.motto} /></td>
-            </tr>
-            </tbody></table>
 
-            { /* contact / misc info */ }
-            <table><tbody>
-            <tr>
-                <td className="label">Email</td>
-                <td className="label">Phone Main</td>
-                <td className="label">Created</td>
-                <td className="label">Tracking Number</td>
-            </tr>
-            <tr>
-                <td><input type="text" value={data.email} /></td>
-                <td><input type="text" value={data.phoneMain} /></td>
-                <td><input type="text" value={formatDate(data.createdDate)} /></td>
-                <td><input type="text" value={data.trackingNumber} /></td>
-            </tr>
-            </tbody></table>
+            <td>
+                {info}
+                {contactInfo}
+            </td>
 
-             { /* BIRTH INFO */ }
-            <table><tbody>
-            <tr>
-                <td className="label">Birth Date</td>
-                <td className="label">Birth Time</td>
-                <td className="label">Birth City</td>
-                <td className="label">Birth State</td>
-                <td className="label">Birth Country</td>
-            </tr>
-            <tr>
-                <td><input type="text" value={formatDate(data.birthDate)} /></td>
-                <td><input type="text" value={formatTime(data.birthTime)} /></td>
-                <td><input type="text" value={data.birthCity} /></td>
-                <td><input type="text" value={data.birthPrincipality} /></td>
-                <td><input type="text" value={data.birthCountryMinerval} /></td>
-            </tr>
-            </tbody></table>
+            <td>
+                {addressPrimary}
+                {addressMail}
+                {addressOther}
+            </td>
 
-             { /* Primary Address */ }
-            <table><tbody>
-            <tr>
-                <td className="label">Address 1</td>
-                <td className="label">Address 2</td>
-                <td className="label">City</td>
-                <td className="label">State</td>
-                <td className="label">Zip</td>
-            </tr>
-            <tr>
-                <td><input type="text" value={data.primaryAddress} /></td>
-                <td><input type="text" value={data.primaryAddress2} /></td>
-                <td><input type="text" value={data.primaryCity} /></td>
-                <td><input type="text" value={data.primaryPrincipality} /></td>
-                <td><input type="text" value={data.primaryZip} /></td>
+            <td>
+            {birthInfo}
+            </td>
             </tr>
             </tbody></table>
 

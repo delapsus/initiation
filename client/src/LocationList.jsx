@@ -38,10 +38,10 @@ export class LocationList extends React.Component {
 
             a.push(<tr key={i}>
                 <td><a href={"?locationid=" + location.locationId}>view</a></td>
-                <td>{location.name}</td>
-                <td>{location.type}</td>
-                <td>{location.city}</td>
-                <td>{location.state}</td>
+                <td>{location.data.name}</td>
+                <td>{location.data.type}</td>
+                <td>{location.data.city}</td>
+                <td>{location.data.state}</td>
             </tr>);
 
         });

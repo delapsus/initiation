@@ -37,15 +37,16 @@ export class LocationPage extends React.Component {
         if (this.state.location === null) return <div></div>;
 
         let inits = [];
-        if (this.state.location.initiations) {
-            this.state.location.initiations.forEach((o, i) => {
-                inits.push(<InitiationDisplay initiation={o} key={i} />);
+        if (this.state.location.initiationsPerformed) {
+            this.state.location.initiationsPerformed.forEach((o, i) => {
+                inits.push(<InitiationDisplay initiation={o} key={i} showPerson={true} showLocation={false} />);
             });
         }
 
 
 
-        let html = {__html: putObjectInLines(this.state.location)};
+        //let html = {__html: putObjectInLines(this.state.location)};
+        let html = {__html: "<div></div>"};
         return <div className="locationPage">
             <LocationInformation location={this.state.location} />
             {inits}
@@ -70,10 +71,10 @@ export class LocationInformation extends React.Component {
                 <td className="label">State</td>
             </tr>
             <tr>
-                <td><input type="text" value={data.name} /></td>
-                <td><input type="text" value={data.type} /></td>
-                <td><input type="text" value={data.city} /></td>
-                <td><input type="text" value={data.state} /></td>
+                <td><input type="text" value={data.data.name} /></td>
+                <td><input type="text" value={data.data.type} /></td>
+                <td><input type="text" value={data.data.city} /></td>
+                <td><input type="text" value={data.data.state} /></td>
             </tr>
             </tbody></table>
 

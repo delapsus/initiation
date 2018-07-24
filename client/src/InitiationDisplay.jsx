@@ -25,7 +25,7 @@ export class InitiationDisplay extends React.Component {
         }
 
         // location
-        let location = <div className="field locationName"><LocationLink location={o.location} altName={o.data.location}></LocationLink></div>;
+        let location = this.props.hasOwnProperty('showLocation') && !this.props.showLocation ? "" : <div className="field locationName"><LocationLink location={o.location} altName={o.data.location}></LocationLink></div>;
 
         return <div className="initiation">
             {personLink}
