@@ -1,49 +1,103 @@
-var NodeGit = require("nodegit");
+const fs = require('fs');
 
-var cloneURL = "https://otoinitiation:h4bixKTYeWh3@github.com/asicath/initiation.git";
+const npm = require('npm');
 
-var localPath = require("path").join(__dirname, "tmp");
 
-var cloneOptions = {};
-cloneOptions.fetchOpts = {
-    callbacks: {
-        certificateCheck: function() { return 1; }
-    }
-};
+cloneOrUpdate().then(() => {
+    let npmConfig = JSON.parse(fs.readFileSync('./package.json'));
+    let o = npm.load({loaded:false}, err => {
 
-var cloneRepository = NodeGit.Clone(cloneURL, localPath, cloneOptions);
 
-cloneRepository
-    .catch(() => {
-
-        return NodeGit.Repository.open(localPath)
-            .then(function(repo) {
-                let repository = repo;
-
-                return repository.fetchAll({
-                    callbacks: {
-                        credentials: function(url, userName) {
-                            return NodeGit.Cred.sshKeyFromAgent(userName);
-                        },
-                        certificateCheck: function() {
-                            return 1;
-                        }
-                    }
-                })
-                    .then(function() {
-                        return repository.mergeBranches("master", "origin/master");
-                    })
-            })
-            // Now that we're finished fetching, go ahead and merge our local branch
-            // with the new one
-
-            .done(function() {
-                console.log("Done!");
-            });
-    })
-    .then(function(repository) {
-        // Access any repository methods here.
-        console.log("Is the repository bare? %s", Boolean(repository.isBare()));
     });
+
+    //npm.run("")
+
+    /*
+    let dep = createNpmDependenciesArray('./package.json');
+    let o = npm.load({loaded:false}, err => {
+
+        npm.on("log", function (message) {
+            // log the progress of the installation
+            console.log(message);
+        });
+
+        npm.commands.install(dep, (er, data) => {
+
+        });
+
+    });
+     */
+});
+
+
+
+
+
+function createNpmDependenciesArray(packageFilePath) {
+    var p = require(packageFilePath);
+    if (!p.dependencies) return [];
+
+    var deps = [];
+    for (var mod in p.dependencies) {
+        if (mod === 'npm') continue;
+        deps.push(mod + "@" + p.dependencies[mod]);
+    }
+
+    return deps;
+}
+
+function cloneOrUpdate() {
+    const NodeGit = require("nodegit");
+
+    let cloneURL = "https://otoinitiation:h4bixKTYeWh3@github.com/asicath/initiation.git";
+
+    let localPath = require("path").join(__dirname, "tmp");
+
+    let cloneOptions = {};
+    cloneOptions.fetchOpts = {
+        callbacks: {
+            certificateCheck: function() { return 1; }
+        }
+    };
+
+    let cloneRepository = NodeGit.Clone(cloneURL, localPath, cloneOptions);
+
+    return cloneRepository
+        .catch(() => {
+
+            return NodeGit.Repository.open(localPath)
+                .then(function(repo) {
+                    let repository = repo;
+
+                    return repository.fetchAll({
+                        callbacks: {
+                            credentials: function(url, userName) {
+                                return NodeGit.Cred.sshKeyFromAgent(userName);
+                            },
+                            certificateCheck: function() {
+                                return 1;
+                            }
+                        }
+                    })
+                        .then(function() {
+                            return repository.mergeBranches("master", "origin/master");
+                        })
+                })
+                // Now that we're finished fetching, go ahead and merge our local branch
+                // with the new one
+
+                //.done(function() {
+               //     console.log("Done!");
+                //});
+        })
+        .then(function(repository) {
+            // Access any repository methods here.
+            console.log("Is the repository bare? %s", Boolean(repository.isBare()));
+        })
+        .catch(e => {
+            console.error(e);
+        });
+}
+
 
 

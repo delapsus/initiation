@@ -1,0 +1,18 @@
+{
+  "name": "install",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "nodegit": "^0.22.2",
+    "npm": "^6.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "installServer": "cd tmp/server && npm install",
+    "installClient": "cd tmp/client && npm install"
+  },
+  "author": "",
+  "license": "ISC"
+}
