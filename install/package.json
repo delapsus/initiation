@@ -11,7 +11,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "installServer": "cd tmp/server && npm install",
-    "installClient": "cd tmp/client && npm install"
+    "installClient": "cd tmp/client && npm install",
+    "buildClient": "cd tmp/client && npm run build"
   },
   "author": "",
   "license": "ISC"

@@ -1,35 +1,24 @@
 const fs = require('fs');
-
 const npm = require('npm');
 
 
-cloneOrUpdate().then(() => {
+cloneOrUpdate().then(installAndBuild);
+
+function installAndBuild() {
+    npm.on("log", function (message) {
+        // log the progress of the installation
+        console.log(message);
+    });
+
     let npmConfig = JSON.parse(fs.readFileSync('./package.json'));
-    let o = npm.load({loaded:false}, err => {
-
-
-    });
-
-    //npm.run("")
-
-    /*
-    let dep = createNpmDependenciesArray('./package.json');
-    let o = npm.load({loaded:false}, err => {
-
-        npm.on("log", function (message) {
-            // log the progress of the installation
-            console.log(message);
+    npm.load(npmConfig, err => {
+        npm.run("installServer", () => {
+            npm.run("installClient", () => {
+                npm.run("buildClient");
+            });
         });
-
-        npm.commands.install(dep, (er, data) => {
-
-        });
-
     });
-     */
-});
-
-
+}
 
 
 
@@ -81,6 +70,9 @@ function cloneOrUpdate() {
                     })
                         .then(function() {
                             return repository.mergeBranches("master", "origin/master");
+                        })
+                        .then(() => {
+                            return repository;
                         })
                 })
                 // Now that we're finished fetching, go ahead and merge our local branch
