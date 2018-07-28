@@ -89,7 +89,11 @@ app.post('/data/location', function (req, res) {
         .catch(console.error);
 });
 
-
+app.post('/data/initiation', function (req, res) {
+    peopleSearch.getInitiation(req.body.initiationId)
+        .then(value => { res.send(JSON.stringify(value)); })
+        .catch(console.error);
+});
 
 
 

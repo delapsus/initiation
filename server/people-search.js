@@ -285,6 +285,45 @@ exports.getLocationWithInitiations = function(locationId) {
     });
 };
 
+exports.getInitiation = function(initiationId) {
+    return Promise.all([getPeopleLookup(), getLocations()]).then(() => {
+        // first we need to find it, should eventually create this as a lookup
+        let initiation = getInitiation(initiationId);
+
+        /*
+        Add these objects:
+
+        personId: 3197
+        sponsor1_personId: 975
+        sponsor2_personId: 6891
+        performedAt_locationId: 50
+
+        officers: [
+            0: {
+                officerId: 4
+                name: a b
+                personId: 975
+            },
+        ]
+
+        */
+
+        return Promise.resolve(initiation);
+    });
+};
+
+function getInitiation(initiationId) {
+    for (let i = 0; i < peopleList.length; i++) {
+        let p = peopleList[i];
+        for (let j = 0; j < p.initiations.length; j++) {
+            if (p.initiations[j].initiationId === initiationId) {
+                return p.initiations[j];
+            }
+        }
+    }
+    return null;
+}
+
 function copy(a) {
     let val = JSON.stringify(a);
     return JSON.parse(val);
