@@ -9,17 +9,22 @@ let fields = [
 */
 
 exports.values = [
-    {name:'Initiator', rank:1, initiationId:1},
-    {name:'Wazir', rank:2, initiationId:2},
-    {name:'Emir', rank:3, initiationId:3},
-    {name:'Zerrubbabel', rank:1, initiationId:1},
-    {name:'Haggai', rank:2, initiationId:2},
-    {name:'Joshua', rank:3, initiationId:3},
-    {name:'Herald', rank:4, initiationId:4},
-    {name:'Senior Perfect Magician', rank:5, initiationId:5},
-    {name:'Assistant 1', rank:6, initiationId:6},
-    {name:'Assistant 2', rank:7, initiationId:7},
-    {name:'Most Wise Sovereign', rank:8, initiationId:8},
-    {name:'High Priestess', rank:9, initiationId:9},
-    {name:'Grand Marshal', rank:10, initiationId:10}
+    {name:'Initiator', rank:1, officerId:1},
+    {name:'Wazir', rank:2, officerId:2},
+    {name:'Emir', rank:3, officerId:3},
+    {name:'Zerrubbabel', rank:1, officerId:4},
+    {name:'Haggai', rank:2, officerId:5},
+    {name:'Joshua', rank:3, officerId:6},
+    {name:'Herald', rank:4, officerId:7},
+    {name:'Senior Perfect Magician', rank:5, officerId:8},
+    {name:'Assistant 1', rank:6, officerId:9},
+    {name:'Assistant 2', rank:7, officerId:10},
+    {name:'Most Wise Sovereign', rank:8, officerId:11},
+    {name:'High Priestess', rank:9, officerId:12},
+    {name:'Grand Marshal', rank:10, officerId:13}
 ];
+
+exports.lookup = {};
+exports.values.forEach(o => {
+    exports.lookup[o.officerId] = o;
+});

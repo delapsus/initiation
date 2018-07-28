@@ -2,6 +2,7 @@ let Person = require('./data2/person');
 let Initiation = require('./data2/initiation');
 let Location = require('./data2/location');
 let degreeLookup = require('./data2/degree').lookup;
+let officerLookup = require('./data2/officer').lookup;
 
 let sortMethods = {
     lastName: function(a, b) {
@@ -204,14 +205,23 @@ function luLocation(locationId) {
     let key = locationId.toString();
     return locationsLookup[key];
 }
-function addPersonAndLocation(init) {
-    addSponsors(init);
+
+function addLocation(init) {
     init.location = luLocation(init.data.performedAt_locationId);
 }
-
+function addPerson(init) {
+    init.person = luPerson(init.data.personId);
+}
 function addSponsors(init) {
     init.sponsor1_person = luPerson(init.data.sponsor1_personId);
     init.sponsor2_person = luPerson(init.data.sponsor2_personId);
+}
+
+function addOfficers(init) {
+    init.data.officers.forEach(o => {
+        o.person = luPerson(o.personId);
+        o.officer = officerLookup[o.officerId];
+    });
 }
 
 exports.getPersonWithFullData = function(personId) {
@@ -221,7 +231,8 @@ exports.getPersonWithFullData = function(personId) {
 
         // attach initiations and officers
         person.initiations.forEach(init => {
-            addPersonAndLocation(init);
+            addSponsors(init);
+            addLocation(init);
         });
 
         // attach the people this person has sponsored
@@ -231,13 +242,15 @@ exports.getPersonWithFullData = function(personId) {
                 if (init.data.sponsor1_personId === personId) {
                     let i = copy(init);
                     i.person = copy(p);
-                    addPersonAndLocation(i);
+                    addSponsors(init);
+                    addLocation(init);
                     person.sponsoredInitiations.push(i);
                 }
                 if (init.data.sponsor2_personId === personId) {
                     let i = copy(init);
                     i.person = copy(p);
-                    addPersonAndLocation(i);
+                    addSponsors(init);
+                    addLocation(init);
                     person.sponsoredInitiations.push(i);
                 }
             });
@@ -288,25 +301,34 @@ exports.getLocationWithInitiations = function(locationId) {
 exports.getInitiation = function(initiationId) {
     return Promise.all([getPeopleLookup(), getLocations()]).then(() => {
         // first we need to find it, should eventually create this as a lookup
-        let initiation = getInitiation(initiationId);
+        let initiation = copy(getInitiation(initiationId));
 
-        /*
-        Add these objects:
+        addPerson(initiation);
+        addSponsors(initiation);
+        addLocation(initiation);
+        addOfficers(initiation);
 
-        personId: 3197
-        sponsor1_personId: 975
-        sponsor2_personId: 6891
-        performedAt_locationId: 50
+        // add people initiated into same degree on the same day at same place
 
-        officers: [
-            0: {
-                officerId: 4
-                name: a b
-                personId: 975
-            },
-        ]
+        initiation.otherPeople = [];
 
-        */
+        if (initiation.data.actualDate !== null) {
+            let actualDate = new Date(initiation.data.actualDate);
+
+            peopleList.forEach(p => {
+                p.initiations.forEach(init => {
+                    // make sure they took place at same place and same degree
+                    if (init.data.performedAt_locationId === initiation.data.performedAt_locationId && init.data.degreeId === initiation.data.degreeId && init.data.personId !== initiation.data.personId) {
+
+                        // compare the dates
+                        if (Math.abs(init.data.actualDate - actualDate) < 24*60*60*1000) {
+                            initiation.otherPeople.push(p);
+                        }
+
+                    }
+                });
+            });
+        }
 
         return Promise.resolve(initiation);
     });
