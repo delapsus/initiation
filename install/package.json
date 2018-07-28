@@ -4,8 +4,7 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "nodegit": "^0.22.2",
-    "npm": "^6.2.0"
+    "nodegit": "^0.22.2"
   },
   "devDependencies": {},
   "scripts": {
