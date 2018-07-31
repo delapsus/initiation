@@ -30,7 +30,7 @@ export class InitiationDisplay extends React.Component {
         let link = "index.html?initiationid=" + o.initiationId;
 
         return <div className="initiation">
-            <a href={link}>view</a>
+            <div className="field view"><a href={link}>view</a></div>
             {personLink}
             <div className="field degree">{degree.name}</div>
             {location}
@@ -54,6 +54,7 @@ export class InitiationDisplayHeader extends React.Component {
         }
 
         return <div className="initiation">
+            <div className="field view"></div>
             {personLink}
             <div className="field degree">°</div>
             <div className="field locationName">Location</div>

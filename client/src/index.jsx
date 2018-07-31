@@ -40,7 +40,8 @@ class Index extends React.Component {
             this.state.page = parsed.page;
         }
     }
-    render() {
+
+    getPageContent() {
         if (this.state.page === 'people') return <PeopleSearch />;
         if (this.state.page === 'person-select') return <PersonSelect />;
         else if (this.state.page === 'person') return <PersonPage personId={this.state.personId} />;
@@ -49,6 +50,15 @@ class Index extends React.Component {
         else if (this.state.page === 'initiation') return <InitiationPage initiationId={this.state.initiationId}/>;
         else if (this.state.page === 'application') return <ApplicationFirst />;
         else return <Home />;
+    }
+
+    render() {
+        let content = this.getPageContent();
+
+        return <div>
+            <div>O.T.O. USGL Initiation Database | <a href="index.html?page=people">People</a> | <a href="index.html?page=locations">Locations</a> | <a href="index.html?page=application">New Application</a></div>
+            {content}
+        </div>
     }
 }
 
