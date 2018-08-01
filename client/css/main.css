@@ -1,14 +1,16 @@
 html {
     font-family: 'IBM Plex Sans', sans-serif;
 }
-a, a:visited {
-    color: #440099;
+a, a:visited, .link {
+    color: #5c00cc;
     font-weight: bold;
     text-decoration: none;
 }
-a:hover {
-
+a:hover, .link:hover {
     text-decoration: underline;
+}
+.link {
+    cursor: pointer;
 }
 
 body {

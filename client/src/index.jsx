@@ -18,7 +18,7 @@ class Index extends React.Component {
 
         let parsed = queryString.parse(location.search);
         this.state = {
-            page: 'home'
+            page: 'people'
         };
 
         if (parsed.personid) {

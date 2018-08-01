@@ -93,6 +93,18 @@ exports.getPeople = post => {
 
     return getPeopleList().then(people => {
 
+        if (post.degreeId && post.degreeId !== 0) {
+            people = people.filter(person => {
+
+                if (post.degreeId === -1) {
+                    return person.initiations.length === 0;
+                }
+
+                if (person.initiations.length === 0) return false;
+                return person.initiations[person.initiations.length - 1].data.degreeId === post.degreeId;
+            });
+        }
+
         if (post.textSearch && post.textSearch.length > 0) {
             let parts = post.textSearch.toLowerCase().split(' ');
 
