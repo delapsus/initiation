@@ -11,6 +11,14 @@ a:hover, .link:hover {
 }
 .link {
     cursor: pointer;
+
+    -webkit-user-select: none; /* Chrome/Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+ */
+
+    /* Rules below not implemented in browsers yet */
+    -o-user-select: none;
+    user-select: none;
 }
 
 body {
@@ -23,6 +31,10 @@ table {
 th, td {
     padding: 0 0.2em;
 }
+th {
+    font-weight: bold;
+    text-align: left;
+}
 #app {
     width: 55.5em;
     height: auto;
@@ -34,9 +46,12 @@ th, td {
     margin-right: auto;
     padding: 0.4em 0.4em 0 0.4em;
 }
+#menuHeader {
+    margin-bottom: 1em;
+}
 
-input, textarea {
-    border: solid 1px #ffe8ff;
+input, textarea, select {
+    border: solid 1px #ad78bd;
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 1em;
 }
@@ -55,6 +70,40 @@ input, textarea {
 }
 
 
+#peopleFilters .item {
+    display: inline-block;
+    margin-right: 1em;
+}
+
+#resultsHeader {
+    background-color: #8ABAD3;
+    border-top: 1px solid #ffe8ff;
+    border-bottom: 1px solid #ffe8ff;
+    margin-top: 1em;
+}
+#resultsHeader .item {
+    display: inline-block;
+    margin-left: 1em;
+}
+
+.peopleListTable .colLink {
+    width:2em;
+}
+.peopleListTable .colFirst {
+    width:7em;
+}
+.peopleListTable .colLast {
+    width:7em;
+}
+.peopleListTable .colDegree {
+    width:4em;
+}
+.peopleListTable .colMaxDate {
+    width:6em;
+}
+.peopleListTable .colMinDate {
+    width:6em;
+}
 
 
 .initiation .field {

@@ -56,7 +56,7 @@ class Index extends React.Component {
         let content = this.getPageContent();
 
         return <div>
-            <div>O.T.O. USGL Initiation Database | <a href="index.html?page=people">People</a> | <a href="index.html?page=locations">Locations</a> | <a href="index.html?page=application">New Application</a></div>
+            <div id="menuHeader">O.T.O. USGL Initiation Database | <a href="index.html?page=people">People</a> | <a href="index.html?page=locations">Locations</a> | <a href="index.html?page=application">New Application</a></div>
             {content}
         </div>
     }
