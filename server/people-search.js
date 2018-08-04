@@ -89,6 +89,7 @@ function getPeopleLookup() {
     return Promise.resolve(peopleLookup);
 }
 
+// people search page, assumes one input
 exports.getPeople = post => {
 
     return getPeopleList().then(people => {
@@ -106,16 +107,24 @@ exports.getPeople = post => {
         }
 
         if (post.textSearch && post.textSearch.length > 0) {
-            let parts = post.textSearch.toLowerCase().split(' ');
+            let text = post.textSearch.toLowerCase();
+            //while (text.indexOf('  ') !== -1) {
+            //    text = text.replace(/\s\s/g, ' ');
+            //}
+            let parts = text.split(' ');
 
             let matching = [];
             people.forEach(person => {
                 let possible = [];
                 if (person.data.firstName) possible.push(person.data.firstName.toLowerCase());
+                //if (person.data.middleName) possible.push(person.data.middleName.toLowerCase());
                 if (person.data.lastName) possible.push(person.data.lastName.toLowerCase());
 
                 let allMatch = true;
                 parts.forEach(part => {
+
+                    if (part.length === 0) return;
+
                     let match = false;
                     for (let i = 0; i < possible.length; i++) {
                         if (possible[i] === null) continue;
