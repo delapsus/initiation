@@ -28,7 +28,10 @@ export class PersonPicker extends React.Component {
     handleChange (event) {
         const target = event.target;
         let value = (target.type === 'checkbox' ? target.checked : target.value).trim();
-        const name = target.name;
+        let name = target.name;
+        const key = this.props.name + "Radio";
+
+        if (name === key) name = 'personId';
 
         if (name === 'personId') value = +value;
 
@@ -92,6 +95,13 @@ export class PersonPicker extends React.Component {
 
 
     getData() {
+
+        if (this.state.firstName.length === 0 && this.state.lastName.length === 0) {
+            this.setState({suggestions: null});
+            return;
+        }
+
+
         let combined = this.state.firstName + " " + this.state.lastName; // + " " + this.state.middleName
         getPeople({textSearch:combined.trim()}).then(result => {
 
@@ -134,13 +144,13 @@ export class PersonPicker extends React.Component {
             picks = [];
 
             picks.push(<tr key={-1}>
-                <td><input type="radio" name="personId" value={-1} onChange={this.handleChange.bind(this)} /></td>
+                <td><input type="radio" name={this.props.name + "Radio"} value={-1} onChange={this.handleChange.bind(this)} /></td>
                 <td colSpan="3">Create a New Person Entry</td>
             </tr>);
 
             this.state.suggestions.people.forEach((person, i) => {
                 picks.push(<tr key={i}>
-                    <td><input type="radio" name="personId" value={person.personId} onChange={this.handleChange.bind(this)} checked={person.personId === this.state.personId} /></td>
+                    <td><input type="radio" name={this.props.name + "Radio"} value={person.personId} onChange={this.handleChange.bind(this)} checked={person.personId === this.state.personId} /></td>
                     <td>{person.data.firstName}</td>
                     <td>{person.data.middleName}</td>
                     <td>{person.data.lastName}</td>
@@ -150,22 +160,23 @@ export class PersonPicker extends React.Component {
         }
 
         return <div>
+            <input type="hidden" value="something"/>
 
             <table>
                 <thead>
                 <tr>
                     <th></th>
-                    <th>First</th>
-                    <th>Middle</th>
-                    <th>Last</th>
+                    <th className="formItemTitle">First</th>
+                    <th className="formItemTitle">Middle</th>
+                    <th className="formItemTitle">Last</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <td></td>
-                    <td><input type="text" name="firstName" value={this.state.firstName} onChange={this.handleChange.bind(this)} /></td>
-                    <td><input type="text" name="middleName" value={this.state.middleName} onChange={this.handleChange.bind(this)} /></td>
-                    <td><input type="text" name="lastName" value={this.state.lastName} onChange={this.handleChange.bind(this)} /></td>
+                    <td><input type="radio" style={{visibility: "hidden"}} /></td>
+                    <td><input type="text" name="firstName" value={this.state.firstName} onChange={this.handleChange.bind(this)} autoComplete="new-password" /></td>
+                    <td><input type="text" name="middleName" value={this.state.middleName} onChange={this.handleChange.bind(this)} autoComplete="new-password" /></td>
+                    <td><input type="text" name="lastName" value={this.state.lastName} onChange={this.handleChange.bind(this)} autoComplete="new-password" /></td>
                 </tr>
                 {picks}
                 </tbody>

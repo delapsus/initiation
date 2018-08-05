@@ -128,8 +128,17 @@ input, textarea, select {
 
 
 
-
-
+.formLine {
+    margin-bottom: 1em;
+}
+.formItem {
+    display: inline-block;
+    vertical-align: top;
+}
+.formItemTitle {
+    font-weight: bold;
+    font-size: 0.8em;
+}
 
 
 
