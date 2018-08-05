@@ -6,6 +6,7 @@ let Person = require('./data2/person');
 let Initiation = require('./data2/initiation');
 let Location = require('./data2/location');
 let peopleSearch = require('./people-search');
+let submit = require('./submit');
 
 let express = require('express');
 var bodyParser = require('body-parser');
@@ -17,6 +18,8 @@ exports.start = () => {
         app.listen(getPort());
     });
 };
+
+if (module.parent === null) setTimeout(exports.start, 0);
 
 let app = express();
 
@@ -95,7 +98,11 @@ app.post('/data/initiation', function (req, res) {
         .catch(console.error);
 });
 
-
+app.post('/data/submit-application', function (req, res) {
+    submit.submitApplication(req.body)
+        .then(value => { res.send(JSON.stringify(value)); })
+        .catch(console.error);
+});
 
 
 

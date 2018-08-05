@@ -42,28 +42,23 @@ export class PersonPicker extends React.Component {
         // pass up an on change
         if (name === 'personId' && this.props.hasOwnProperty('onChange')) {
 
-            let person = {
-                personId: value
+            this.sendChange(value, {
+                firstName: this.state.firstName,
+                middleName: this.state.middleName,
+                lastName: this.state.lastName
+            });
+
+        }
+        else {
+            let data = {
+                firstName: this.state.firstName,
+                middleName: this.state.middleName,
+                lastName: this.state.lastName
             };
 
-            // indicates that this is a new person, pass the data
-            if (person.personId === -1) {
-                person.personId = -1;
-                person.data = {
-                    firstName: this.state.firstName,
-                    middleName: this.state.middleName,
-                    lastName: this.state.lastName
-                }
-            }
+            data[name] = value;
 
-            this.props.onChange({
-                target:{
-                    type: 'PersonPicker',
-                    name: this.props.name,
-                    nameNew: this.props.nameNew,
-                    person: person
-                }
-            });
+            this.sendChange(this.state.personId, data);
         }
     }
 
