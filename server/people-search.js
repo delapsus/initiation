@@ -1,7 +1,8 @@
 let Person = require('./data2/person');
 let Initiation = require('./data2/initiation');
 let Location = require('./data2/location');
-let degreeLookup = require('./data2/degree').lookup;
+let Degree = require('./data2/degree');
+let degreeLookup = Degree.lookup;
 let officerLookup = require('./data2/officer').lookup;
 
 let sortMethods = {
@@ -39,8 +40,22 @@ function loadAllPeopleWithInits() {
 
         // give the initiations to the people
         initiations.forEach(init => {
+
+            // this shouldn't happen, but lets capture it
+            if (!init.data.hasOwnProperty('personId') || init.data.personId === null || !lookup.hasOwnProperty(init.data.personId)) {
+                console.log('initiation does not have valid personId: ' + init.initiationId);
+                return;
+            }
+
             lookup[init.data.personId].initiations.push(init);
-            init.degree = degreeLookup[init.data.degreeId]; // to allow sorting by rank
+
+            if (!degreeLookup.hasOwnProperty(init.data.degreeId)) {
+                init.degree = Degree.unknown;
+            }
+            else {
+                init.degree = degreeLookup[init.data.degreeId]; // to allow sorting by rank
+            }
+
         });
 
         // sort each person's initiations

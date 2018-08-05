@@ -154,10 +154,10 @@ export class PersonPicker extends React.Component {
 
         }
 
-        return <div>
+        return <div className="personPicker">
             <input type="hidden" value="something"/>
 
-            <table>
+            <table className="noPad">
                 <thead>
                 <tr>
                     <th></th>
@@ -168,7 +168,7 @@ export class PersonPicker extends React.Component {
                 </thead>
                 <tbody>
                 <tr>
-                    <td><input type="radio" style={{visibility: "hidden"}} /></td>
+                    <td className="indentBlock"></td>
                     <td><input type="text" name="firstName" value={this.state.firstName} onChange={this.handleChange.bind(this)} autoComplete="new-password" /></td>
                     <td><input type="text" name="middleName" value={this.state.middleName} onChange={this.handleChange.bind(this)} autoComplete="new-password" /></td>
                     <td><input type="text" name="lastName" value={this.state.lastName} onChange={this.handleChange.bind(this)} autoComplete="new-password" /></td>

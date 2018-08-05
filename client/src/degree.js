@@ -17,6 +17,8 @@ let values = [
     {name:'10', rank:15}
 ];
 
+let unknown = {name:'?', rank:-1, degreeId:0};
+
 let lookup = {};
 values.forEach(o => {
     o.degreeId = o.rank + 1;
@@ -25,10 +27,21 @@ values.forEach(o => {
 
 
 export function getDegreeById(degreeId) {
+    if (isNaN(degreeId)) return unknown;
+
     let key = degreeId.toString();
     if (!lookup.hasOwnProperty(key))  {
         console.log('no key: ' + key);
     }
 
     return lookup[key];
+}
+
+export function getDegreeByName(name) {
+    let degree = null;
+    values.forEach(d => {
+        if (d.name === name) degree = d;
+    });
+
+    return degree;
 }

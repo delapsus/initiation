@@ -7,6 +7,8 @@ let fields = [
 ];
 */
 
+
+
 exports.values = [
     {name:'Minerval', rank:1, degreeId:1},
     {name:'First', rank:2, degreeId:2},
@@ -30,3 +32,5 @@ exports.lookup = {};
 exports.values.forEach(d => {
     exports.lookup[d.degreeId] = d;
 });
+
+exports.unknown = {name:'unknown', rank:0, degreeId:0};
