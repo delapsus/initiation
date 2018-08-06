@@ -344,14 +344,18 @@ exports.getLocationWithInitiations = function(locationId) {
     });
 };
 
-let minDate = new Date('1/1/1900');
-let maxDate = new Date('1/1/3000');
 
 function sortByDateAsc(a, b) {
-    let aVal = a.data.actualDate || a.data.proposedDate || a.data.signedDate || a.data.localBodyDate || maxDate;
-    let bVal = b.data.actualDate || b.data.proposedDate || b.data.signedDate || b.data.localBodyDate || maxDate;
+    let aVal = a.data.actualDate || a.data.proposedDate || a.data.signedDate || a.data.localBodyDate || null;
+    let bVal = b.data.actualDate || b.data.proposedDate || b.data.signedDate || b.data.localBodyDate || null;
 
-
+    if (aVal === null) {
+        if (bVal === null) return 0;
+        return 1;
+    }
+    else if (bVal === null) {
+        return -1;
+    }
 
     if (aVal < bVal) return -1;
     else if (aVal > bVal) return 1;
@@ -359,8 +363,17 @@ function sortByDateAsc(a, b) {
 }
 
 function sortByDateDesc(a, b) {
-    let aVal = a.data.actualDate || a.data.proposedDate || a.data.signedDate || a.data.localBodyDate || minDate;
-    let bVal = b.data.actualDate || b.data.proposedDate || b.data.signedDate || b.data.localBodyDate || minDate;
+    let aVal = a.data.actualDate || a.data.proposedDate || a.data.signedDate || a.data.localBodyDate || null;
+    let bVal = b.data.actualDate || b.data.proposedDate || b.data.signedDate || b.data.localBodyDate || null;
+
+    if (aVal === null) {
+        if (bVal === null) return 0;
+        return 1;
+    }
+    else if (bVal === null) {
+        return -1;
+    }
+
     if (aVal > bVal) return -1;
     else if (aVal < bVal) return 1;
     else return 0;
