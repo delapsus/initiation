@@ -338,17 +338,33 @@ exports.getLocationWithInitiations = function(locationId) {
             });
         });
 
-        location.initiationsPerformed.sort((a, b) => {
-            let aVal = a.data.actualDate || a.data.proposedDate || a.data.signedDate || a.data.localBodyDate;
-            let bVal = b.data.actualDate || b.data.proposedDate || b.data.signedDate || b.data.localBodyDate;
-            if (aVal < bVal) return -1;
-            else if (aVal > bVal) return 1;
-            else return 0;
-        });
+        location.initiationsPerformed.sort(sortByDateAsc);
 
         return location;
     });
 };
+
+let minDate = new Date('1/1/1900');
+let maxDate = new Date('1/1/3000');
+
+function sortByDateAsc(a, b) {
+    let aVal = a.data.actualDate || a.data.proposedDate || a.data.signedDate || a.data.localBodyDate || maxDate;
+    let bVal = b.data.actualDate || b.data.proposedDate || b.data.signedDate || b.data.localBodyDate || maxDate;
+
+
+
+    if (aVal < bVal) return -1;
+    else if (aVal > bVal) return 1;
+    else return 0;
+}
+
+function sortByDateDesc(a, b) {
+    let aVal = a.data.actualDate || a.data.proposedDate || a.data.signedDate || a.data.localBodyDate || minDate;
+    let bVal = b.data.actualDate || b.data.proposedDate || b.data.signedDate || b.data.localBodyDate || minDate;
+    if (aVal > bVal) return -1;
+    else if (aVal < bVal) return 1;
+    else return 0;
+}
 
 exports.getInitiation = function(initiationId) {
     return Promise.all([getPeopleLookup(), getLocations()]).then(() => {
@@ -447,6 +463,14 @@ exports.getInitiations = (post) => {
 
                 return true;
             });
+        }
+
+        // SORT
+        if (post.sort === 'actualDateDesc') {
+            initiations.sort(sortByDateDesc);
+        }
+        else if (post.sort === 'actualDateAsc') {
+            initiations.sort(sortByDateAsc);
         }
 
         let value = {

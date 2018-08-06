@@ -9,7 +9,8 @@ function getInitiations(state) {
             pageSize:state.pageSize,
             index: state.pageIndex,
             degreeId: state.degreeId,
-            status: state.status
+            status: state.status,
+            sort: state.sort
         }, result => {
             result = JSON.parse(result);
             resolve(result);
@@ -27,7 +28,8 @@ export class InitiationList extends React.Component {
             pageCount: 0,
             recordCount: 0,
             degreeId: null,
-            status: ""
+            status: "",
+            sort: "actualDateDesc"
         };
         this.onClickNext = this.onClickNext.bind(this);
         this.onClickPrev = this.onClickPrev.bind(this);
@@ -53,6 +55,7 @@ export class InitiationList extends React.Component {
         if (prevState.pageIndex === this.state.pageIndex
             && prevState.degreeId === this.state.degreeId
             && prevState.status === this.state.status
+            && prevState.sort === this.state.sort
         ) return;
         this.getData();
     }
@@ -67,6 +70,9 @@ export class InitiationList extends React.Component {
     }
     handleStatusChange(event) {
         this.setState({status: event.target.value, pageIndex:0});
+    }
+    handleSortChange(event) {
+        this.setState({sort: event.target.value, pageIndex:0});
     }
 
     render() {
@@ -114,12 +120,18 @@ export class InitiationList extends React.Component {
                     <option value="16">10</option>
                 </select>
                 </div>
+
+                <div className="item">
+                    Sort: <select value={this.state.sort} onChange={this.handleSortChange.bind(this)}>
+                    <option value="actualDateDesc">Date (desc)</option>
+                    <option value="actualDateAsc">Date (asc)</option>
+                </select>
+                </div>
+
                 <div className="item">
                     <div><input type="radio" name="status" value="" checked={this.state.status === ""} onChange={this.handleStatusChange.bind(this)} /> Show All</div>
                     <div><input type="radio" name="status" value="waitingForCert" checked={this.state.status === "waitingForCert"} onChange={this.handleStatusChange.bind(this)} /> Waiting For Cert From Body</div>
                     <div><input type="radio" name="status" value="receivedCertFromBody" checked={this.state.status === "receivedCertFromBody"} onChange={this.handleStatusChange.bind(this)} /> Received cert, need to send for signature</div>
-
-                    
                     <div><input type="radio" name="status" value="sentForSig" checked={this.state.status === "sentForSig"} onChange={this.handleStatusChange.bind(this)} /> Sent For Signature</div>
                     <div><input type="radio" name="status" value="certSentToBody" checked={this.state.status === "certSentToBody"} onChange={this.handleStatusChange.bind(this)} /> Cert Sent to Body (complete)</div>
                 </div>
