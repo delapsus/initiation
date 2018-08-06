@@ -1,6 +1,20 @@
 
 to run on mac:
 
+1. install nodejs
+2. unencrypt folder with install.js, package.json, and initiation.db
+3. trm to folder, run "npm install"
+4. run "node install.js"
+5. cd tmp
+6. run app.js
+
+
+
+
+
+
+
+
 1. install node
 
 2. install git
