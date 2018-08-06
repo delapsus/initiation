@@ -86,6 +86,11 @@ function loadAllPeopleWithInits() {
 let peopleList = null;
 let peopleLookup = null;
 
+exports.clearCache = () => {
+    peopleList = null;
+    peopleLookup = null;
+};
+
 function getPeopleList() {
     if (peopleList === null) return loadAllPeopleWithInits().then(result => {
         peopleList = result.peopleList;

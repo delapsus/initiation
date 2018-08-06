@@ -4,7 +4,10 @@ import {formatDate, formatTime, putObjectInLines} from './common.js';
 import {PersonLink} from './PersonLink.jsx';
 import {PersonPicker} from './PersonPicker.jsx';
 import {postAjax} from "./http";
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
 
+import 'react-datepicker/dist/react-datepicker.css';
 
 function submitApplication(state) {
     return new Promise((resolve, reject) => {
@@ -62,7 +65,7 @@ export class ApplicationFirst extends React.Component {
             minervalDate: '',
             minervalLocation: '',
 
-            proposedDate: '',
+            proposedDate: new Date(),
             proposedLocation: '',
 
             contactName: '',
@@ -81,7 +84,7 @@ export class ApplicationFirst extends React.Component {
 
     handleChange (event) {
         const target = event.target;
-        let value = target.type === 'checkbox' ? target.checked : target.value;
+        let value = (target.hasOwnProperty('type') && target.type === 'checkbox') ? target.checked : target.value;
         if (target.type === 'radio') value = value === 'true';
         const name = target.name;
 
@@ -123,8 +126,9 @@ export class ApplicationFirst extends React.Component {
             this.setState({errors: errors});
         }
         else {
-            submitApplication(this.state).then(() => {
+            submitApplication(this.state).then(result => {
                 this.setState({message: "save complete. (this should redirect to the initiation page?)"});
+                window.location = "index.html?initiationid=" + result.initiationId;
             });
             this.setState({errors: errors, message: "saving..."});
         }
@@ -224,10 +228,16 @@ export class ApplicationFirst extends React.Component {
             <div className="formLine indent">
                 <div className="formItem">
                     <div className="formItemTitle">Proposed date of initiation</div>
-                    <div><input type="text" name="proposedDate" value={this.state.proposedDate} onChange={this.handleChange.bind(this)} /></div>
+                    <div>
+                        <DatePicker selected={moment(this.state.proposedDate)} onChange={m => {this.handleChange({target:{type:'DatePicker', value:m.toDate(), name:'proposedDate'}})}} />
+                    </div>
                 </div>
                 <div className="formItem">
                     <div className="formItemTitle">Lodge / Oasis / Camp to perform initiation</div>
+                    <div><input type="text" name="proposedLocation" value={this.state.proposedLocation} onChange={this.handleChange.bind(this)} /></div>
+                </div>
+                <div className="formItem">
+                    <div className="formItemTitle">Submitted through Lodge / Oasis</div>
                     <div><input type="text" name="proposedLocation" value={this.state.proposedLocation} onChange={this.handleChange.bind(this)} /></div>
                 </div>
             </div>
@@ -288,12 +298,13 @@ export class ApplicationFirst extends React.Component {
             </div>
 
 
-            <div dangerouslySetInnerHTML={html} />
+
         </div>;
     }
 }
 
 /*
+<div dangerouslySetInnerHTML={html} />
 
     convictedOfFelony: false,
 

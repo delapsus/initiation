@@ -1,5 +1,6 @@
 let Person = require('./data2/person');
 let Initiation = require('./data2/initiation');
+let dataCache = require('./people-search');
 
 exports.submitApplication = function(post) {
 
@@ -66,6 +67,7 @@ exports.submitApplication = function(post) {
             }});
 
         return Initiation.save(init).then(() => {
+            dataCache.clearCache();
             console.log('initiation saved ' + init.initiationId);
             return init;
         });

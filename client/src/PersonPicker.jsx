@@ -134,9 +134,16 @@ export class PersonPicker extends React.Component {
 
     render() {
 
-        let picks = "";
+        let picks = [];
+
+        picks.push(<tr key={-2}>
+            <td className="indentBlock"></td>
+            <td><input type="text" name="firstName" value={this.state.firstName} onChange={this.handleChange.bind(this)} autoComplete="new-password" /></td>
+            <td><input type="text" name="middleName" value={this.state.middleName} onChange={this.handleChange.bind(this)} autoComplete="new-password" /></td>
+            <td><input type="text" name="lastName" value={this.state.lastName} onChange={this.handleChange.bind(this)} autoComplete="new-password" /></td>
+        </tr>);
+
         if (this.state.suggestions !== null) {
-            picks = [];
 
             picks.push(<tr key={-1}>
                 <td><input type="radio" name={this.props.name + "Radio"} value={-1} onChange={this.handleChange.bind(this)} /></td>
@@ -166,15 +173,7 @@ export class PersonPicker extends React.Component {
                     <th className="formItemTitle">Last</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td className="indentBlock"></td>
-                    <td><input type="text" name="firstName" value={this.state.firstName} onChange={this.handleChange.bind(this)} autoComplete="new-password" /></td>
-                    <td><input type="text" name="middleName" value={this.state.middleName} onChange={this.handleChange.bind(this)} autoComplete="new-password" /></td>
-                    <td><input type="text" name="lastName" value={this.state.lastName} onChange={this.handleChange.bind(this)} autoComplete="new-password" /></td>
-                </tr>
-                {picks}
-                </tbody>
+                <tbody>{picks}</tbody>
             </table>
 
         </div>;
