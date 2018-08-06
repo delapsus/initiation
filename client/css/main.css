@@ -123,6 +123,7 @@ input, textarea, select {
 }
 .initiation .actualDate {
     width: 7em;
+    text-align: center;
 }
 .initiation .person {
     width: 13em;

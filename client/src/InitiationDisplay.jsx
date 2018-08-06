@@ -12,7 +12,12 @@ export class InitiationDisplay extends React.Component {
         // degree info
         let degree = getDegreeById(+o.data.degreeId);
 
-        let actualDate = formatDate(o.data.actualDate);
+        let date = o.data.actualDate || null;
+        let noActualDate = date === null;
+        date = date || o.data.proposedDate || o.data.signedDate || o.data.localBodyDate;
+
+        let actualDate = formatDate(date);
+        if (noActualDate && actualDate.length > 0) actualDate = "[" + actualDate + "]";
 
         let personLink = this.props.showPerson ? <div className="field person"><PersonLink person={o.person} /></div> : "";
 
