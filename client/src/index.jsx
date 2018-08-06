@@ -9,6 +9,7 @@ import {PeopleSearch} from './PeopleSearch.jsx';
 import {ApplicationFirst} from "./ApplicationFirst.jsx";
 import {Home} from "./Home.jsx";
 import {InitiationPage} from "./InitiationPage.jsx";
+import {InitiationList} from "./InitiationList.jsx";
 
 
 class Index extends React.Component {
@@ -46,6 +47,7 @@ class Index extends React.Component {
         else if (this.state.page === 'person') return <PersonPage personId={this.state.personId} />;
         else if (this.state.page === 'location') return <LocationPage locationId={this.state.locationId} />;
         else if (this.state.page === 'locations') return <LocationList />;
+        else if (this.state.page === 'initiations') return <InitiationList />;
         else if (this.state.page === 'initiation') return <InitiationPage initiationId={this.state.initiationId}/>;
         else if (this.state.page === 'application') return <ApplicationFirst />;
         else return <Home />;
@@ -55,7 +57,7 @@ class Index extends React.Component {
         let content = this.getPageContent();
 
         return <div>
-            <div id="menuHeader">O.T.O. USGL Initiation Database | <a href="index.html?page=people">People</a> | <a href="index.html?page=locations">Locations</a> | <a href="index.html?page=application">New Application</a></div>
+            <div id="menuHeader">O.T.O. USGL Initiation Database | <a href="index.html?page=people">People</a> | <a href="index.html?page=locations">Locations</a> | <a href="index.html?page=initiations">Initiations</a> | <a href="index.html?page=application">New Application</a></div>
             {content}
         </div>
     }

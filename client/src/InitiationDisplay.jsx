@@ -24,6 +24,11 @@ export class InitiationDisplay extends React.Component {
             if (this.props.dontShowIf.personId === o.data.sponsor2_personId) sponsor2 = "";
         }
 
+        if (this.props.dontShowSponsors) {
+            sponsor1 = "";
+            sponsor2 = "";
+        }
+
         // location
         let location = this.props.hasOwnProperty('showLocation') && !this.props.showLocation ? "" : <div className="field locationName"><LocationLink location={o.location} altName={o.data.location}></LocationLink></div>;
 
@@ -50,6 +55,11 @@ export class InitiationDisplayHeader extends React.Component {
 
         if (this.props.showOnlyOneSponsor) {
             sponsor1 = <div className="field person">Other Sponsor</div>;
+            sponsor2 = "";
+        }
+
+        if (this.props.dontShowSponsors) {
+            sponsor1 = "";
             sponsor2 = "";
         }
 

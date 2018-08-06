@@ -98,6 +98,12 @@ app.post('/data/initiation', function (req, res) {
         .catch(console.error);
 });
 
+app.post('/data/initiations', function (req, res) {
+    peopleSearch.getInitiations(req.body)
+        .then(value => { res.send(JSON.stringify(value)); })
+        .catch(console.error);
+});
+
 app.post('/data/submit-application', function (req, res) {
     submit.submitApplication(req.body)
         .then(value => { res.send(JSON.stringify(value)); })

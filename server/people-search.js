@@ -31,6 +31,8 @@ function loadAllPeopleWithInits() {
         let people = results[0];
         let initiations = results[1];
 
+        let initiationList = [];
+
         // add the people to the lookup by id
         let lookup = {};
         people.forEach(p => {
@@ -47,8 +49,11 @@ function loadAllPeopleWithInits() {
                 return;
             }
 
-            lookup[init.data.personId].initiations.push(init);
+            // add the person's init list
+            let person = lookup[init.data.personId];
+            person.initiations.push(init);
 
+            // add the degree
             if (!degreeLookup.hasOwnProperty(init.data.degreeId)) {
                 init.degree = Degree.unknown;
             }
@@ -56,6 +61,11 @@ function loadAllPeopleWithInits() {
                 init.degree = degreeLookup[init.data.degreeId]; // to allow sorting by rank
             }
 
+            // push onto another list
+            let o = copy(init);
+            o.degree = init.degree;
+            o.person = copy(person);
+            initiationList.push(o);
         });
 
         // sort each person's initiations
@@ -79,34 +89,35 @@ function loadAllPeopleWithInits() {
         // sort the people
         people.sort(sortMethods.lastName);
 
-        return { peopleList:people, peopleLookup: lookup };
+        return { peopleList:people, peopleLookup: lookup, initiationList: initiationList };
     });
 }
 
 let peopleList = null;
 let peopleLookup = null;
+let initiationList = null;
 
 exports.clearCache = () => {
     peopleList = null;
     peopleLookup = null;
+    initiationList = null;
 };
 
-function getPeopleList() {
+function loadCache() {
     if (peopleList === null) return loadAllPeopleWithInits().then(result => {
         peopleList = result.peopleList;
         peopleLookup = result.peopleLookup;
-        return peopleList;
+        initiationList = result.initiationList;
     });
-    return Promise.resolve(peopleList);
+    return Promise.resolve();
+}
+
+function getPeopleList() {
+    return loadCache().then(() => { return peopleList; });
 }
 
 function getPeopleLookup() {
-    if (peopleLookup === null) return loadAllPeopleWithInits().then(result => {
-        peopleList = result.peopleList;
-        peopleLookup = result.peopleLookup;
-        return peopleLookup;
-    });
-    return Promise.resolve(peopleLookup);
+    return loadCache().then(() => { return peopleLookup; });
 }
 
 // people search page, assumes one input
@@ -386,6 +397,79 @@ function getInitiation(initiationId) {
     }
     return null;
 }
+
+exports.getInitiations = (post) => {
+    return loadCache().then(() => {
+
+        // start with the full list
+        let initiations = initiationList;
+
+        // filter by degree
+        if (post.degreeId && post.degreeId !== 0) {
+            initiations = initiations.filter(init => {
+
+                if (post.degreeId === -1) {
+                    return init.data.degreeId === null;
+                }
+
+                return init.data.degreeId === post.degreeId;
+            });
+        }
+
+        if (post.status && post.status.length > 0) {
+            initiations = initiations.filter(init => {
+
+                let key1 = "certReceivedDate";
+                let key2 = "certSentOutForSignatureDate";
+                let key3 = "certSentOutToBodyDate";
+
+                if (post.status === 'waitingForCert') {
+                    if (init.data.hasOwnProperty(key3) && init.data[key3] !== null) return false;
+                    if (init.data.hasOwnProperty(key2) && init.data[key2] !== null) return false;
+                    if (init.data.hasOwnProperty(key1) && init.data[key1] !== null) return false;
+                }
+
+                else if (post.status === 'receivedCertFromBody') {
+                    if (init.data.hasOwnProperty(key3) && init.data[key3] !== null) return false; // cant yet have sent to body
+                    if (init.data.hasOwnProperty(key2) && init.data[key2] !== null) return false; // cant yet have sent for sig
+
+                    if (!init.data.hasOwnProperty(key1) || init.data[key1] === null) return false; // needs to have received cert
+                }
+
+                else if (post.status === 'sentForSig') {
+                    if (init.data.hasOwnProperty(key3) && init.data[key3] !== null) return false; // cant yet have sent to body
+
+                    if (!init.data.hasOwnProperty(key2) || init.data[key2] === null) return false; // needs to have this value
+                }
+                else if (post.status === 'certSentToBody') {
+                    if (!init.data.hasOwnProperty(key3) || init.data[key3] === null) return false; // needs to have this value
+                }
+
+                return true;
+            });
+        }
+
+        let value = {
+            count: initiations.length,
+            initiations: null
+        };
+
+        let pageSize = post.pageSize || 0;
+        let index = post.index || 0;
+        let start = pageSize * index;
+
+        // outside the bounds
+        if (initiations.length <= start) value.initiations = [];
+
+        // page is completely within bounds
+        else if (initiations.length >= start + pageSize) value.initiations = initiations.slice(start, start + pageSize);
+
+        // just the end records
+        else value.initiations = initiations.slice(start, initiations.length);
+
+        return value;
+    });
+};
 
 function copy(a) {
     let val = JSON.stringify(a);
