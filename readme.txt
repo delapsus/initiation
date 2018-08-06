@@ -2,11 +2,11 @@
 to run on mac:
 
 1. install nodejs
-2. unencrypt folder with install.js, package.json, and initiation.db
-3. trm to folder, run "npm install"
+2. unencrypt folder with install.js, app.js, package.json, and initiation.db
+3. applications -> utilities -> terminal
+4. run "npm install"
 4. run "node install.js"
-5. cd tmp
-6. run app.js
+6. run "node app.js"
 
 
 
