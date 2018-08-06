@@ -308,13 +308,7 @@ exports.getPersonWithFullData = function(personId) {
             });
         });
 
-        person.sponsoredInitiations.sort((a, b) => {
-            let aVal = a.data.actualDate || a.data.proposedDate || a.data.signedDate || a.data.localBodyDate;
-            let bVal = b.data.actualDate || b.data.proposedDate || b.data.signedDate || b.data.localBodyDate;
-            if (aVal < bVal) return -1;
-            else if (aVal > bVal) return 1;
-            else return 0;
-        });
+        person.sponsoredInitiations.sort(sortByDateAsc);
 
         return person;
     });
