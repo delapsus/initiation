@@ -1,5 +1,6 @@
 let sqlite3 = require('sqlite3').verbose();
 let path = require('path');
+let fs = require('fs');
 
 exports.db = null;
 
@@ -9,7 +10,18 @@ exports.storageType = {
     memory: ':memory:'
 };
 
-exports.init = filename => {
+exports.init = (filename, createIfMissing) => {
+
+    console.log('opening database: ' + filename);
+
+    if (!fs.existsSync(filename)) {
+        if (createIfMissing) {
+            console.warn('.db does not exist, creating...');
+        }
+        else {
+            return Promise.reject(new Error('.db not found'));
+        }
+    }
 
     return new Promise((resolve, reject) => {
         // just init in memory for now
