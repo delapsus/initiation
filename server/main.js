@@ -13,9 +13,12 @@ var bodyParser = require('body-parser');
 
 exports.start = () => {
     // open the database
-    database.init(database.storageType.file).then(function() {
+    return database.init(database.storageType.file).then(function() {
         // then start accepting connections
         app.listen(getPort());
+    }).catch(e => {
+        console.error(e);
+        process.exit();
     });
 };
 
