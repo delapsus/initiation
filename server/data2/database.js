@@ -4,9 +4,11 @@ let fs = require('fs');
 
 exports.db = null;
 
+//exports.dbPath = path.resolve(__dirname, '../../../initiation.db');
+exports.dbPath = path.resolve('./initiation.db'); // just use the database in the root dir
 
 exports.storageType = {
-    file: path.resolve(__dirname, '../../../initiation.db'),
+    file: exports.dbPath,
     memory: ':memory:'
 };
 

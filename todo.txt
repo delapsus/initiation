@@ -1,0 +1,29 @@
+1. Make application input pages for all forms
+
+2. Allow person, initiation, and location data to be edited.
+
+3. Allow the various dates around initiations to be easily inputted (updating cert dates etc.)
+
+4. Allow merging of entities (person, location)
+
+-- Be able to run a report that gives me all apps submitted in the last year that do not have matching ISRs.
+This will enable me to be able to catch expired apps, but also send the LB a report showing which ISRs they should be submitting and which apps they should expire.
+
+-- ISRs submitted but no certs submitted. (exception would be minerval). I'd like to run a report that shows which ISRs were submitted without certs.
+
+-- Note that both of those likely have a TON of legacy/old items.
+Its not going to be useful for me to know that horizon has 400 "expired" applications etc.
+So maybe there's a way to ignore data that is over X old?
+
+Other items that I think are already there:
+-- Get a list of all officers for X person.
+-- Get a list of all times X officered
+-- Get a list of all times X initiated
+
+
+
+done:
+-- Get a list of people someone sponsored.
+-- Get a list of All X degree members
+-- Get a list of all initaitions at X Body
+-- Get a list of all initiations for X person
