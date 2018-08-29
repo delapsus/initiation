@@ -321,6 +321,25 @@ exports.getPersonWithFullData = function(personId) {
 
         person.sponsoredInitiations.sort(sortByDateAsc);
 
+        // attach the initiations this person was an officer for
+        person.officeredInitiations = [];
+        peopleList.forEach(p => {
+            p.initiations.forEach(init => {
+
+                //if (init.hasOwnProperty('officers') && init.officers !== null) {
+                init.data.officers.forEach(officer => {
+                    if (officer.personId === personId) {
+                        let i = copy(init);
+                        i.person = copy(p);
+                        person.officeredInitiations.push(i);
+                    }
+                });
+
+            });
+        });
+
+        person.officeredInitiations.sort(sortByDateAsc);
+
         return person;
     });
 

@@ -45,6 +45,14 @@ export class PersonPage extends React.Component {
             });
         }
 
+        // officeredInitiations
+        let officeredInits = [];
+        if (this.state.person.officeredInitiations) {
+            this.state.person.officeredInitiations.forEach((o, i) => {
+                officeredInits.push(<InitiationDisplay initiation={o} key={i} showPerson={true} dontShowSponsors={true} showOfficerPersonId={this.state.person.personId} />);
+            });
+        }
+
         return <div className="personPage">
             <PersonInformation person={this.state.person} />
 
@@ -52,9 +60,13 @@ export class PersonPage extends React.Component {
             <InitiationDisplayHeader showPerson={false} />
             {inits}
 
-            <h3>Candidates Sponsored</h3>
+            <h3>Candidates Sponsored: {sponsoredInits.length.toString()}</h3>
             <InitiationDisplayHeader showPerson={true} showOnlyOneSponsor={true}/>
             {sponsoredInits}
+
+            <h3>Initiations Officered: {officeredInits.length.toString()}</h3>
+            <InitiationDisplayHeader showPerson={true} dontShowSponsors={true} showOfficerHeader={true}/>
+            {officeredInits}
         </div>;
     }
 

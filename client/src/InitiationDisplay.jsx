@@ -1,5 +1,6 @@
 import React from 'react';
 import {getDegreeById} from './degree';
+import {getOfficerById} from "./officer";
 import {formatDate, formatTime, putObjectInLines} from './common.js';
 import {PersonLink} from './PersonLink.jsx';
 import {LocationLink} from './LocationLink.jsx';
@@ -34,6 +35,14 @@ export class InitiationDisplay extends React.Component {
             sponsor2 = "";
         }
 
+        let officerTitle = "";
+        if (this.props.showOfficerPersonId) {
+            o.data.officers.forEach(officer => {
+                if (officer.personId === this.props.showOfficerPersonId)
+                    officerTitle = <div className="field person">{getOfficerById(officer.officerId).name}</div>;
+            });
+        }
+
         // location
         let location = this.props.hasOwnProperty('showLocation') && !this.props.showLocation ? "" : <div className="field locationName"><LocationLink location={o.location} altName={o.data.location}></LocationLink></div>;
 
@@ -47,6 +56,7 @@ export class InitiationDisplay extends React.Component {
             <div className="field actualDate">{actualDate}</div>
             {sponsor1}
             {sponsor2}
+            {officerTitle}
         </div>;
     }
 }
@@ -68,6 +78,9 @@ export class InitiationDisplayHeader extends React.Component {
             sponsor2 = "";
         }
 
+        let officerHead = "";
+        if (this.props.showOfficerHeader) officerHead = <div className="field person">Officer</div>;
+
         return <div className="initiation">
             <div className="field view"></div>
             {personLink}
@@ -76,6 +89,7 @@ export class InitiationDisplayHeader extends React.Component {
             <div className="field actualDate">Actual Date</div>
             {sponsor1}
             {sponsor2}
+            {officerHead}
         </div>;
     }
 }
