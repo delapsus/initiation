@@ -93,6 +93,8 @@ function loadAllPeopleWithInits() {
         people.forEach(p => {
             lookup[p.personId] = p;
             p.initiations = [];
+            p.sponsoredInitiations = [];
+            p.officeredInitiations = [];
         });
 
         // give the initiations to the people
@@ -105,7 +107,7 @@ function loadAllPeopleWithInits() {
             }
 
             // add the person's init list
-            let person = lookup[init.data.personId];
+            let person = lookup[init.data.personId.toString()];
             person.initiations.push(init);
 
             // add the degree
@@ -121,6 +123,25 @@ function loadAllPeopleWithInits() {
             o.degree = init.degree;
             o.person = copy(person);
             initiationList.push(o);
+
+            // give this init to the sponsors
+            let sponsor1 = lookup[o.data.sponsor1_personId];
+            if (sponsor1) {
+                sponsor1.sponsoredInitiations.push(o);
+            }
+            let sponsor2 = lookup[o.data.sponsor2_personId];
+            if (sponsor2) {
+                sponsor2.sponsoredInitiations.push(o);
+            }
+
+            // give the init to the officers
+            o.data.officers.forEach(officer => {
+                if (officer.personId) {
+                    let p = lookup[officer.personId];
+                    p.officeredInitiations.push(o);
+                }
+            });
+
         });
 
         // sort each person's initiations
@@ -130,6 +151,8 @@ function loadAllPeopleWithInits() {
                 else if (a.degree.rank > b.degree.rank) return 1;
                 else return 0;
             });
+            person.sponsoredInitiations.sort(sortMethods.byDateAsc);
+            person.officeredInitiations.sort(sortMethods.byDateAsc);
         });
 
         // now calculate a searchName
@@ -144,6 +167,10 @@ function loadAllPeopleWithInits() {
 
         // sort the people
         people.sort(sortMethods.lastName);
+
+
+
+
 
         return { peopleList:people, peopleLookup: lookup, initiationList: initiationList };
     });
@@ -311,47 +338,23 @@ exports.getPersonWithFullData = function(personId) {
 
         // attach the people this person has sponsored
         person.sponsoredInitiations = [];
-        cache.peopleList.forEach(p => {
-            p.initiations.forEach(initiation => {
-                if (initiation.data.sponsor1_personId === personId) {
-                    let i = copy(initiation);
-                    i.person = copy(p);
-                    addSponsors(i);
-                    addLocation(i);
-                    person.sponsoredInitiations.push(i);
-                }
-                if (initiation.data.sponsor2_personId === personId) {
-                    let i = copy(initiation);
-                    i.person = copy(p);
-                    addSponsors(i);
-                    addLocation(i);
-                    person.sponsoredInitiations.push(i);
-                }
-            });
+        original.sponsoredInitiations.forEach(initiation => {
+            let i = copy(initiation);
+            i.person = copy(initiation.person);
+            addSponsors(i);
+            addLocation(i);
+            person.sponsoredInitiations.push(i);
         });
-
-        person.sponsoredInitiations.sort(sortMethods.byDateAsc);
 
         // attach the initiations this person was an officer for
         person.officeredInitiations = [];
-        cache.peopleList.forEach(p => {
-            p.initiations.forEach(init => {
-
-                //if (init.hasOwnProperty('officers') && init.officers !== null) {
-                init.data.officers.forEach(officer => {
-                    if (officer.personId === personId) {
-                        let i = copy(init);
-                        i.person = copy(p);
-                        addSponsors(i);
-                        addLocation(i);
-                        person.officeredInitiations.push(i);
-                    }
-                });
-
-            });
+        original.officeredInitiations.forEach(initiation => {
+            let i = copy(initiation);
+            i.person = copy(initiation.person);
+            //addSponsors(i);
+            addLocation(i);
+            person.officeredInitiations.push(i);
         });
-
-        person.officeredInitiations.sort(sortMethods.byDateAsc);
 
         return person;
     });
