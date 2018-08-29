@@ -116,7 +116,7 @@ function loadAllPeopleWithInits() {
                 init.degree = degreeLookup[init.data.degreeId]; // to allow sorting by rank
             }
 
-            // push onto another list
+            // invert initiation/person and store as initiation
             let o = copy(init);
             o.degree = init.degree;
             o.person = copy(person);
@@ -133,6 +133,7 @@ function loadAllPeopleWithInits() {
         });
 
         // now calculate a searchName
+        let reNonChar = /[^a-zA-Z ]/g;
         people.forEach(person => {
             let a = [];
             if (person.data.firstName !== null) a.push(person.data.firstName.replace(reNonChar, ' '));
@@ -276,48 +277,15 @@ exports.getPeople = post => {
 
 };
 
-
-
-let reNonChar = /[^a-zA-Z ]/g;
-
-exports.suggestPeople = post => {
-
-    let textSearch = post.textSearch.toLowerCase();
-
-    textSearch = textSearch.replace(reNonChar, ' ');
-
-    let tokens = textSearch.split(' ').map(text => {
-        return new RegExp('(?:^|\\W)' + text, 'i');
-    });
-
-    return loadCache().then(cache => {
-
-        let people = cache.peopleList;
-
-        let matches = people.filter(person => {
-
-            let matchAll = true;
-
-            for (let i = 0; i < tokens.length && matchAll; i++) {
-                let found = person.searchName.match(tokens[i]);
-                if (!found) matchAll = false;
-            }
-
-            return matchAll;
-        });
-
-        return matches.slice(0, 10);
-    });
-};
-
-
-
 exports.getPerson = function(personId) {
 
     return loadCache().then(cache => {
         let person = copy(cache.peopleLookup[personId]);
+
+        // make sure to clear the extra data
         person.initiations = null;
         person.sponsoredInitiations = null;
+
         return person;
     });
 
@@ -326,10 +294,14 @@ exports.getPerson = function(personId) {
 exports.getPersonWithFullData = function(personId) {
 
     return loadCache().then(cache => {
-        let person = copy(cache.peopleLookup[personId]);
+        let original = cache.peopleLookup[personId];
+        let person = copy(original);
 
         // attach initiations and officers
-        person.initiations.forEach(init => {
+        person.initiations = [];
+        original.initiations.forEach(initiation => {
+            let init = copy(initiation);
+            person.initiations.push(init);
             addSponsors(init);
             addLocation(init);
         });
@@ -337,19 +309,19 @@ exports.getPersonWithFullData = function(personId) {
         // attach the people this person has sponsored
         person.sponsoredInitiations = [];
         cache.peopleList.forEach(p => {
-            p.initiations.forEach(init => {
-                if (init.data.sponsor1_personId === personId) {
-                    let i = copy(init);
+            p.initiations.forEach(initiation => {
+                if (initiation.data.sponsor1_personId === personId) {
+                    let i = copy(initiation);
                     i.person = copy(p);
-                    addSponsors(init);
-                    addLocation(init);
+                    addSponsors(i);
+                    addLocation(i);
                     person.sponsoredInitiations.push(i);
                 }
-                if (init.data.sponsor2_personId === personId) {
-                    let i = copy(init);
+                if (initiation.data.sponsor2_personId === personId) {
+                    let i = copy(initiation);
                     i.person = copy(p);
-                    addSponsors(init);
-                    addLocation(init);
+                    addSponsors(i);
+                    addLocation(i);
                     person.sponsoredInitiations.push(i);
                 }
             });
@@ -367,6 +339,8 @@ exports.getPersonWithFullData = function(personId) {
                     if (officer.personId === personId) {
                         let i = copy(init);
                         i.person = copy(p);
+                        addSponsors(i);
+                        addLocation(i);
                         person.officeredInitiations.push(i);
                     }
                 });
@@ -407,8 +381,10 @@ exports.getLocationWithInitiations = function(locationId) {
 exports.getInitiation = function(initiationId) {
     return loadCache().then(cache => {
         // first we need to find it, should eventually create this as a lookup
-        let initiation = copy(getInitiation(initiationId));
+        let original = getInitiation(initiationId);
+        let initiation = copy(original);
 
+        initiation.degree = original.degree;
         addPerson(initiation);
         addSponsors(initiation);
         addLocation(initiation);
@@ -533,7 +509,15 @@ exports.getInitiations = (post) => {
     });
 };
 
+let reId = /id/i;
+
 function copy(a) {
-    let val = JSON.stringify(a);
-    return JSON.parse(val);
+
+    let copy = {};
+    for (let key in a) {
+        if (key === 'data') copy.data = JSON.parse(JSON.stringify(a.data));
+        else if (key.match(reId)) copy[key] = a[key];
+    }
+
+    return copy;
 }
