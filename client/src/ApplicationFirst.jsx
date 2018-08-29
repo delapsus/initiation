@@ -3,20 +3,13 @@ import {getDegreeById, getDegreeByName} from './degree';
 import {formatDate, formatTime, putObjectInLines} from './common.js';
 import {PersonLink} from './PersonLink.jsx';
 import {PersonPicker} from './PersonPicker.jsx';
-import {postAjax} from "./http";
+import {submitApplication} from "./webservice";
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
-function submitApplication(state) {
-    return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/data/submit-application", {data:state}, result => {
-            result = JSON.parse(result);
-            resolve(result);
-        });
-    });
-}
+
 
 // https://blog.logrocket.com/an-imperative-guide-to-forms-in-react-927d9670170a
 

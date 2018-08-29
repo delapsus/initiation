@@ -1,6 +1,8 @@
 1. Make application input pages for all forms
 
 2. Allow person, initiation, and location data to be edited.
+ - person done
+ - maybe better reloading of cache?
 
 3. Allow the various dates around initiations to be easily inputted (updating cert dates etc.)
 

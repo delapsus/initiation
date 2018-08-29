@@ -37,7 +37,7 @@ app.use(function(req, res, next) {
     //intercepts OPTIONS method
     if ('OPTIONS' === req.method) {
         //respond with 200
-        res.send(200);
+        res.sendStatus(200);
     }
     // all post will return JSON
     else if  ('POST' === req.method) {
