@@ -1,6 +1,6 @@
 let Person = require('./data2/person');
 let Initiation = require('./data2/initiation');
-let dataCache = require('./people-search');
+let dataCache = require('./data-cache');
 
 exports.submitApplication = function(post) {
 

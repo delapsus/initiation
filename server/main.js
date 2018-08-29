@@ -5,7 +5,7 @@ let database = require('./data2/database');
 let Person = require('./data2/person');
 let Initiation = require('./data2/initiation');
 let Location = require('./data2/location');
-let peopleSearch = require('./people-search');
+let dataCache = require('./data-cache');
 let submit = require('./submit');
 
 let express = require('express');
@@ -62,21 +62,21 @@ function getPort() {
 
 // people search
 app.post('/data/people', function (req, res) {
-    peopleSearch.getPeople(req.body)
+    dataCache.getPeople(req.body)
         .then(value => { res.send(JSON.stringify(value)); })
         .catch(console.error);
 });
 
 app.post('/data/person', function (req, res) {
 
-    peopleSearch.getPerson(req.body.personId)
+    dataCache.getPerson(req.body.personId)
         .then(value => { res.send(JSON.stringify(value)); })
         .catch(console.error);
 });
 
 app.post('/data/person-with-data', function (req, res) {
 
-    peopleSearch.getPersonWithFullData(req.body.personId)
+    dataCache.getPersonWithFullData(req.body.personId)
         .then(value => { res.send(JSON.stringify(value)); })
         .catch(console.error);
 });
@@ -97,19 +97,19 @@ app.post('/data/locations', function (req, res) {
 });
 
 app.post('/data/location', function (req, res) {
-    peopleSearch.getLocationWithInitiations(req.body.locationId)
+    dataCache.getLocationWithInitiations(req.body.locationId)
         .then(value => { res.send(JSON.stringify(value)); })
         .catch(console.error);
 });
 
 app.post('/data/initiation', function (req, res) {
-    peopleSearch.getInitiation(req.body.initiationId)
+    dataCache.getInitiation(req.body.initiationId)
         .then(value => { res.send(JSON.stringify(value)); })
         .catch(console.error);
 });
 
 app.post('/data/initiations', function (req, res) {
-    peopleSearch.getInitiations(req.body)
+    dataCache.getInitiations(req.body)
         .then(value => { res.send(JSON.stringify(value)); })
         .catch(console.error);
 });
