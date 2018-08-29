@@ -276,6 +276,17 @@ function addOfficers(init) {
     });
 }
 
+exports.getPerson = function(personId) {
+
+    return Promise.all([getPeopleLookup(), getLocations()]).then(() => {
+        let person = copy(peopleLookup[personId]);
+        person.initiations = null;
+        person.sponsoredInitiations = null;
+        return person;
+    });
+
+};
+
 exports.getPersonWithFullData = function(personId) {
 
     return Promise.all([getPeopleLookup(), getLocations()]).then(() => {

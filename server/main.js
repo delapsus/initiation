@@ -69,6 +69,13 @@ app.post('/data/people', function (req, res) {
 
 app.post('/data/person', function (req, res) {
 
+    peopleSearch.getPerson(req.body.personId)
+        .then(value => { res.send(JSON.stringify(value)); })
+        .catch(console.error);
+});
+
+app.post('/data/person-with-data', function (req, res) {
+
     peopleSearch.getPersonWithFullData(req.body.personId)
         .then(value => { res.send(JSON.stringify(value)); })
         .catch(console.error);
@@ -113,7 +120,11 @@ app.post('/data/submit-application', function (req, res) {
         .catch(console.error);
 });
 
-
+app.post('/data/submit-edit-person', function (req, res) {
+    submit.submitEditPerson(req.body)
+        .then(value => { res.send(JSON.stringify(value)); })
+        .catch(console.error);
+});
 
 
 

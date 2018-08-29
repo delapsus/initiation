@@ -75,3 +75,9 @@ exports.submitApplication = function(post) {
 
 
 };
+
+exports.submitEditPerson = function(post) {
+    return Person.save(post.person)
+        .then(dataCache.clearCache)
+        .then(() => {return {};});
+};

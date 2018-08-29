@@ -1,17 +1,8 @@
 import React from 'react';
-import {postAjax} from './http';
-import {formatDate, formatTime, putObjectInLines} from './common.js';
+import {getPersonWithData} from "./webservice";
+import {formatDate, formatTime} from './common.js';
 import {InitiationDisplay, InitiationDisplayHeader} from './InitiationDisplay.jsx';
 
-
-function getPerson(personId) {
-    return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/data/person", {personId: personId}, result => {
-            result = JSON.parse(result);
-            resolve(result);
-        });
-    });
-}
 
 export class PersonPage extends React.Component {
     constructor(props) {
@@ -23,7 +14,7 @@ export class PersonPage extends React.Component {
     }
 
     getPersonData() {
-        getPerson(this.props.personId).then(result => {
+        getPersonWithData(this.props.personId).then(result => {
             this.setState({
                 person: result
             });
@@ -54,10 +45,6 @@ export class PersonPage extends React.Component {
             });
         }
 
-        let rawHtml = {__html: putObjectInLines(this.state.person)};
-        let raw = <input type="button" value="show raw data" onClick={() => {this.setState({showRawData: true})}}/>;
-        if (this.state.showRawData) raw = <div dangerouslySetInnerHTML={rawHtml} />;
-
         return <div className="personPage">
             <PersonInformation person={this.state.person} />
 
@@ -68,11 +55,6 @@ export class PersonPage extends React.Component {
             <h3>Candidates Sponsored</h3>
             <InitiationDisplayHeader showPerson={true} showOnlyOneSponsor={true}/>
             {sponsoredInits}
-
-            <br/><br/><br/>
-
-            {raw}
-
         </div>;
     }
 
@@ -88,27 +70,6 @@ function areAllEmpty(o, keys) {
 export class PersonInformation extends React.Component {
     render() {
         let data = this.props.person.data;
-
-        /*
-
-    {name:'addressComments'},
-
-    {name:'fax'},
-
-    {name:'bodyOfResponsibility'},
-
-    {name:'difficultiesComments'},
-    {name:'difficulty', type:'boolean'},
-    {name:'isMaster', type:'boolean'},
-    {name:'masterOfBody'},
-    {name:'reportComment'},
-    {name:'isFelon', type:'boolean'},
-    {name:'isDuesInactive', type:'boolean'},
-    {name:'isInternationalBadReport', type:'boolean'},
-    {name:'isResigned', type:'boolean'},
-
-    {name:'importSource'},
-        */
 
         let info = <table><tbody>
         <tr><td className="label">First Name</td><td>{data.firstName}</td></tr>
@@ -184,7 +145,13 @@ export class PersonInformation extends React.Component {
         <tr><td className="label">Birth Country 1°</td><td>{data.birthCountryFirst}</td></tr>
         </tbody></table>;
 
+        let comments = <div><span className="label">Comments:</span><br/>{data.comments}</div>;
+        if (data.comments === null) comments = '';
+
+        let editLink = "index.html?page=edit-person&personid=" + this.props.person.personId;
+
         return <div>
+            <div><a href={editLink}>Edit Person Data</a></div>
 
             <table><tbody>
             <tr>
@@ -206,8 +173,28 @@ export class PersonInformation extends React.Component {
             </tr>
             </tbody></table>
 
-            <div>Comments:<br/><textarea value={data.comments} cols="80" rows="4" /></div>
-
+            {comments}
         </div>;
     }
 }
+
+/*
+
+{name:'addressComments'},
+
+{name:'fax'},
+
+{name:'bodyOfResponsibility'},
+
+{name:'difficultiesComments'},
+{name:'difficulty', type:'boolean'},
+{name:'isMaster', type:'boolean'},
+{name:'masterOfBody'},
+{name:'reportComment'},
+{name:'isFelon', type:'boolean'},
+{name:'isDuesInactive', type:'boolean'},
+{name:'isInternationalBadReport', type:'boolean'},
+{name:'isResigned', type:'boolean'},
+
+{name:'importSource'},
+*/
