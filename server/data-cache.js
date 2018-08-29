@@ -20,7 +20,28 @@ let sortMethods = {
     }
 };
 
+let cache = null;
 
+exports.clearCache = () => {
+    cache = null;
+};
+
+function loadCache() {
+    if (cache === null) return Promise.all([loadAllPeopleWithInits(), loadLocations()])
+        .then(result => {
+
+            cache = {
+                peopleList: result[0].peopleList,
+                peopleLookup: result[0].peopleLookup,
+                initiationList: result[0].initiationList,
+                locations: result[1].locations,
+                locationsLookup: result[1].locationsLookup
+            };
+
+            return cache;
+        });
+    return Promise.resolve(cache);
+}
 
 function loadAllPeopleWithInits() {
     return Promise.all([
@@ -93,37 +114,29 @@ function loadAllPeopleWithInits() {
     });
 }
 
-let peopleList = null;
-let peopleLookup = null;
-let initiationList = null;
+function loadLocations() {
 
-exports.clearCache = () => {
-    peopleList = null;
-    peopleLookup = null;
-    initiationList = null;
-};
+    return Location.selectAll().then(result => {
+        let locations = result;
 
-function loadCache() {
-    if (peopleList === null) return loadAllPeopleWithInits().then(result => {
-        peopleList = result.peopleList;
-        peopleLookup = result.peopleLookup;
-        initiationList = result.initiationList;
+        let locationsLookup = {};
+        locations.forEach(loc => {
+            locationsLookup[loc.locationId.toString()] = loc;
+        });
+
+        return {locations: locations, locationsLookup: locationsLookup};
     });
-    return Promise.resolve();
 }
 
-function getPeopleList() {
-    return loadCache().then(() => { return peopleList; });
-}
 
-function getPeopleLookup() {
-    return loadCache().then(() => { return peopleLookup; });
-}
+
+
 
 // people search page, assumes one input
 exports.getPeople = post => {
 
-    return getPeopleList().then(people => {
+    return loadCache().then(cache => {
+        let people = cache.peopleList;
 
         if (post.degreeId && post.degreeId !== 0) {
             people = people.filter(person => {
@@ -198,23 +211,7 @@ exports.getPeople = post => {
 };
 
 
-let locations = null;
-let locationsLookup = null;
 
-function getLocations() {
-    if (locations !== null) return Promise.resolve(locations);
-
-    return Location.selectAll().then(result => {
-        locations = result;
-
-        locationsLookup = {};
-        locations.forEach(loc => {
-            locationsLookup[loc.locationId.toString()] = loc;
-        });
-
-        return locations;
-    });
-}
 
 
 let reNonChar = /[^a-zA-Z ]/g;
@@ -229,7 +226,9 @@ exports.suggestPeople = post => {
         return new RegExp('(?:^|\\W)' + text, 'i');
     });
 
-    return getPeopleList().then(people => {
+    return loadCache().then(cache => {
+
+        let people = cache.peopleList;
 
         let matches = people.filter(person => {
 
@@ -250,12 +249,12 @@ exports.suggestPeople = post => {
 function luPerson(personId) {
     if (typeof personId === 'undefined' || personId === null) return null;
     let key = personId.toString();
-    return peopleLookup[key];
+    return cache.peopleLookup[key];
 }
 function luLocation(locationId) {
     if (typeof locationId === 'undefined' || locationId === null) return null;
     let key = locationId.toString();
-    return locationsLookup[key];
+    return cache.locationsLookup[key];
 }
 
 function addLocation(init) {
@@ -278,8 +277,8 @@ function addOfficers(init) {
 
 exports.getPerson = function(personId) {
 
-    return Promise.all([getPeopleLookup(), getLocations()]).then(() => {
-        let person = copy(peopleLookup[personId]);
+    return loadCache().then(cache => {
+        let person = copy(cache.peopleLookup[personId]);
         person.initiations = null;
         person.sponsoredInitiations = null;
         return person;
@@ -289,8 +288,8 @@ exports.getPerson = function(personId) {
 
 exports.getPersonWithFullData = function(personId) {
 
-    return Promise.all([getPeopleLookup(), getLocations()]).then(() => {
-        let person = copy(peopleLookup[personId]);
+    return loadCache().then(cache => {
+        let person = copy(cache.peopleLookup[personId]);
 
         // attach initiations and officers
         person.initiations.forEach(init => {
@@ -300,7 +299,7 @@ exports.getPersonWithFullData = function(personId) {
 
         // attach the people this person has sponsored
         person.sponsoredInitiations = [];
-        peopleList.forEach(p => {
+        cache.peopleList.forEach(p => {
             p.initiations.forEach(init => {
                 if (init.data.sponsor1_personId === personId) {
                     let i = copy(init);
@@ -323,7 +322,7 @@ exports.getPersonWithFullData = function(personId) {
 
         // attach the initiations this person was an officer for
         person.officeredInitiations = [];
-        peopleList.forEach(p => {
+        cache.peopleList.forEach(p => {
             p.initiations.forEach(init => {
 
                 //if (init.hasOwnProperty('officers') && init.officers !== null) {
@@ -346,12 +345,12 @@ exports.getPersonWithFullData = function(personId) {
 };
 
 exports.getLocationWithInitiations = function(locationId) {
-    return Promise.all([getPeopleLookup(), getLocations()]).then(() => {
-        let location = copy(locationsLookup[locationId]);
+    return loadCache().then(cache => {
+        let location = copy(cache.locationsLookup[locationId]);
 
         // attach the people this person has sponsored
         location.initiationsPerformed = [];
-        peopleList.forEach(p => {
+        cache.peopleList.forEach(p => {
             p.initiations.forEach(init => {
                 if (init.data.performedAt_locationId === locationId) {
                     let i = copy(init);
@@ -404,7 +403,7 @@ function sortByDateDesc(a, b) {
 }
 
 exports.getInitiation = function(initiationId) {
-    return Promise.all([getPeopleLookup(), getLocations()]).then(() => {
+    return loadCache().then(cache => {
         // first we need to find it, should eventually create this as a lookup
         let initiation = copy(getInitiation(initiationId));
 
@@ -420,7 +419,7 @@ exports.getInitiation = function(initiationId) {
         if (initiation.data.actualDate !== null) {
             let actualDate = new Date(initiation.data.actualDate);
 
-            peopleList.forEach(p => {
+            cache.peopleList.forEach(p => {
                 p.initiations.forEach(init => {
                     // make sure they took place at same place and same degree
                     if (init.data.performedAt_locationId === initiation.data.performedAt_locationId && init.data.degreeId === initiation.data.degreeId && init.data.personId !== initiation.data.personId) {
@@ -440,8 +439,8 @@ exports.getInitiation = function(initiationId) {
 };
 
 function getInitiation(initiationId) {
-    for (let i = 0; i < peopleList.length; i++) {
-        let p = peopleList[i];
+    for (let i = 0; i < cache.peopleList.length; i++) {
+        let p = cache.peopleList[i];
         for (let j = 0; j < p.initiations.length; j++) {
             if (p.initiations[j].initiationId === initiationId) {
                 return p.initiations[j];
@@ -452,10 +451,10 @@ function getInitiation(initiationId) {
 }
 
 exports.getInitiations = (post) => {
-    return loadCache().then(() => {
+    return loadCache().then(cache => {
 
         // start with the full list
-        let initiations = initiationList;
+        let initiations = cache.initiationList;
 
         // filter by degree
         if (post.degreeId && post.degreeId !== 0) {
