@@ -177,17 +177,20 @@ function luLocation(locationId) {
 
 function addLocation(init) {
     init.location = luLocation(init.data.performedAt_locationId);
+    if (init.location !== null) init.location = copy(init.location);
 }
-function addPerson(init) {
-    init.person = luPerson(init.data.personId);
-}
+
 function addSponsors(init) {
-    init.sponsor1_person = luPerson(init.data.sponsor1_personId);
-    init.sponsor2_person = luPerson(init.data.sponsor2_personId);
+    let val1 = luPerson(init.data.sponsor1_personId);
+    init.sponsor1_person = (val1 !== null) ? copy(val1) : null;
+
+    let val2 = luPerson(init.data.sponsor2_personId);
+    init.sponsor2_person = (val2 !== null) ? copy(val2) : null;
 }
 function addOfficers(init) {
     init.data.officers.forEach(o => {
-        o.person = luPerson(o.personId);
+        let val = luPerson(o.personId);
+        o.person = (val === null) ? null : copy(val);
         o.officer = officerLookup[o.officerId];
     });
 }
@@ -385,7 +388,7 @@ exports.getInitiation = function(initiationId) {
         let initiation = copy(original);
 
         initiation.degree = original.degree;
-        addPerson(initiation);
+        initiation.person = original.person;
         addSponsors(initiation);
         addLocation(initiation);
         addOfficers(initiation);
