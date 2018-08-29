@@ -17,8 +17,42 @@ let sortMethods = {
         if (aVal < bVal) return -1;
         else if (aVal > bVal) return 1;
         else return 0;
+    },
+    byDateAsc: function(a, b) {
+        let aVal = a.data.actualDate || a.data.proposedDate || a.data.signedDate || a.data.localBodyDate || null;
+        let bVal = b.data.actualDate || b.data.proposedDate || b.data.signedDate || b.data.localBodyDate || null;
+
+        if (aVal === null) {
+            if (bVal === null) return 0;
+            return 1;
+        }
+        else if (bVal === null) {
+            return -1;
+        }
+
+        if (aVal < bVal) return -1;
+        else if (aVal > bVal) return 1;
+        else return 0;
+    },
+    byDateDesc: function(a, b) {
+        let aVal = a.data.actualDate || a.data.proposedDate || a.data.signedDate || a.data.localBodyDate || null;
+        let bVal = b.data.actualDate || b.data.proposedDate || b.data.signedDate || b.data.localBodyDate || null;
+
+        if (aVal === null) {
+            if (bVal === null) return 0;
+            return 1;
+        }
+        else if (bVal === null) {
+            return -1;
+        }
+
+        if (aVal > bVal) return -1;
+        else if (aVal < bVal) return 1;
+        else return 0;
     }
 };
+
+
 
 let cache = null;
 
@@ -128,6 +162,38 @@ function loadLocations() {
     });
 }
 
+// *** lookup and add functions, only work when cache is loaded
+function luPerson(personId) {
+    if (typeof personId === 'undefined' || personId === null) return null;
+    let key = personId.toString();
+    return cache.peopleLookup[key];
+}
+function luLocation(locationId) {
+    if (typeof locationId === 'undefined' || locationId === null) return null;
+    let key = locationId.toString();
+    return cache.locationsLookup[key];
+}
+
+function addLocation(init) {
+    init.location = luLocation(init.data.performedAt_locationId);
+}
+function addPerson(init) {
+    init.person = luPerson(init.data.personId);
+}
+function addSponsors(init) {
+    init.sponsor1_person = luPerson(init.data.sponsor1_personId);
+    init.sponsor2_person = luPerson(init.data.sponsor2_personId);
+}
+function addOfficers(init) {
+    init.data.officers.forEach(o => {
+        o.person = luPerson(o.personId);
+        o.officer = officerLookup[o.officerId];
+    });
+}
+
+
+
+
 
 
 
@@ -212,8 +278,6 @@ exports.getPeople = post => {
 
 
 
-
-
 let reNonChar = /[^a-zA-Z ]/g;
 
 exports.suggestPeople = post => {
@@ -246,34 +310,7 @@ exports.suggestPeople = post => {
     });
 };
 
-function luPerson(personId) {
-    if (typeof personId === 'undefined' || personId === null) return null;
-    let key = personId.toString();
-    return cache.peopleLookup[key];
-}
-function luLocation(locationId) {
-    if (typeof locationId === 'undefined' || locationId === null) return null;
-    let key = locationId.toString();
-    return cache.locationsLookup[key];
-}
 
-function addLocation(init) {
-    init.location = luLocation(init.data.performedAt_locationId);
-}
-function addPerson(init) {
-    init.person = luPerson(init.data.personId);
-}
-function addSponsors(init) {
-    init.sponsor1_person = luPerson(init.data.sponsor1_personId);
-    init.sponsor2_person = luPerson(init.data.sponsor2_personId);
-}
-
-function addOfficers(init) {
-    init.data.officers.forEach(o => {
-        o.person = luPerson(o.personId);
-        o.officer = officerLookup[o.officerId];
-    });
-}
 
 exports.getPerson = function(personId) {
 
@@ -318,7 +355,7 @@ exports.getPersonWithFullData = function(personId) {
             });
         });
 
-        person.sponsoredInitiations.sort(sortByDateAsc);
+        person.sponsoredInitiations.sort(sortMethods.byDateAsc);
 
         // attach the initiations this person was an officer for
         person.officeredInitiations = [];
@@ -337,7 +374,7 @@ exports.getPersonWithFullData = function(personId) {
             });
         });
 
-        person.officeredInitiations.sort(sortByDateAsc);
+        person.officeredInitiations.sort(sortMethods.byDateAsc);
 
         return person;
     });
@@ -361,46 +398,11 @@ exports.getLocationWithInitiations = function(locationId) {
             });
         });
 
-        location.initiationsPerformed.sort(sortByDateAsc);
+        location.initiationsPerformed.sort(sortMethods.byDateAsc);
 
         return location;
     });
 };
-
-
-function sortByDateAsc(a, b) {
-    let aVal = a.data.actualDate || a.data.proposedDate || a.data.signedDate || a.data.localBodyDate || null;
-    let bVal = b.data.actualDate || b.data.proposedDate || b.data.signedDate || b.data.localBodyDate || null;
-
-    if (aVal === null) {
-        if (bVal === null) return 0;
-        return 1;
-    }
-    else if (bVal === null) {
-        return -1;
-    }
-
-    if (aVal < bVal) return -1;
-    else if (aVal > bVal) return 1;
-    else return 0;
-}
-
-function sortByDateDesc(a, b) {
-    let aVal = a.data.actualDate || a.data.proposedDate || a.data.signedDate || a.data.localBodyDate || null;
-    let bVal = b.data.actualDate || b.data.proposedDate || b.data.signedDate || b.data.localBodyDate || null;
-
-    if (aVal === null) {
-        if (bVal === null) return 0;
-        return 1;
-    }
-    else if (bVal === null) {
-        return -1;
-    }
-
-    if (aVal > bVal) return -1;
-    else if (aVal < bVal) return 1;
-    else return 0;
-}
 
 exports.getInitiation = function(initiationId) {
     return loadCache().then(cache => {
@@ -503,10 +505,10 @@ exports.getInitiations = (post) => {
 
         // SORT
         if (post.sort === 'actualDateDesc') {
-            initiations.sort(sortByDateDesc);
+            initiations.sort(sortMethods.byDateDesc);
         }
         else if (post.sort === 'actualDateAsc') {
-            initiations.sort(sortByDateAsc);
+            initiations.sort(sortMethods.byDateAsc);
         }
 
         let value = {
