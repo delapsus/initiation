@@ -7,8 +7,20 @@ let officerLookup = require('./data2/officer').lookup;
 
 let sortMethods = {
     lastName: function(a, b) {
-        let aVal = (a.lastName || "").toLowerCase();
-        let bVal = (b.lastName || "").toLowerCase();
+        let aVal = (a.data.lastName || "").toLowerCase();
+        let bVal = (b.data.lastName || "").toLowerCase();
+
+        if (aVal.length === 0 && bVal.length === 0) return 0;
+        if (aVal.length > 0 && bVal.length === 0) return -1;
+        if (aVal.length === 0 && bVal.length > 0) return 1;
+
+        if (aVal < bVal) return -1;
+        else if (aVal > bVal) return 1;
+        else return 0;
+    },
+    firstName: function(a, b) {
+        let aVal = (a.data.firstName || "").toLowerCase();
+        let bVal = (b.data.firstName || "").toLowerCase();
 
         if (aVal.length === 0 && bVal.length === 0) return 0;
         if (aVal.length > 0 && bVal.length === 0) return -1;
@@ -49,6 +61,94 @@ let sortMethods = {
         if (aVal > bVal) return -1;
         else if (aVal < bVal) return 1;
         else return 0;
+    },
+    byLastInitDateAsc: function(a, b) {
+
+        if (a.initiations.length === 0) {
+            if (b.initiations.length === 0) return 0;
+            return 1;
+        }
+        else if (b.initiations.length === 0) {
+            return -1;
+        }
+
+        let aInit = a.initiations[a.initiations.length-1];
+        let bInit = b.initiations[b.initiations.length-1];
+
+        let aVal = aInit.data.actualDate || aInit.data.proposedDate || aInit.data.signedDate || aInit.data.localBodyDate || null;
+        let bVal = bInit.data.actualDate || bInit.data.proposedDate || bInit.data.signedDate || bInit.data.localBodyDate || null;
+
+        if (aVal === null) {
+            if (bVal === null) return 0;
+            return 1;
+        }
+        else if (bVal === null) {
+            return -1;
+        }
+
+        if (aVal < bVal) return -1;
+        else if (aVal > bVal) return 1;
+        else return 0;
+    },
+    byLastInitDateDesc: function(a, b) {
+
+        if (a.initiations.length === 0) {
+            if (b.initiations.length === 0) return 0;
+            return 1;
+        }
+        else if (b.initiations.length === 0) {
+            return -1;
+        }
+
+        let aInit = a.initiations[a.initiations.length-1];
+        let bInit = b.initiations[b.initiations.length-1];
+
+        let aVal = aInit.data.actualDate || aInit.data.proposedDate || aInit.data.signedDate || aInit.data.localBodyDate || null;
+        let bVal = bInit.data.actualDate || bInit.data.proposedDate || bInit.data.signedDate || bInit.data.localBodyDate || null;
+
+        if (aVal === null) {
+            if (bVal === null) return 0;
+            return 1;
+        }
+        else if (bVal === null) {
+            return -1;
+        }
+
+        if (aVal > bVal) return -1;
+        else if (aVal < bVal) return 1;
+        else return 0;
+    },
+    bySponsoredCount: function(a, b) {
+        let aVal = a.sponsoredInitiations.length;
+        let bVal = b.sponsoredInitiations.length;
+
+        if (aVal < bVal) return 1;
+        else if (aVal > bVal) return -1;
+
+        // then by officered
+        aVal = a.officeredInitiations.length;
+        bVal = b.officeredInitiations.length;
+
+        if (aVal < bVal) return 1;
+        else if (aVal > bVal) return -1;
+
+        return 0;
+    },
+    byOfficeredCount: function(a, b) {
+        let aVal = a.officeredInitiations.length;
+        let bVal = b.officeredInitiations.length;
+
+        if (aVal < bVal) return 1;
+        else if (aVal > bVal) return -1;
+
+        // then by sponsored
+        aVal = a.sponsoredInitiations.length;
+        bVal = b.sponsoredInitiations.length;
+
+        if (aVal < bVal) return 1;
+        else if (aVal > bVal) return -1;
+
+        return 0;
     }
 };
 
@@ -284,25 +384,38 @@ exports.getPeople = post => {
 
         }
 
-        let value = {
-            count: people.length,
-            people: null
-        };
+        // sort the people
+        switch (post.sortBy) {
+            case 'lastName': people.sort(sortMethods.lastName); break;
+            case 'firstName': people.sort(sortMethods.firstName); break;
+            case 'lastDateAsc': people.sort(sortMethods.byLastInitDateAsc); break;
+            case 'lastDateDesc': people.sort(sortMethods.byLastInitDateDesc); break;
+            case 'sponsored': people.sort(sortMethods.bySponsoredCount); break;
+            case 'officered': people.sort(sortMethods.byOfficeredCount); break;
+        }
 
+
+        let totalCount = people.length;
+
+        // page it down to size
         let pageSize = post.pageSize || 0;
         let index = post.index || 0;
         let start = pageSize * index;
 
         // outside the bounds
-        if (people.length <= start) value.people = [];
+        if (people.length <= start) people = [];
 
         // page is completely within bounds
-        else if (people.length >= start + pageSize) value.people = people.slice(start, start + pageSize);
+        else if (people.length >= start + pageSize) people = people.slice(start, start + pageSize);
 
         // just the end records
-        else value.people = people.slice(start, people.length);
+        else people = people.slice(start, people.length);
 
-        return value;
+        return {
+            count: totalCount,
+            people: people
+        };
+
     });
 
 };

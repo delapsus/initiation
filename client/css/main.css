@@ -106,10 +106,14 @@ input, textarea, select {
     width:4em;
 }
 .peopleListTable .colMaxDate {
-    width:6em;
+    width:6.4em;
+
+    text-align: center;
 }
 .peopleListTable .colMinDate {
-    width:6em;
+    width:6.4em;
+
+    text-align: center;
 }
 .peopleListTable .colCount {
     width:3.3em;

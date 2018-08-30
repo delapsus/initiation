@@ -4,10 +4,20 @@ import {formatDate} from './common.js';
 
 function getPeople(state) {
     return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/data/people", {pageSize:state.pageSize, index: state.pageIndex, textSearch: state.searchText, degreeId:state.degreeId}, result => {
+
+        let args = {
+            pageSize:state.pageSize,
+            index: state.pageIndex,
+            textSearch: state.searchText,
+            degreeId:state.degreeId,
+            sortBy: state.sortBy
+        };
+
+        postAjax("http://localhost:2020/data/people", args, result => {
             result = JSON.parse(result);
             resolve(result);
         });
+
     });
 }
 
@@ -22,12 +32,9 @@ export class PeopleSearch extends React.Component {
             recordCount: 0,
 
             searchText: "",
-            degreeId: 0
+            degreeId: 0,
+            sortBy: 'lastName'
         };
-        this.onClickNext = this.onClickNext.bind(this);
-        this.onClickPrev = this.onClickPrev.bind(this);
-        this.handleKeyPress = this.handleKeyPress.bind(this);
-        this.handleDegreeChange = this.handleDegreeChange.bind(this);
     }
 
 
@@ -49,6 +56,7 @@ export class PeopleSearch extends React.Component {
         if (prevState.pageIndex === this.state.pageIndex
             && prevState.searchText === this.state.searchText
             && prevState.degreeId === this.state.degreeId
+            && prevState.sortBy === this.state.sortBy
         ) return;
         this.updatePeopleList();
     }
@@ -64,14 +72,17 @@ export class PeopleSearch extends React.Component {
     handleDegreeChange(event) {
         this.setState({degreeId: +event.target.value, pageIndex:0});
     }
+    handleSortChange(event) {
+        this.setState({sortBy: event.target.value, pageIndex:0});
+    }
 
     render() {
 
 
-        let pageNext = <span className="link" onClick={this.onClickNext}>next</span>;
+        let pageNext = <span className="link" onClick={this.onClickNext.bind(this)}>next</span>;
         if (this.state.pageIndex + 1 === this.state.pageCount) pageNext = "next";
 
-        let pagePrev = <span className="link" onClick={this.onClickPrev}>prev</span>;
+        let pagePrev = <span className="link" onClick={this.onClickPrev.bind(this)}>prev</span>;
         if (this.state.pageIndex === 0) pagePrev = "prev";
 
 
@@ -79,10 +90,10 @@ export class PeopleSearch extends React.Component {
 
             <div id="peopleFilters">
 
-                <div className="item">Name Search: <input type="text" onKeyUp={this.handleKeyPress}></input></div>
+                <div className="item">Name Search: <input type="text" onKeyUp={this.handleKeyPress.bind(this)}></input></div>
 
                 <div className="item">
-                    Degree: <select value={this.state.degreeId} onChange={this.handleDegreeChange}>
+                    Degree: <select value={this.state.degreeId} onChange={this.handleDegreeChange.bind(this)}>
                         <option value="0"></option>
                         <option value="-1">none</option>
                         <option value="1">0</option>
@@ -104,6 +115,17 @@ export class PeopleSearch extends React.Component {
                     </select>
                 </div>
 
+                <div className="item">
+                    Sort by: <select value={this.state.sortBy} onChange={this.handleSortChange.bind(this)}>
+                    <option value="lastName">Last Name</option>
+                    <option value="firstName">First Name</option>
+                    <option value="lastDateDesc">Last Initiation Date (Desc)</option>
+                    <option value="lastDateAsc">Last Initiation Date (Asc)</option>
+                    <option value="sponsored">Sponsored Count</option>
+                    <option value="officered">Officered Count</option>
+                </select>
+                </div>
+
             </div>
 
             <div id="resultsHeader">
@@ -123,6 +145,16 @@ function ago(date) {
     return `${years}yrs`;
 }
 
+function getInitiationDate(init) {
+    let date = init.data.actualDate || null;
+    let noActualDate = date === null;
+    date = date || init.data.proposedDate || init.data.signedDate || init.data.localBodyDate;
+
+    let actualDate = formatDate(date);
+    if (noActualDate && actualDate.length > 0) actualDate = "[" + actualDate + "]";
+    return actualDate;
+}
+
 class PeopleDisplay extends React.Component {
 
     render() {
@@ -138,10 +170,10 @@ class PeopleDisplay extends React.Component {
             if (person.initiations.length > 0) {
                 let lastInit = person.initiations[person.initiations.length-1];
                 maxDegree = lastInit.degree.name;
-                maxDegreeDate = lastInit.data.actualDate === null ? "" : formatDate(new Date(lastInit.data.actualDate));
+                maxDegreeDate = getInitiationDate(lastInit); //lastInit.data.actualDate === null ? "" : formatDate(new Date(lastInit.data.actualDate));
 
                 let minInit = person.initiations[0];
-                minDegreeDate = minInit.data.actualDate === null ? "" : formatDate(new Date(minInit.data.actualDate));
+                minDegreeDate = getInitiationDate(minInit); //minInit.data.actualDate === null ? "" : formatDate(new Date(minInit.data.actualDate));
             }
 
 
@@ -167,8 +199,8 @@ class PeopleDisplay extends React.Component {
                 <th></th>
                 <th>First</th>
                 <th>Last</th>
-                <th>°</th>
-                <th>On</th>
+                <th style={{textAlign:'center'}}>°</th>
+                <th>Taken</th>
                 <th>Earliest</th>
 
                 <th style={{textAlign:'center'}}>Inits</th>
