@@ -75,6 +75,11 @@ input, textarea, select {
 .test {
     font-family: helvetica,sans-serif;
 }
+.icon {
+    height: 1em;
+    margin-top: 0.15em;
+    vertical-align: top;
+}
 
 
 #peopleFilters .item {
