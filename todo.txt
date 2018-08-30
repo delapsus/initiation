@@ -8,6 +8,10 @@
 
 4. Allow merging of entities (person, location)
 
+5. allow deleting of entities
+
+Sort order on the people search page
+
 -- Be able to run a report that gives me all apps submitted in the last year that do not have matching ISRs.
 This will enable me to be able to catch expired apps, but also send the LB a report showing which ISRs they should be submitting and which apps they should expire.
 

@@ -40,6 +40,7 @@ th, td {
 th {
     font-weight: bold;
     text-align: left;
+    font-size: 0.8em;
 }
 #app {
     width: 55.5em;
@@ -109,6 +110,10 @@ input, textarea, select {
 }
 .peopleListTable .colMinDate {
     width:6em;
+}
+.peopleListTable .colCount {
+    width:3.3em;
+    text-align: center;
 }
 
 

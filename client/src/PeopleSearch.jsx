@@ -16,7 +16,7 @@ export class PeopleSearch extends React.Component {
         super(props);
         this.state = {
             people: [],
-            pageSize: 40,
+            pageSize: 30,
             pageIndex: 0,
             pageCount: 0,
             recordCount: 0,
@@ -145,6 +145,8 @@ class PeopleDisplay extends React.Component {
             }
 
 
+
+
             a.push(<tr key={i}>
                 <td className="colLink"><a href={"?personid=" + person.personId}>view</a></td>
                 <td className="colFirst">{person.data.firstName}</td>
@@ -152,18 +154,28 @@ class PeopleDisplay extends React.Component {
                 <td className="colDegree">{maxDegree}</td>
                 <td className="colMaxDate">{maxDegreeDate}</td>
                 <td className="colMinDate">{minDegreeDate}</td>
+
+                <td className="colCount">{person.initiations.length}</td>
+                <td className="colCount">{person.sponsoredInitiations.length}</td>
+                <td className="colCount">{person.officeredInitiations.length}</td>
             </tr>);
         });
 
         return <table className="peopleListTable">
-            <thead>
+            <thead><tr>
+
                 <th></th>
                 <th>First</th>
                 <th>Last</th>
                 <th>°</th>
                 <th>On</th>
                 <th>Earliest</th>
-            </thead>
+
+                <th style={{textAlign:'center'}}>Inits</th>
+                <th style={{textAlign:'center'}}>Sponsor</th>
+                <th style={{textAlign:'center'}}>Officer</th>
+
+            </tr></thead>
             <tbody>{a}</tbody>
         </table>;
     }
