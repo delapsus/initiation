@@ -15,7 +15,7 @@ export class InitiationDisplay extends React.Component {
 
         let date = o.data.actualDate || null;
         let noActualDate = date === null;
-        date = date || o.data.proposedDate || o.data.signedDate || o.data.localBodyDate;
+        date = date || o.data.proposedDate || o.data.signedDate || o.data.localBodyDate || o.data.reportedDate;
 
         let actualDate = formatDate(date);
         if (noActualDate && actualDate.length > 0) actualDate = "[" + actualDate + "]";
