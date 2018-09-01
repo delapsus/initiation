@@ -81,6 +81,16 @@ app.post('/data/person-with-data', function (req, res) {
         .catch(console.error);
 });
 
+app.post('/data/merge-person', function (req, res) {
+
+    let masterPersonId = req.body.masterPersonId;
+    let slavePersonId = req.body.slavePersonId;
+
+    submit.mergePerson(masterPersonId, slavePersonId)
+        .then(value => { res.send(JSON.stringify(value)); })
+        .catch(console.error);
+});
+
 
 app.post('/data/locations', function (req, res) {
     Location.selectAll()

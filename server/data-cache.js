@@ -16,7 +16,19 @@ let sortMethods = {
 
         if (aVal < bVal) return -1;
         else if (aVal > bVal) return 1;
-        else return 0;
+
+        // then by first name
+        aVal = (a.data.firstName || "").toLowerCase();
+        bVal = (b.data.firstName || "").toLowerCase();
+
+        if (aVal.length === 0 && bVal.length === 0) return 0;
+        if (aVal.length > 0 && bVal.length === 0) return -1;
+        if (aVal.length === 0 && bVal.length > 0) return 1;
+
+        if (aVal < bVal) return -1;
+        else if (aVal > bVal) return 1;
+
+        return 0;
     },
     firstName: function(a, b) {
         let aVal = (a.data.firstName || "").toLowerCase();
@@ -183,10 +195,10 @@ function loadAllPeopleWithInits() {
         Initiation.selectAll()
     ]).then(results => {
 
-        let people = results[0];
-        let initiations = results[1];
-
-        let initiationList = [];
+        let people = results[0].filter(person => {
+            if (person.data.hasOwnProperty('archived') && person.data.archived) return false;
+            return true;
+        });
 
         // add the people to the lookup by id
         let lookup = {};
@@ -197,12 +209,15 @@ function loadAllPeopleWithInits() {
             p.officeredInitiations = [];
         });
 
+        let initiations = results[1];
+        let initiationList = [];
+
         // give the initiations to the people
         initiations.forEach(init => {
 
             // this shouldn't happen, but lets capture it
             if (!init.data.hasOwnProperty('personId') || init.data.personId === null || !lookup.hasOwnProperty(init.data.personId)) {
-                console.log('initiation does not have valid personId: ' + init.initiationId);
+                //console.log('initiation does not have valid personId: ' + init.initiationId);
                 return;
             }
 

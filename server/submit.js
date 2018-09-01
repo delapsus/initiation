@@ -81,3 +81,55 @@ exports.submitEditPerson = function(post) {
         .then(dataCache.clearCache)
         .then(() => {return {};});
 };
+
+exports.mergePerson = function(masterPersonId, slavePersonId) {
+
+    return dataCache.getPersonWithFullData(slavePersonId).then(slave => {
+        // first load up each initiation to check
+        let toSave = {};
+
+        // direct initiations
+        slave.initiations.forEach(init => {
+            toSave[init.initiationId] = init;
+        });
+
+        // sponsored initiations
+        slave.sponsoredInitiations.forEach(init => {
+            toSave[init.initiationId] = init;
+        });
+
+        // officered initiations
+        slave.officeredInitiations.forEach(init => {
+            toSave[init.initiationId] = init;
+        });
+
+        // then go through and change any applicable IDs and save
+        let saving = [];
+        for (let key in toSave) {
+            let init = toSave[key];
+
+            if (init.data.personId === slavePersonId) init.data.personId = masterPersonId;
+            if (init.data.sponsor1_personId === slavePersonId) init.data.sponsor1_personId = masterPersonId;
+            if (init.data.sponsor2_personId === slavePersonId) init.data.sponsor2_personId = masterPersonId;
+            init.data.officers.forEach(officer => {
+                if (officer.personId === slavePersonId) officer.personId = masterPersonId;
+            });
+
+            saving.push(Initiation.save(init));
+        }
+
+        return Promise.all(saving)
+            .then(() => {
+                slave.data.archived = true;
+                return Person.save(slave);
+            })
+            .then(() => {
+                // eventually do this
+                dataCache.clearCache();
+                return {};
+            });
+    });
+
+
+
+};

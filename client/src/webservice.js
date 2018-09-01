@@ -9,6 +9,15 @@ export function submitApplication(state) {
     });
 }
 
+export function submitMergePerson(masterPersonId, slavePersonId) {
+    return new Promise((resolve, reject) => {
+        postAjax("http://localhost:2020/data/merge-person", {masterPersonId:masterPersonId, slavePersonId:slavePersonId}, result => {
+            result = JSON.parse(result);
+            resolve(result);
+        });
+    });
+}
+
 export function getPerson(personId) {
     return new Promise((resolve, reject) => {
         postAjax("http://localhost:2020/data/person", {personId: personId}, result => {

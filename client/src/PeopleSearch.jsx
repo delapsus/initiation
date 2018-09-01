@@ -1,6 +1,7 @@
 import React from 'react';
 import {postAjax} from './http';
 import {formatDate} from './common.js';
+import {submitMergePerson} from "./webservice";
 
 function getPeople(state) {
     return new Promise((resolve, reject) => {
@@ -33,7 +34,13 @@ export class PeopleSearch extends React.Component {
 
             searchText: "",
             degreeId: 0,
-            sortBy: 'lastName'
+            sortBy: 'lastName',
+
+            showMerge: false,
+            selecting: '',
+            mergeMaster: null,
+            mergeSlave: null,
+            submittingMerge: false
         };
     }
 
@@ -76,6 +83,35 @@ export class PeopleSearch extends React.Component {
         this.setState({sortBy: event.target.value, pageIndex:0});
     }
 
+    showMergeTools() {
+        this.setState({showMerge: true});
+    }
+    setSelecting(key) {
+        this.setState({selecting: key});
+    }
+    onPersonSelect(event) {
+
+        let personId = +event.target.value;
+
+        let person = this.state.people.find(p => { return p.personId === personId; });
+
+        let state = {
+            selecting: ''
+        };
+
+        if (this.state.selecting === 'master') state.mergeMaster = person;
+        if (this.state.selecting === 'slave') state.mergeSlave = person;
+
+        this.setState(state);
+    }
+    submitMerge() {
+        submitMergePerson(this.state.mergeMaster.personId, this.state.mergeSlave.personId).then(() => {
+            this.setState({submittingMerge: false, mergeMaster: null, mergeSlave: null});
+            this.updatePeopleList();
+        });
+        this.setState({submittingMerge: true});
+    }
+
     render() {
 
 
@@ -85,8 +121,57 @@ export class PeopleSearch extends React.Component {
         let pagePrev = <span className="link" onClick={this.onClickPrev.bind(this)}>prev</span>;
         if (this.state.pageIndex === 0) pagePrev = "prev";
 
+        // MERGE SECTION
+        let mergeSection = null;
+        if (!this.state.showMerge) {
+            mergeSection = <div style={{marginBottom:'1em'}}><div className="link" style={{fontSize:'0.8em'}} onClick={this.showMergeTools.bind(this)}>Show Merge Tools</div></div>;
+        }
+        else {
+
+            // master
+            let masterSelectButton = null;
+            if (this.state.selecting === 'master') masterSelectButton = <span style={{fontWeight:'bold'}}>Select Below...</span>;
+            else masterSelectButton = <div className="link" onClick={this.setSelecting.bind(this, 'master')}>Click to Select</div>;
+
+            let masterPersonInfo = "";
+            if (this.state.mergeMaster !== null) masterPersonInfo = <PeopleDisplay people={[this.state.mergeMaster]} />;
+
+            // slave
+            let slaveSelectButton = null;
+            if (this.state.selecting === 'slave') slaveSelectButton = <span style={{fontWeight:'bold'}}>Select Below...</span>;
+            else slaveSelectButton = <div className="link" onClick={this.setSelecting.bind(this, 'slave')}>Click to Select</div>;
+
+            let slavePersonInfo = "";
+            if (this.state.mergeSlave !== null) slavePersonInfo = <PeopleDisplay people={[this.state.mergeSlave]} />;
+
+            // submit button
+            let submitMerge = "";
+            if (this.state.mergeMaster !== null && this.state.mergeSlave !== null) {
+                submitMerge = <div style={{marginLeft: '39.7em', marginBottom:'1em'}}><button onClick={this.submitMerge.bind(this)}>↑ Merge ↑</button></div>;
+                if (this.state.submittingMerge) submitMerge = <div style={{marginLeft: '39.7em', marginBottom:'1em'}}>Merging...</div>;
+            }
+
+
+            // display
+            mergeSection = <div style={{marginBottom:'1em', border: 'solid 1px #ad78bd'}}>
+                <div style={{marginBottom:'1em', marginTop:'1em', backgroundColor:'#ddFFdd'}}>
+                    <div>Master: {masterSelectButton}</div>
+                    {masterPersonInfo}
+                </div>
+                {submitMerge}
+                <div style={{marginBottom:'1em', backgroundColor:'#FFdddd'}}>
+                    <div>Record To Be Merged & Removed: {slaveSelectButton}</div>
+                    {slavePersonInfo}
+                </div>
+            </div>;
+        }
+
 
         return <div>
+
+            <h1>People</h1>
+
+            {mergeSection}
 
             <div id="peopleFilters">
 
@@ -133,7 +218,7 @@ export class PeopleSearch extends React.Component {
                 <div className="item">Page: {pagePrev} {this.state.pageIndex + 1} / {this.state.pageCount} {pageNext}</div>
             </div>
 
-            <PeopleDisplay people={this.state.people} />
+            <PeopleDisplay people={this.state.people} onPersonSelect={this.onPersonSelect.bind(this)} showSelect={this.state.selecting.length > 0} />
         </div>;
     }
 }
@@ -176,10 +261,12 @@ class PeopleDisplay extends React.Component {
                 minDegreeDate = getInitiationDate(minInit); //minInit.data.actualDate === null ? "" : formatDate(new Date(minInit.data.actualDate));
             }
 
-
-
+            let select = <input type="radio" name="personIdRadio" style={{margin:'0'}} value={person.personId} onChange={this.props.onPersonSelect} />;
+            if (!this.props.showSelect) select = "";
 
             a.push(<tr key={i}>
+                <td style={{padding:'0', verticalAlign: 'middle'}}>{select}</td>
+
                 <td className="colLink"><a href={"?personid=" + person.personId}>view</a></td>
                 <td className="colFirst">{person.data.firstName}</td>
                 <td className="colLast">{person.data.lastName}</td>
@@ -196,6 +283,7 @@ class PeopleDisplay extends React.Component {
         return <table className="peopleListTable">
             <thead><tr>
 
+                <th style={{width:'1em'}}></th>
                 <th></th>
                 <th>First</th>
                 <th>Last</th>
