@@ -1,7 +1,8 @@
 import React from 'react';
 import {postAjax} from './http';
 import {formatDate} from './common.js';
-import {submitMergePerson} from "./webservice";
+import {submitMergePerson, getPersonWithData} from "./webservice";
+
 
 function getPeople(state) {
     return new Promise((resolve, reject) => {
@@ -37,7 +38,6 @@ export class PeopleSearch extends React.Component {
             sortBy: 'lastName',
 
             showMerge: false,
-            selecting: '',
             mergeMaster: null,
             mergeSlave: null,
             submittingMerge: false
@@ -46,13 +46,20 @@ export class PeopleSearch extends React.Component {
 
 
     updatePeopleList() {
-        getPeople(this.state).then(result => {
+        return getPeople(this.state).then(result => {
             this.setState({
                 people: result.people,
                 pageCount: Math.ceil(result.count / this.state.pageSize),
                 recordCount: result.count
             });
 
+        });
+    }
+
+    updateMergeMaster() {
+        if (this.state.mergeMaster === null) return;
+        return getPersonWithData(this.state.mergeMaster.personId).then(result => {
+            this.setState({mergeMaster: result});
         });
     }
 
@@ -86,28 +93,30 @@ export class PeopleSearch extends React.Component {
     showMergeTools() {
         this.setState({showMerge: true});
     }
-    setSelecting(key) {
-        this.setState({selecting: key});
-    }
+
     onPersonSelect(event) {
 
         let personId = +event.target.value;
+        let selecting = event.target.name === 'personIdRadioMaster' ? 'master' : 'slave';
 
         let person = this.state.people.find(p => { return p.personId === personId; });
 
-        let state = {
-            selecting: ''
-        };
+        let state = {};
 
-        if (this.state.selecting === 'master') state.mergeMaster = person;
-        if (this.state.selecting === 'slave') state.mergeSlave = person;
+        if (selecting === 'master') state.mergeMaster = person;
+        if (selecting === 'slave') state.mergeSlave = person;
 
         this.setState(state);
     }
     submitMerge() {
         submitMergePerson(this.state.mergeMaster.personId, this.state.mergeSlave.personId).then(() => {
-            this.setState({submittingMerge: false, mergeMaster: null, mergeSlave: null});
-            this.updatePeopleList();
+            this.updatePeopleList().then(() => {
+                this.updateMergeMaster().then(() => {
+                    // finally clear the current merge state
+                    this.setState({submittingMerge: false, mergeSlave: null});
+                })
+            });
+
         });
         this.setState({submittingMerge: true});
     }
@@ -129,18 +138,10 @@ export class PeopleSearch extends React.Component {
         else {
 
             // master
-            let masterSelectButton = null;
-            if (this.state.selecting === 'master') masterSelectButton = <span style={{fontWeight:'bold'}}>Select Below...</span>;
-            else masterSelectButton = <div className="link" onClick={this.setSelecting.bind(this, 'master')}>Click to Select</div>;
-
             let masterPersonInfo = "";
             if (this.state.mergeMaster !== null) masterPersonInfo = <PeopleDisplay people={[this.state.mergeMaster]} />;
 
             // slave
-            let slaveSelectButton = null;
-            if (this.state.selecting === 'slave') slaveSelectButton = <span style={{fontWeight:'bold'}}>Select Below...</span>;
-            else slaveSelectButton = <div className="link" onClick={this.setSelecting.bind(this, 'slave')}>Click to Select</div>;
-
             let slavePersonInfo = "";
             if (this.state.mergeSlave !== null) slavePersonInfo = <PeopleDisplay people={[this.state.mergeSlave]} />;
 
@@ -148,19 +149,18 @@ export class PeopleSearch extends React.Component {
             let submitMerge = "";
             if (this.state.mergeMaster !== null && this.state.mergeSlave !== null) {
                 submitMerge = <div style={{marginLeft: '39.7em', marginBottom:'1em'}}><button onClick={this.submitMerge.bind(this)}>↑ Merge ↑</button></div>;
-                if (this.state.submittingMerge) submitMerge = <div style={{marginLeft: '39.7em', marginBottom:'1em'}}>Merging...</div>;
             }
-
+            if (this.state.submittingMerge) submitMerge = <div style={{marginLeft: '39.7em', marginBottom:'1em'}}>Merging...</div>;
 
             // display
             mergeSection = <div style={{marginBottom:'1em', border: 'solid 1px #ad78bd'}}>
                 <div style={{marginBottom:'1em', marginTop:'1em', backgroundColor:'#ddFFdd'}}>
-                    <div>Master: {masterSelectButton}</div>
+                    <div>Master:</div>
                     {masterPersonInfo}
                 </div>
                 {submitMerge}
                 <div style={{marginBottom:'1em', backgroundColor:'#FFdddd'}}>
-                    <div>Record To Be Merged & Removed: {slaveSelectButton}</div>
+                    <div>Record To Be Merged & Removed:</div>
                     {slavePersonInfo}
                 </div>
             </div>;
@@ -218,7 +218,7 @@ export class PeopleSearch extends React.Component {
                 <div className="item">Page: {pagePrev} {this.state.pageIndex + 1} / {this.state.pageCount} {pageNext}</div>
             </div>
 
-            <PeopleDisplay people={this.state.people} onPersonSelect={this.onPersonSelect.bind(this)} showSelect={this.state.selecting.length > 0} />
+            <PeopleDisplay people={this.state.people} onPersonSelect={this.onPersonSelect.bind(this)} showSelect={this.state.showMerge} masterPerson={this.state.mergeMaster} slavePerson={this.state.mergeSlave} />
         </div>;
     }
 }
@@ -248,6 +248,9 @@ class PeopleDisplay extends React.Component {
 
         let a = [];
 
+        let masterId = (!this.props.hasOwnProperty('masterPerson') || this.props.masterPerson === null) ? null : this.props.masterPerson.personId;
+        let slaveId = (!this.props.hasOwnProperty('slavePerson') || this.props.slavePerson === null) ? null : this.props.slavePerson.personId;
+
         this.props.people.forEach((person, i) => {
 
             let maxDegree = "", maxDegreeDate = "", minDegreeDate = "";
@@ -261,7 +264,12 @@ class PeopleDisplay extends React.Component {
                 minDegreeDate = getInitiationDate(minInit); //minInit.data.actualDate === null ? "" : formatDate(new Date(minInit.data.actualDate));
             }
 
-            let select = <input type="radio" name="personIdRadio" style={{margin:'0'}} value={person.personId} onChange={this.props.onPersonSelect} />;
+            //
+
+            let select = <div>
+                <input type="radio" name="personIdRadioMaster" style={{margin:'0'}} value={person.personId} checked={person.personId === masterId} onChange={this.props.onPersonSelect} />
+                <input type="radio" name="personIdRadioSlave" style={{margin:'0'}} value={person.personId} checked={person.personId === slaveId} onChange={this.props.onPersonSelect} />
+            </div>;
             if (!this.props.showSelect) select = "";
 
             a.push(<tr key={i}>

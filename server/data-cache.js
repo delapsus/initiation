@@ -226,12 +226,7 @@ function loadAllPeopleWithInits() {
             person.initiations.push(init);
 
             // add the degree
-            if (!degreeLookup.hasOwnProperty(init.data.degreeId)) {
-                init.degree = Degree.unknown;
-            }
-            else {
-                init.degree = degreeLookup[init.data.degreeId]; // to allow sorting by rank
-            }
+            addDegree(init);
 
             // invert initiation/person and store as initiation
             let o = copy(init);
@@ -291,6 +286,8 @@ function loadAllPeopleWithInits() {
     });
 }
 
+
+
 function loadLocations() {
 
     return Location.selectAll().then(result => {
@@ -335,6 +332,14 @@ function addOfficers(init) {
         o.person = (val === null) ? null : copy(val);
         o.officer = officerLookup[o.officerId];
     });
+}
+function addDegree(init) {
+    if (!degreeLookup.hasOwnProperty(init.data.degreeId)) {
+        init.degree = Degree.unknown;
+    }
+    else {
+        init.degree = degreeLookup[init.data.degreeId]; // to allow sorting by rank
+    }
 }
 
 
@@ -462,6 +467,7 @@ exports.getPersonWithFullData = function(personId) {
             person.initiations.push(init);
             addSponsors(init);
             addLocation(init);
+            addDegree(init);
         });
 
         // attach the people this person has sponsored
