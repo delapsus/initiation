@@ -90,9 +90,8 @@ export class PeopleSearch extends React.Component {
         this.setState({sortBy: event.target.value, pageIndex:0});
     }
 
-    showMergeTools() {
-        this.setState({showMerge: true});
-    }
+    showMergeTools() { this.setState({showMerge: true}); }
+    hideMergeTools() { this.setState({showMerge: false, mergeMaster: null, mergeSlave: null}); }
 
     onPersonSelect(event) {
 
@@ -131,11 +130,13 @@ export class PeopleSearch extends React.Component {
         if (this.state.pageIndex === 0) pagePrev = "prev";
 
         // MERGE SECTION
+        let showMerge = <div className="link" style={{fontSize:'0.8em'}} onClick={this.showMergeTools.bind(this)}>Show Merge Tools</div>;
+
         let mergeSection = null;
-        if (!this.state.showMerge) {
-            mergeSection = <div style={{marginBottom:'1em'}}><div className="link" style={{fontSize:'0.8em'}} onClick={this.showMergeTools.bind(this)}>Show Merge Tools</div></div>;
-        }
-        else {
+        if (this.state.showMerge) {
+
+            // change to hide
+            showMerge = <div className="link" style={{fontSize:'0.8em'}} onClick={this.hideMergeTools.bind(this)}>Hide Merge Tools</div>;
 
             // master
             let masterPersonInfo = "";
@@ -169,7 +170,9 @@ export class PeopleSearch extends React.Component {
 
         return <div>
 
-            <h1>People</h1>
+            <div className="pageTitleDiv">
+                <span className="pageTitle">People</span> | {showMerge}
+            </div>
 
             {mergeSection}
 
@@ -267,8 +270,8 @@ class PeopleDisplay extends React.Component {
             //
 
             let select = <div>
-                <input type="radio" name="personIdRadioMaster" style={{margin:'0'}} value={person.personId} checked={person.personId === masterId} onChange={this.props.onPersonSelect} />
-                <input type="radio" name="personIdRadioSlave" style={{margin:'0'}} value={person.personId} checked={person.personId === slaveId} onChange={this.props.onPersonSelect} />
+                <div className="mergeRadio green"><input type="radio" name="personIdRadioMaster" style={{margin:'0'}} value={person.personId} checked={person.personId === masterId} onChange={this.props.onPersonSelect} /></div>
+                <div className="mergeRadio red"><input type="radio" name="personIdRadioSlave" style={{margin:'0'}} value={person.personId} checked={person.personId === slaveId} onChange={this.props.onPersonSelect} /></div>
             </div>;
             if (!this.props.showSelect) select = "";
 
@@ -291,7 +294,7 @@ class PeopleDisplay extends React.Component {
         return <table className="peopleListTable">
             <thead><tr>
 
-                <th style={{width:'1em'}}></th>
+                <th style={{width:'2.6em'}}></th>
                 <th></th>
                 <th>First</th>
                 <th>Last</th>

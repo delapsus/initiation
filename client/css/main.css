@@ -52,6 +52,13 @@ h1 {
     margin-bottom: 0.5em;
     font-size: 1.5em;
 }
+.pageTitle {
+    font-size: 1.5em;
+}
+.pageTitleDiv {
+    margin-top: 0em;
+    margin-bottom: 1em;
+}
 #app {
     width: 55.5em;
     height: auto;
@@ -133,6 +140,16 @@ input, textarea, select {
 .peopleListTable .colCount {
     width:3.3em;
     text-align: center;
+}
+.mergeRadio {
+    display: inline-block;
+    padding: 0.15em;
+}
+.mergeRadio.green {
+    background-color: #ddFFdd;
+}
+.mergeRadio.red {
+    background-color: #FFdddd;
 }
 
 
