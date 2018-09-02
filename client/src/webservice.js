@@ -27,6 +27,24 @@ export function getPerson(personId) {
     });
 }
 
+export function getLocation(locationId) {
+    return new Promise((resolve, reject) => {
+        postAjax("http://localhost:2020/data/location", {locationId: locationId}, result => {
+            result = JSON.parse(result);
+            resolve(result);
+        });
+    });
+}
+
+export function getLocationWithData(locationId) {
+    return new Promise((resolve, reject) => {
+        postAjax("http://localhost:2020/data/location-with-data", {locationId: locationId}, result => {
+            result = JSON.parse(result);
+            resolve(result);
+        });
+    });
+}
+
 export function getPersonWithData(personId) {
     return new Promise((resolve, reject) => {
         postAjax("http://localhost:2020/data/person-with-data", {personId: personId}, result => {
@@ -39,6 +57,15 @@ export function getPersonWithData(personId) {
 export function submitEditPerson(person) {
     return new Promise((resolve, reject) => {
         postAjax("http://localhost:2020/data/submit-edit-person", {person:person}, result => {
+            result = JSON.parse(result);
+            resolve(result);
+        });
+    });
+}
+
+export function submitEditLocation(location) {
+    return new Promise((resolve, reject) => {
+        postAjax("http://localhost:2020/data/submit-edit-location", {location:location}, result => {
             result = JSON.parse(result);
             resolve(result);
         });

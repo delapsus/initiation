@@ -495,6 +495,17 @@ exports.getPersonWithFullData = function(personId) {
 
 };
 
+exports.getLocation = function(locationId) {
+    return loadCache().then(cache => {
+        let location = copy(cache.locationsLookup[locationId]);
+
+        // attach the people this person has sponsored
+        location.initiationsPerformed = null;
+
+        return location;
+    });
+};
+
 exports.getLocationWithInitiations = function(locationId) {
     return loadCache().then(cache => {
         let location = copy(cache.locationsLookup[locationId]);

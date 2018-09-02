@@ -163,7 +163,10 @@ export class PersonInformation extends React.Component {
         let editLink = "index.html?page=edit-person&personid=" + this.props.person.personId;
 
         return <div>
-            <div><a href={editLink}>Edit Person Data</a></div>
+
+            <div className="pageTitleDiv">
+                <span className="pageTitle">Person</span> | <a href={editLink}>Edit Person Data</a>
+            </div>
 
             <table><tbody>
             <tr>

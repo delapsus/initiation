@@ -1,16 +1,7 @@
 import React from 'react';
-import {postAjax} from './http';
 import {formatDate, formatTime, putObjectInLines} from './common.js';
 import {InitiationDisplay} from './InitiationDisplay.jsx';
-
-function getLocation(locationId) {
-    return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/data/location", {locationId: locationId}, result => {
-            result = JSON.parse(result);
-            resolve(result);
-        });
-    });
-}
+import {getLocationWithData} from "./webservice";
 
 export class LocationPage extends React.Component {
     constructor(props) {
@@ -21,7 +12,7 @@ export class LocationPage extends React.Component {
     }
 
     getLocationData() {
-        getLocation(this.props.locationId).then(result => {
+        getLocationWithData(this.props.locationId).then(result => {
             this.setState({
                 location: result
             });
@@ -59,11 +50,18 @@ export class LocationPage extends React.Component {
 
 export class LocationInformation extends React.Component {
     render() {
+
         let data = this.props.location;
+
+        let editLink = "index.html?page=edit-location&locationid=" + data.locationId;
+
         return <div>
 
-            { /* name/motto */ }
-            <table><tbody>
+            <div className="pageTitleDiv">
+                <span className="pageTitle">Location</span> | <a href={editLink}>Edit Location Data</a>
+            </div>
+
+            <table className="locationInfo" style={{marginBottom:"1em"}}><tbody>
             <tr>
                 <td className="label">Name</td>
                 <td className="label">Type</td>
@@ -71,13 +69,12 @@ export class LocationInformation extends React.Component {
                 <td className="label">State</td>
             </tr>
             <tr>
-                <td><input type="text" value={data.data.name} /></td>
-                <td><input type="text" value={data.data.type} /></td>
-                <td><input type="text" value={data.data.city} /></td>
-                <td><input type="text" value={data.data.state} /></td>
+                <td>{data.data.name}</td>
+                <td>{data.data.type}</td>
+                <td>{data.data.city}</td>
+                <td>{data.data.state}</td>
             </tr>
             </tbody></table>
-
 
         </div>;
     }

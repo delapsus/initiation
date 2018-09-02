@@ -82,7 +82,9 @@ input, textarea, select {
 
 .label {
     font-size: 0.8em;
-
+}
+.locationInfo .label {
+    font-weight: bold;
 }
 
 .indent {

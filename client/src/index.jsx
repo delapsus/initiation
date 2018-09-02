@@ -11,6 +11,7 @@ import {Home} from "./Home.jsx";
 import {InitiationPage} from "./InitiationPage.jsx";
 import {InitiationList} from "./InitiationList.jsx";
 import {EditPerson} from "./EditPerson.jsx";
+import {EditLocation} from "./EditLocation.jsx"
 
 
 class Index extends React.Component {
@@ -44,12 +45,13 @@ class Index extends React.Component {
 
     getPageContent() {
         if (this.state.page === 'people') return <PeopleSearch />;
-
         else if (this.state.page === 'person') return <PersonPage personId={this.state.personId} />;
         else if (this.state.page === 'edit-person') return <EditPerson personId={this.state.personId} />;
 
-        else if (this.state.page === 'location') return <LocationPage locationId={this.state.locationId} />;
         else if (this.state.page === 'locations') return <LocationList />;
+        else if (this.state.page === 'location') return <LocationPage locationId={this.state.locationId} />;
+        else if (this.state.page === 'edit-location') return <EditLocation locationId={this.state.locationId} />;
+
         else if (this.state.page === 'initiations') return <InitiationList />;
         else if (this.state.page === 'initiation') return <InitiationPage initiationId={this.state.initiationId}/>;
         else if (this.state.page === 'application') return <ApplicationFirst />;

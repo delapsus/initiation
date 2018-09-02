@@ -107,6 +107,12 @@ app.post('/data/locations', function (req, res) {
 });
 
 app.post('/data/location', function (req, res) {
+    dataCache.getLocation(req.body.locationId)
+        .then(value => { res.send(JSON.stringify(value)); })
+        .catch(console.error);
+});
+
+app.post('/data/location-with-data', function (req, res) {
     dataCache.getLocationWithInitiations(req.body.locationId)
         .then(value => { res.send(JSON.stringify(value)); })
         .catch(console.error);
@@ -132,6 +138,12 @@ app.post('/data/submit-application', function (req, res) {
 
 app.post('/data/submit-edit-person', function (req, res) {
     submit.submitEditPerson(req.body)
+        .then(value => { res.send(JSON.stringify(value)); })
+        .catch(console.error);
+});
+
+app.post('/data/submit-edit-location', function (req, res) {
+    submit.submitEditLocation(req.body)
         .then(value => { res.send(JSON.stringify(value)); })
         .catch(console.error);
 });

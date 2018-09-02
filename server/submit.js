@@ -1,5 +1,6 @@
 let Person = require('./data2/person');
 let Initiation = require('./data2/initiation');
+let Location = require('./data2/location');
 let dataCache = require('./data-cache');
 
 exports.submitApplication = function(post) {
@@ -78,6 +79,12 @@ exports.submitApplication = function(post) {
 
 exports.submitEditPerson = function(post) {
     return Person.save(post.person)
+        .then(dataCache.clearCache)
+        .then(() => {return {};});
+};
+
+exports.submitEditLocation = function(post) {
+    return Location.save(post.location)
         .then(dataCache.clearCache)
         .then(() => {return {};});
 };
