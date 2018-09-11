@@ -417,31 +417,30 @@ exports.getPeople = post => {
             case 'officered': people.sort(sortMethods.byOfficeredCount); break;
         }
 
-
-        let totalCount = people.length;
-
-        // page it down to size
-        let pageSize = post.pageSize || 0;
-        let index = post.index || 0;
-        let start = pageSize * index;
-
-        // outside the bounds
-        if (people.length <= start) people = [];
-
-        // page is completely within bounds
-        else if (people.length >= start + pageSize) people = people.slice(start, start + pageSize);
-
-        // just the end records
-        else people = people.slice(start, people.length);
-
         return {
-            count: totalCount,
-            people: people
+            count: people.length,
+            people: paginate(people, post)
         };
 
     });
 
 };
+
+function paginate(array, post) {
+    // page it down to size
+    let pageSize = post.pageSize || 0;
+    let index = post.index || 0;
+    let start = pageSize * index;
+
+    // outside the bounds
+    if (array.length <= start) return [];
+
+    // page is completely within bounds
+    else if (array.length >= start + pageSize) return array.slice(start, start + pageSize);
+
+    // just the end records
+    else return array.slice(start, array.length);
+}
 
 exports.getPerson = function(personId) {
 
@@ -506,6 +505,65 @@ exports.getLocation = function(locationId) {
         location.initiationsPerformed = null;
 
         return location;
+    });
+};
+
+//pageSize:10, index: 0, textSearch: state.textSearch
+exports.getLocations = function(post) {
+    return loadCache().then(cache => {
+
+        let locations = cache.locations.slice(0);
+
+
+        if (post.textSearch && post.textSearch.length > 0) {
+            let text = post.textSearch.toLowerCase();
+
+            let parts = text.split(' ');
+
+            let matching = [];
+            locations.forEach(location => {
+                let possible = [];
+                if (location.data.name) possible.push(location.data.name.toLowerCase());
+
+
+                let allMatch = true;
+                parts.forEach(part => {
+
+                    if (part.length === 0) return;
+
+                    let match = false;
+                    for (let i = 0; i < possible.length; i++) {
+                        if (possible[i] === null) continue;
+                        if (possible[i].indexOf(part) !== -1) {
+                            match = true;
+                            possible[i] = null;
+                            break;
+                        }
+                    }
+                    if (!match) allMatch = false;
+                });
+                if (allMatch) matching.push(location);
+            });
+
+            locations = matching;
+        }
+
+
+
+
+        locations.sort((a,b) => {
+            if (a.data.name < b.data.name) return -1;
+            if (a.data.name > b.data.name) return 1;
+            return 0;
+        });
+
+        if (post && post !== null) {
+            locations = paginate(locations, post);
+        }
+
+        return {
+            locations: locations
+        };
     });
 };
 

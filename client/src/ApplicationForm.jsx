@@ -8,6 +8,7 @@ import DatePicker from 'react-datepicker';
 import moment from 'moment';
 
 import 'react-datepicker/dist/react-datepicker.css';
+import {LocationPicker} from "./LocationPicker.jsx";
 
 
 
@@ -87,6 +88,27 @@ export class ApplicationForm extends React.Component {
         this.setState({
             [name]: value
         });
+    }
+
+    handleLocationChange (event) {
+        const target = event.target;
+        const name = target.name;
+        const nameNew = target.nameNew;
+        const id = target.location.locationId;
+
+        if (id === -1) {
+            this.setState({
+                [name]: id,
+                [nameNew]: target.location.data
+            });
+        }
+        else {
+            this.setState({
+                [name]: id,
+                [nameNew]: null
+            });
+        }
+
     }
 
     handlePersonChange (event) {
@@ -335,11 +357,11 @@ export class ApplicationForm extends React.Component {
                 </div>
                 <div className="formItem">
                     <div className="formItemTitle">L/O/C to perform initiation</div>
-                    <div><input type="text" name="proposedLocation" value={this.state.proposedLocation} onChange={this.handleChange.bind(this)} /></div>
+                    <div><LocationPicker name="performedAt_locationId" nameNew="performedAt_locationNameNew" onChange={this.handleLocationChange.bind(this)} /></div>
                 </div>
                 <div className="formItem">
                     <div className="formItemTitle">Submitted through Lodge / Oasis</div>
-                    <div><input type="text" name="proposedLocation" value={this.state.proposedLocation} onChange={this.handleChange.bind(this)} /></div>
+                    <div><LocationPicker name="submittedThrough_locationId" nameNew="submittedThrough_locationNameNew" onChange={this.handleLocationChange.bind(this)} /></div>
                 </div>
             </div>
 

@@ -93,15 +93,7 @@ app.post('/data/merge-person', function (req, res) {
 
 
 app.post('/data/locations', function (req, res) {
-    Location.selectAll()
-        .then(results => {
-            results.sort((a,b) => {
-                if (a.data.name < b.data.name) return -1;
-                if (a.data.name > b.data.name) return 1;
-                return 0;
-            });
-            return {locations:results};
-        })
+    dataCache.getLocations(req.body)
         .then(value => { res.send(JSON.stringify(value)); })
         .catch(console.error);
 });
