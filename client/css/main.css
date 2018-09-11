@@ -204,6 +204,14 @@ input, textarea, select {
     margin-right: 1em;
 }
 
+.initiationPage > div > div {
+    display:inline-block;
+    vertical-align: top;
+}
+.initiationPage > div > div.title {
+    width:8em;
+}
+
 
 
 

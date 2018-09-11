@@ -35,43 +35,41 @@ export class InitiationPage extends React.Component {
 
         let init = this.state.initiation;
 
-        let officers = init.data.officers.map(o => {
-            return <div>{o.officer.name}: <PersonLink person={o.person} altName={o.name} /></div>
+        let officers = init.data.officers.map((o, i) => {
+            return <div key={i}>
+                <div className="title">{o.officer.name}:</div><div><PersonLink person={o.person} altName={o.name} /></div>
+            </div>
         });
 
-        let otherPeople = init.otherPeople.map(p => {
-            return <div><PersonLink person={p} /></div>
+        let otherPeople = init.otherPeople.map((p, i) => {
+            return <div key={i}><PersonLink person={p} /></div>
         });
 
 
         return <div className="initiationPage">
 
-            <div>Degree: {init.degree.name}</div>
-            <div>Person: <PersonLink person={init.person} /></div>
-            <div>Location: <LocationLink location={init.location} altName={init.data.location}></LocationLink></div>
+            <div><div className="title">Person:</div><div><PersonLink person={init.person} /></div></div>
+            <div><div className="title">Degree:</div><div>{init.degree.name}</div></div>
+            <div><div className="title">Sponsor 1:</div><div><PersonLink person={init.sponsor1_person} altNameFirst={init.data.sponsor1First} altNameLast={init.data.sponsor1Last} /></div></div>
+            <div><div className="title">Sponsor 2:</div><div><PersonLink person={init.sponsor2_person} altNameFirst={init.data.sponsor2First} altNameLast={init.data.sponsor2Last} /></div></div>
+            <div><div className="title">Local body Membership:</div><div>{init.data.localBody}</div></div>
 
-            <div>Sponsor 1: <PersonLink person={init.sponsor1_person} altNameFirst={init.data.sponsor1First} altNameLast={init.data.sponsor1Last} /></div>
-            <div>Sponsor 2: <PersonLink person={init.sponsor2_person} altNameFirst={init.data.sponsor2First} altNameLast={init.data.sponsor2Last} /></div>
+            <div style={{marginTop:"1em"}}><div className="title">Location:</div><div><LocationLink location={init.location} altName={init.data.location}></LocationLink></div></div>
             {officers}
-            <div>Other People:</div>
-            {otherPeople}
+            <div><div className="title">Others Initiated:</div><div>{otherPeople}</div></div>
 
+            <div style={{marginTop:"1em"}}><div className="title">localBodyDate:</div><div>{formatDate(init.data.localBodyDate)}</div></div>
+            <div><div className="title">signedDate:</div><div>{formatDate(init.data.signedDate)}</div></div>
+            <div><div className="title">proposedDate:</div><div>{formatDate(init.data.proposedDate)}</div></div>
+            <div><div className="title">approvedDate:</div><div>{formatDate(init.data.approvedDate)}</div></div>
+            <div><div className="title">actualDate:</div><div>{formatDate(init.data.actualDate)}</div></div>
+            <div><div className="title">reportedDate:</div><div>{formatDate(init.data.reportedDate)}</div></div>
 
-            <div>Local body Membership: {init.data.localBody}</div>
+            <div style={{marginTop:"1em"}}><div>Cert:</div></div>
+            <div><div className="title">Received:</div><div>{formatDate(init.data.certReceivedDate)}</div></div>
+            <div><div className="title">Sent Out For Signature:</div><div>{formatDate(init.data.certSentOutForSignatureDate)}</div></div>
+            <div><div className="title">Sent Out To Body:</div><div>{formatDate(init.data.certSentOutToBodyDate)}</div></div>
 
-            <div>localBodyDate: {formatDate(init.data.localBodyDate)}</div>
-            <div>signedDate: {formatDate(init.data.signedDate)}</div>
-            <div>proposedDate: {formatDate(init.data.proposedDate)}</div>
-            <div>approvedDate: {formatDate(init.data.approvedDate)}</div>
-            <div>actualDate: {formatDate(init.data.actualDate)}</div>
-            <div>reportedDate: {formatDate(init.data.reportedDate)}</div>
-
-            <div>Cert:</div>
-            <div>certReceivedDate: {formatDate(init.data.certReceivedDate)}</div>
-            <div>certSentOutForSignatureDate: {formatDate(init.data.certSentOutForSignatureDate)}</div>
-            <div>certSentOutToBodyDate: {formatDate(init.data.certSentOutToBodyDate)}</div>
-
-            <div dangerouslySetInnerHTML={html} />
         </div>;
     }
 

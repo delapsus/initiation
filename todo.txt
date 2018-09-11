@@ -1,21 +1,25 @@
-1. Make application input pages for all forms
+* Make application input pages for all forms
 
-2. Allow person, initiation, and location data to be edited.
- - person done
+* Allow initiation data to be edited.
+ - person, location done
  - maybe better reloading of cache?
 
-3. Allow the various dates around initiations to be easily inputted (updating cert dates etc.)
+* Allow the various dates around initiations to be easily inputted (updating cert dates etc.)
 
-4. Allow merging of entities (person, location)
+* Allow merging of entities (location)
+ - person complete
 
-5. allow deleting of entities
+* allow deleting of entities
+ - people can be archived on merge, need to add to person page?
 
-Sort order on the people search page
+* show unique people sponsored on people list
 
--- Be able to run a report that gives me all apps submitted in the last year that do not have matching ISRs.
+* show active states in people list
+
+* Be able to run a report that gives me all apps submitted in the last year that do not have matching ISRs.
 This will enable me to be able to catch expired apps, but also send the LB a report showing which ISRs they should be submitting and which apps they should expire.
 
--- ISRs submitted but no certs submitted. (exception would be minerval). I'd like to run a report that shows which ISRs were submitted without certs.
+* ISRs submitted but no certs submitted. (exception would be minerval). I'd like to run a report that shows which ISRs were submitted without certs.
 
 -- Note that both of those likely have a TON of legacy/old items.
 Its not going to be useful for me to know that horizon has 400 "expired" applications etc.

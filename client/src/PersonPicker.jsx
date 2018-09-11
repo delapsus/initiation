@@ -1,5 +1,6 @@
 import React from "react";
 import {postAjax} from "./http";
+import {getDegreeById} from "./degree";
 
 function getPeople(state) {
     return new Promise((resolve, reject) => {
@@ -20,7 +21,8 @@ export class PersonPicker extends React.Component {
             middleName: '',
             lastName: '',
             suggestions: null,
-            personId: null
+            personId: null,
+            lookupDegreeId: props.hasOwnProperty('lookupDegreeId') ? props.lookupDegreeId : null
         };
 
     }
@@ -125,9 +127,15 @@ export class PersonPicker extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+
+        if (prevProps.lookupDegreeId !== this.props.lookupDegreeId) {
+            this.setState({lookupDegreeId: this.props.lookupDegreeId});
+        }
+
         if (prevState.firstName === this.state.firstName
             && prevState.middleName === this.state.middleName
             && prevState.lastName === this.state.lastName
+            && prevState.lookupDegreeId === this.state.lookupDegreeId
         ) return;
         this.getData();
     }
@@ -151,14 +159,28 @@ export class PersonPicker extends React.Component {
             </tr>);
 
             this.state.suggestions.people.forEach((person, i) => {
+
+                let initiation = person.initiations.find(init => {
+                    if (init.data.degreeId === this.state.lookupDegreeId) return true;
+                }) || null;
+                let initDate = (initiation === null) ? '' :  initiation.data.actualDate;
+                let initDateCol = this.state.lookupDegreeId === null ? '' : <td>{initDate}</td>;
+
                 picks.push(<tr key={i}>
                     <td><input type="radio" name={this.props.name + "Radio"} value={person.personId} onChange={this.handleChange.bind(this)} checked={person.personId === this.state.personId} /></td>
                     <td>{person.data.firstName}</td>
                     <td>{person.data.middleName}</td>
                     <td>{person.data.lastName}</td>
+                    {initDateCol}
                 </tr>);
             });
 
+        }
+
+        let degreeHeader = '';
+        if (this.state.lookupDegreeId) {
+            let degree = getDegreeById(this.state.lookupDegreeId);
+            degreeHeader = <th>{degree.longName || degree.name}</th>;
         }
 
         return <div className="personPicker">
@@ -171,6 +193,7 @@ export class PersonPicker extends React.Component {
                     <th className="formItemTitle">First</th>
                     <th className="formItemTitle">Middle</th>
                     <th className="formItemTitle">Last</th>
+                    {degreeHeader}
                 </tr>
                 </thead>
                 <tbody>{picks}</tbody>

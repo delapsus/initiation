@@ -119,7 +119,7 @@ app.post('/data/location-with-data', function (req, res) {
 });
 
 app.post('/data/initiation', function (req, res) {
-    dataCache.getInitiation(req.body.initiationId)
+    dataCache.getInitiationWithData(req.body.initiationId)
         .then(value => { res.send(JSON.stringify(value)); })
         .catch(console.error);
 });

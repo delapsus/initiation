@@ -180,6 +180,7 @@ function loadCache() {
                 peopleList: result[0].peopleList,
                 peopleLookup: result[0].peopleLookup,
                 initiationList: result[0].initiationList,
+                initiationLookup: result[0].initiationLookup,
                 locations: result[1].locations,
                 locationsLookup: result[1].locationsLookup
             };
@@ -211,6 +212,7 @@ function loadAllPeopleWithInits() {
 
         let initiations = results[1];
         let initiationList = [];
+        let initiationLookup = {};
 
         // give the initiations to the people
         initiations.forEach(init => {
@@ -233,6 +235,7 @@ function loadAllPeopleWithInits() {
             o.degree = init.degree;
             o.person = copy(person);
             initiationList.push(o);
+            initiationLookup[o.initiationId] = o;
 
             // give this init to the sponsors
             let sponsor1 = lookup[o.data.sponsor1_personId];
@@ -282,7 +285,7 @@ function loadAllPeopleWithInits() {
 
 
 
-        return { peopleList:people, peopleLookup: lookup, initiationList: initiationList };
+        return { peopleList:people, peopleLookup: lookup, initiationList: initiationList, initiationLookup: initiationLookup };
     });
 }
 
@@ -529,10 +532,11 @@ exports.getLocationWithInitiations = function(locationId) {
     });
 };
 
-exports.getInitiation = function(initiationId) {
+exports.getInitiationWithData = function(initiationId) {
     return loadCache().then(cache => {
         // first we need to find it, should eventually create this as a lookup
-        let original = getInitiation(initiationId);
+        let original = cache.initiationLookup[initiationId];
+
         let initiation = copy(original);
 
         initiation.degree = original.degree;
@@ -566,18 +570,6 @@ exports.getInitiation = function(initiationId) {
         return Promise.resolve(initiation);
     });
 };
-
-function getInitiation(initiationId) {
-    for (let i = 0; i < cache.peopleList.length; i++) {
-        let p = cache.peopleList[i];
-        for (let j = 0; j < p.initiations.length; j++) {
-            if (p.initiations[j].initiationId === initiationId) {
-                return p.initiations[j];
-            }
-        }
-    }
-    return null;
-}
 
 exports.getInitiations = (post) => {
     return loadCache().then(cache => {

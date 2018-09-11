@@ -1,13 +1,13 @@
 let values = [
-    {name:'0', rank:0},
-    {name:'1', rank:1},
-    {name:'2', rank:2},
-    {name:'3', rank:3},
-    {name:'4', rank:4},
-    {name:'PI', rank:5},
-    {name:'KEW', rank:6},
-    {name:'5', rank:7},
-    {name:'KRE', rank:8},
+    {name:'0', rank:0, longName:'Minerval'},
+    {name:'1', rank:1, longName:'First'},
+    {name:'2', rank:2, longName:'Second'},
+    {name:'3', rank:3, longName:'Third'},
+    {name:'4', rank:4, longName:'Fourth'},
+    {name:'PI', rank:5, longName:'P.I.'},
+    {name:'KEW', rank:6, longName:'K.E.W.'},
+    {name:'5', rank:7, longName:'Fifth'},
+    {name:'KRE', rank:8, longName:'K.R.E.'},
     {name:'6', rank:9},
     {name:'GIC', rank:10},
     {name:'PRS', rank:11},
@@ -25,6 +25,7 @@ values.forEach(o => {
     lookup[o.degreeId.toString()] = o;
 });
 
+export let allDegrees = values;
 
 export function getDegreeById(degreeId) {
     if (isNaN(degreeId)) return unknown;

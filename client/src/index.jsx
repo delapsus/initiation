@@ -6,7 +6,7 @@ import {PersonPage} from './PersonPage.jsx';
 import {LocationPage} from './LocationPage.jsx';
 import {LocationList} from './LocationList.jsx';
 import {PeopleSearch} from './PeopleSearch.jsx';
-import {ApplicationFirst} from "./ApplicationFirst.jsx";
+import {ApplicationForm} from "./ApplicationForm.jsx";
 import {Home} from "./Home.jsx";
 import {InitiationPage} from "./InitiationPage.jsx";
 import {InitiationList} from "./InitiationList.jsx";
@@ -54,7 +54,7 @@ class Index extends React.Component {
 
         else if (this.state.page === 'initiations') return <InitiationList />;
         else if (this.state.page === 'initiation') return <InitiationPage initiationId={this.state.initiationId}/>;
-        else if (this.state.page === 'application') return <ApplicationFirst />;
+        else if (this.state.page === 'application') return <ApplicationForm />;
 
         else return <Home />;
     }
