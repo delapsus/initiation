@@ -1,6 +1,6 @@
 import React from 'react';
 import {postAjax} from './http';
-import {formatDate} from './common.js';
+import {formatDate, getInitiationDate} from './common.js';
 import {submitMergePerson, getPersonWithData} from "./webservice";
 
 
@@ -233,15 +233,7 @@ function ago(date) {
     return `${years}yrs`;
 }
 
-function getInitiationDate(init) {
-    let date = init.data.actualDate || null;
-    let noActualDate = date === null;
-    date = date || init.data.proposedDate || init.data.signedDate || init.data.localBodyDate;
 
-    let actualDate = formatDate(date);
-    if (noActualDate && actualDate.length > 0) actualDate = "[" + actualDate + "]";
-    return actualDate;
-}
 
 class PeopleDisplay extends React.Component {
 

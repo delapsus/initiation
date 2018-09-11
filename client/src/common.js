@@ -56,3 +56,17 @@ export function putObjectInLines(o) {
     //lines.push('<div>}</div>');
     return lines.join('\n');
 }
+
+
+export function getInitiationDate(init) {
+
+    if (init === null) return "";
+
+    let date = init.data.actualDate || null;
+    let noActualDate = date === null;
+    date = date || init.data.proposedDate || init.data.signedDate || init.data.localBodyDate || init.data.reportedDate;
+
+    let actualDate = formatDate(date);
+    if (noActualDate && actualDate.length > 0) actualDate = "[" + actualDate + "]";
+    return actualDate;
+}

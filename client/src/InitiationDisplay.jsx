@@ -1,7 +1,7 @@
 import React from 'react';
 import {getDegreeById} from './degree';
 import {getOfficerById} from "./officer";
-import {formatDate, formatTime, putObjectInLines} from './common.js';
+import {getInitiationDate} from './common.js';
 import {PersonLink} from './PersonLink.jsx';
 import {LocationLink} from './LocationLink.jsx';
 
@@ -13,12 +13,7 @@ export class InitiationDisplay extends React.Component {
         // degree info
         let degree = getDegreeById(+o.data.degreeId);
 
-        let date = o.data.actualDate || null;
-        let noActualDate = date === null;
-        date = date || o.data.proposedDate || o.data.signedDate || o.data.localBodyDate || o.data.reportedDate;
-
-        let actualDate = formatDate(date);
-        if (noActualDate && actualDate.length > 0) actualDate = "[" + actualDate + "]";
+        let actualDate = getInitiationDate(o);
 
         let personLink = this.props.showPerson ? <div className="field person"><PersonLink person={o.person} /></div> : "";
 

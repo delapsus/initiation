@@ -1,6 +1,7 @@
 import React from "react";
 import {postAjax} from "./http";
 import {getDegreeById} from "./degree";
+import {getInitiationDate} from './common.js';
 
 function getPeople(state) {
     return new Promise((resolve, reject) => {
@@ -163,8 +164,8 @@ export class PersonPicker extends React.Component {
                 let initiation = person.initiations.find(init => {
                     if (init.data.degreeId === this.state.lookupDegreeId) return true;
                 }) || null;
-                let initDate = (initiation === null) ? '' :  initiation.data.actualDate;
-                let initDateCol = this.state.lookupDegreeId === null ? '' : <td>{initDate}</td>;
+
+                let initDateCol = this.state.lookupDegreeId === null ? '' : <td>{getInitiationDate(initiation)}</td>;
 
                 picks.push(<tr key={i}>
                     <td><input type="radio" name={this.props.name + "Radio"} value={person.personId} onChange={this.handleChange.bind(this)} checked={person.personId === this.state.personId} /></td>

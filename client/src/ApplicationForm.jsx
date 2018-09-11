@@ -208,7 +208,7 @@ export class ApplicationForm extends React.Component {
                 <div><input type="text" name="bodyMembership" value={this.state.bodyMembership} onChange={this.handleChange.bind(this)} /></div>
             </div>
         </div>;
-                let bodyMembershipMinerval= "";
+        let bodyMembershipMinerval= "";
 
         if (this.state.degreeId === 1) {
             bodyMembershipMinerval = bodyMembership;
@@ -255,6 +255,10 @@ export class ApplicationForm extends React.Component {
             <div className="formLine">
                 {this.createFormItem('Degree', false, <select value={this.state.degreeId} onChange={this.handleDegreeChange.bind(this)}>{degrees}</select>)}
                 {this.createFormItem('Date Signed', false, <DatePicker selected={moment(this.state.signedDate)} onChange={m => {this.handleChange({target:{type:'DatePicker', value:m.toDate(), name:'signedDate'}})}} />)}
+                <div className="formItem">
+                    <div className="formItemTitle">Notes</div>
+                    <div><textarea type="text" cols="70" rows="2" name="notes" value={this.state.notes} onChange={this.handleChange.bind(this)} /></div>
+                </div>
             </div>
 
             <div className="formLine">
@@ -330,7 +334,7 @@ export class ApplicationForm extends React.Component {
                     </div>
                 </div>
                 <div className="formItem">
-                    <div className="formItemTitle">Lodge / Oasis / Camp to perform initiation</div>
+                    <div className="formItemTitle">L/O/C to perform initiation</div>
                     <div><input type="text" name="proposedLocation" value={this.state.proposedLocation} onChange={this.handleChange.bind(this)} /></div>
                 </div>
                 <div className="formItem">
@@ -385,6 +389,8 @@ export class ApplicationForm extends React.Component {
                     <PersonPicker name="sponsor2_personId" nameNew="sponsor2" onChange={this.handlePersonChange.bind(this)} />
                 </div>
             </div>
+
+
 
             <div className="formLine">
                 <div className="formItem">
