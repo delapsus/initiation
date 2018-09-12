@@ -62,8 +62,6 @@ export class ApplicationForm extends React.Component {
             deniedInitiation:false,
 
             proposedDate: new Date(),
-            proposedLocation: '', // TODO make this a selector like name
-
 
             contactName: '',
             contactPhone: '',
@@ -357,11 +355,11 @@ export class ApplicationForm extends React.Component {
                 </div>
                 <div className="formItem">
                     <div className="formItemTitle">L/O/C to perform initiation</div>
-                    <div><LocationPicker name="performedAt_locationId" nameNew="performedAt_locationNameNew" onChange={this.handleLocationChange.bind(this)} /></div>
+                    <div><LocationPicker name="performedAt_locationId" nameNew="performedAt_location" onChange={this.handleLocationChange.bind(this)} /></div>
                 </div>
                 <div className="formItem">
                     <div className="formItemTitle">Submitted through Lodge / Oasis</div>
-                    <div><LocationPicker name="submittedThrough_locationId" nameNew="submittedThrough_locationNameNew" onChange={this.handleLocationChange.bind(this)} /></div>
+                    <div><LocationPicker name="submittedThrough_locationId" nameNew="submittedThrough_location" onChange={this.handleLocationChange.bind(this)} /></div>
                 </div>
             </div>
 

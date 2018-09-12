@@ -51,21 +51,34 @@ exports.submitApplication = function(post) {
         }));
     }
 
+    // create any locations if needed
+    if (post.data.performedAt_locationId === -1) {
+        let location = Person.create({data:{
+                name: post.data.performedAt_location.name
+            }});
+
+        saving.push(Location.save(location).then(() => {
+            post.data.performedAt_locationId = location.locationId;
+            console.log('location created as performedAt: ' + location.locationId);
+        }));
+    }
+
+    if (post.data.submittedThrough_locationId === -1) {
+        let location = Person.create({data:{
+                name: post.data.submittedThrough_location.name
+            }});
+
+        saving.push(Location.save(location).then(() => {
+            post.data.submittedThrough_locationId = location.locationId;
+            console.log('location created as submittedThrough: ' + location.locationId);
+        }));
+    }
+
     // wait for any saving person records
     return Promise.all(saving).then(() => {
         // then save the initiation
 
-        let init = Initiation.create({data:{
-                personId: post.data.personId,
-                degreeId: post.data.degreeId,
-                locationId: post.data.locationId,
-                sponsor1_personId: post.data.sponsor1_personId,
-                sponsor2_personId: post.data.sponsor2_personId,
-
-                localBody: post.data.bodyMembership,
-                signedDate: post.data.signedDate,
-                proposedDate: post.data.proposedDate
-            }});
+        let init = Initiation.create({data:post.data});
 
         return Initiation.save(init).then(() => {
             dataCache.clearCache();

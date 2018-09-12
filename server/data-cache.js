@@ -548,16 +548,13 @@ exports.getLocations = function(post) {
             locations = matching;
         }
 
-
-
-
         locations.sort((a,b) => {
             if (a.data.name < b.data.name) return -1;
             if (a.data.name > b.data.name) return 1;
             return 0;
         });
 
-        if (post && post !== null) {
+        if (post && post !== null && post.hasOwnProperty('pageSize')) {
             locations = paginate(locations, post);
         }
 
