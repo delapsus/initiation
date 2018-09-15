@@ -128,6 +128,12 @@ app.post('/data/submit-application', function (req, res) {
         .catch(console.error);
 });
 
+app.post('/data/submit-initiation-report', function (req, res) {
+    submit.submitInitiationReport(req.body)
+        .then(value => { res.send(JSON.stringify(value)); })
+        .catch(console.error);
+});
+
 app.post('/data/submit-edit-person', function (req, res) {
     submit.submitEditPerson(req.body)
         .then(value => { res.send(JSON.stringify(value)); })

@@ -90,6 +90,10 @@ exports.submitApplication = function(post) {
 
 };
 
+exports.submitInitiationReport = function(post) {
+    return Promise.resolve({});
+};
+
 exports.submitEditPerson = function(post) {
     return Person.save(post.person)
         .then(dataCache.clearCache)

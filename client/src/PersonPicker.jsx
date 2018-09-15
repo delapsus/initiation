@@ -85,7 +85,8 @@ export class PersonPicker extends React.Component {
                     type: 'PersonPicker',
                     name: this.props.name,
                     nameNew: this.props.nameNew,
-                    person: person
+                    person: person,
+                    index: this.props.index
                 }
             });
         }

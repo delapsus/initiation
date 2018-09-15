@@ -11,7 +11,8 @@ import {Home} from "./Home.jsx";
 import {InitiationPage} from "./InitiationPage.jsx";
 import {InitiationList} from "./InitiationList.jsx";
 import {EditPerson} from "./EditPerson.jsx";
-import {EditLocation} from "./EditLocation.jsx"
+import {EditLocation} from "./EditLocation.jsx";
+import {InitiationReportForm} from "./InitiationReportForm.jsx";
 
 
 class Index extends React.Component {
@@ -55,6 +56,7 @@ class Index extends React.Component {
         else if (this.state.page === 'initiations') return <InitiationList />;
         else if (this.state.page === 'initiation') return <InitiationPage initiationId={this.state.initiationId}/>;
         else if (this.state.page === 'application') return <ApplicationForm />;
+        else if (this.state.page === 'report-form') return <InitiationReportForm />;
 
         else return <Home />;
     }
@@ -63,7 +65,7 @@ class Index extends React.Component {
         let content = this.getPageContent();
 
         return <div>
-            <div id="menuHeader"><img src="icon.png" className="icon" /> O.T.O. USGL Initiation Database | <a href="index.html?page=people">People</a> | <a href="index.html?page=locations">Locations</a> | <a href="index.html?page=initiations">Initiations</a> | <a href="index.html?page=application">New Application</a></div>
+            <div id="menuHeader"><img src="icon.png" className="icon" /> O.T.O. USGL Initiation Database | <a href="index.html?page=people">People</a> | <a href="index.html?page=locations">Locations</a> | <a href="index.html?page=initiations">Initiations</a> | <a href="index.html?page=application">New Application</a> | <a href="index.html?page=report-form">Initiation Report</a></div>
             {content}
         </div>
     }
