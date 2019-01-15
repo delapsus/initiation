@@ -1,4 +1,5 @@
 * Make application input pages for all forms
+ - finish initiation report
 
 * Allow initiation data to be edited.
  - person, location done
@@ -11,6 +12,10 @@
 
 * allow deleting of entities
  - people can be archived on merge, need to add to person page?
+
+
+
+
 
 * show unique people sponsored on people list
 

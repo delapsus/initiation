@@ -1,0 +1,32 @@
+signedDate
+Full Legal Name
+Country of Birth
+Previous Name
+Magical Name
+Address
+City
+State
+Zipcode
+Phone
+email
+lodge/oasis/camp membership
+Health Conditions/concerns
+Are you unable to drink alcohol?
+Medications currently being taken
+allergies
+Have you been convicted of a felony since minerval?
+Minerval degree received on (date)
+At (place)
+
+INITIATING BODY
+proposedDate
+Lodge/Oasis/Camp to perform initiation
+Local body contact person
+phone
+email
+initiator
+phone
+email
+
+Sponsor's Name
+Sponsor's Name
