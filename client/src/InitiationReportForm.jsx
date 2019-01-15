@@ -19,6 +19,9 @@ export class InitiationReportForm extends React.Component {
     constructor(props) {
         super(props);
 
+        this.officerPickers = [];
+        this.candidatePickers = [];
+
         this.state = {
             errors:[],
             message: "",
@@ -109,7 +112,7 @@ export class InitiationReportForm extends React.Component {
         const target = event.target;
         const name = target.name;
         const nameNew = target.nameNew;
-        const id = target.person.personId;
+        const id = target.personId;
 
         if (id === -1) {
             this.setState({
@@ -187,12 +190,13 @@ export class InitiationReportForm extends React.Component {
 
         let officers = getOfficerByDegreeId(this.state.degreeId);
         let officerInput = officers.map((officer, i) => {
+            this.officerPickers[i] = this.officerPickers[i] || React.createRef();
             let name = officer.name.toLowerCase() + "_personId";
             let nameNew = officer.name.toLowerCase() + "_person";
             return <div className="formLine" key={i}>
                 <div className="formItem">
                     <div className="formItemTitle">{officer.name}</div>
-                    <PersonPicker name={name} nameNew={nameNew} onChange={this.handlePersonChange.bind(this)} />
+                    <PersonPicker ref={this.officerPickers[i]} name={name} />
                 </div>
             </div>;
         });
@@ -203,11 +207,11 @@ export class InitiationReportForm extends React.Component {
             //let nameNew = "candidate" + i + "_person";
             //let notesName = "candidate" + i + "_notes";
             //let notes = this.state.candidateNotes[i];
-
+            this.candidatePickers[i] = this.candidatePickers[i] || React.createRef();
             return <div className="formLine" key={i}>
                 <div className="formItem">
                     <div className="formItemTitle">Candidate {i+1}</div>
-                    <PersonPicker name={name} nameNew="person" index={i} onChange={this.handleIndexedPersonChange.bind(this)} />
+                    <PersonPicker name={name} ref={this.candidatePickers[i]} />
                 </div>
                 <div className="formItem">
                     <div className="formItemTitle">Notes</div>
