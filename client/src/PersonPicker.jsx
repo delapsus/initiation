@@ -12,86 +12,66 @@ function getPeople(state) {
     });
 }
 
+export function submitPersonPicker(data) {
+    return new Promise((resolve, reject) => {
+        postAjax("http://localhost:2020/data/submit-person-picker", {person:data}, result => {
+            result = JSON.parse(result);
+            resolve(result.personId);
+        });
+    });
+}
+
 export class PersonPicker extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
+            personId: null,
+
             firstName: '',
             middleName: '',
             lastName: '',
+
             suggestions: null,
-            personId: null,
+
             lookupDegreeId: props.hasOwnProperty('lookupDegreeId') ? props.lookupDegreeId : null
         };
 
     }
 
-    handleChange (event) {
+    // first/middle/last text change
+    handleTextChange(event) {
+        const target = event.target;
+        let name = target.name;
+        let value = target.value;
+        this.setState({ [name]: value });
+    }
+
+    handleSelectChange (event) {
         const target = event.target;
         let value = (target.type === 'checkbox' ? target.checked : target.value).trim();
-        let name = target.name;
-        const key = this.props.name + "Radio";
+        value = +value;
 
-        if (name === key) name = 'personId';
+        this.setState({ personId: value });
+    }
 
-        if (name === 'personId') value = +value;
 
-        this.setState({
-            [name]: value
-        });
+    async save() {
 
-        // pass up an on change
-        if (name === 'personId' && this.props.hasOwnProperty('onChange')) {
-
-            this.sendChange(value, {
+        // if the ID is -1, we'll need to create the person record
+        if (this.state.personId === -1) {
+            let personId = await submitPersonPicker({
                 firstName: this.state.firstName,
                 middleName: this.state.middleName,
                 lastName: this.state.lastName
             });
-
+            return personId;
         }
-        else {
-            let data = {
-                firstName: this.state.firstName,
-                middleName: this.state.middleName,
-                lastName: this.state.lastName
-            };
 
-            data[name] = value;
-
-            this.sendChange(this.state.personId, data);
-        }
+        // otherwise just use the selected value
+        return this.state.personId;
     }
-
-    sendChange(personId, data) {
-
-        // pass up an on change
-        if (this.props.hasOwnProperty('onChange')) {
-
-            let person = {
-                personId: personId
-            };
-
-            // indicates that this is a new person, pass the data
-            if (person.personId === -1) {
-                person.personId = -1;
-                person.data = data;
-            }
-
-            this.props.onChange({
-                target:{
-                    type: 'PersonPicker',
-                    name: this.props.name,
-                    nameNew: this.props.nameNew,
-                    person: person,
-                    index: this.props.index
-                }
-            });
-        }
-    }
-
 
     getData() {
 
@@ -99,7 +79,6 @@ export class PersonPicker extends React.Component {
             this.setState({suggestions: null});
             return;
         }
-
 
         let combined = this.state.firstName + " " + this.state.lastName; // + " " + this.state.middleName
         getPeople({textSearch:combined.trim()}).then(result => {
@@ -114,8 +93,6 @@ export class PersonPicker extends React.Component {
                 });
 
                 this.setState({suggestions: result, personId: found ? personId : null});
-
-                if (!found) this.sendChange(null, null);
             }
             else {
                 this.setState({suggestions: result});
@@ -130,15 +107,18 @@ export class PersonPicker extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
 
+        // sometimes parent will change the lookupDegreeId
         if (prevProps.lookupDegreeId !== this.props.lookupDegreeId) {
             this.setState({lookupDegreeId: this.props.lookupDegreeId});
         }
 
+        // don't do an update if nothing changed
         if (prevState.firstName === this.state.firstName
             && prevState.middleName === this.state.middleName
             && prevState.lastName === this.state.lastName
             && prevState.lookupDegreeId === this.state.lookupDegreeId
         ) return;
+
         this.getData();
     }
 
@@ -148,15 +128,15 @@ export class PersonPicker extends React.Component {
 
         picks.push(<tr key={-2}>
             <td className="indentBlock"></td>
-            <td><input type="text" name="firstName" value={this.state.firstName} onChange={this.handleChange.bind(this)} autoComplete="new-password" /></td>
-            <td><input type="text" name="middleName" value={this.state.middleName} onChange={this.handleChange.bind(this)} autoComplete="new-password" /></td>
-            <td><input type="text" name="lastName" value={this.state.lastName} onChange={this.handleChange.bind(this)} autoComplete="new-password" /></td>
+            <td><input type="text" name="firstName" value={this.state.firstName} onChange={this.handleTextChange.bind(this)} autoComplete="new-password" /></td>
+            <td><input type="text" name="middleName" value={this.state.middleName} onChange={this.handleTextChange.bind(this)} autoComplete="new-password" /></td>
+            <td><input type="text" name="lastName" value={this.state.lastName} onChange={this.handleTextChange.bind(this)} autoComplete="new-password" /></td>
         </tr>);
 
         if (this.state.suggestions !== null) {
 
             picks.push(<tr key={-1}>
-                <td><input type="radio" name={this.props.name + "Radio"} value={-1} onChange={this.handleChange.bind(this)} /></td>
+                <td><input type="radio" name={this.props.name + "Radio"} value={-1} onChange={this.handleSelectChange.bind(this)} /></td>
                 <td colSpan="3">Create a New Person Entry</td>
             </tr>);
 
@@ -169,7 +149,7 @@ export class PersonPicker extends React.Component {
                 let initDateCol = this.state.lookupDegreeId === null ? '' : <td>{getInitiationDate(initiation)}</td>;
 
                 picks.push(<tr key={i}>
-                    <td><input type="radio" name={this.props.name + "Radio"} value={person.personId} onChange={this.handleChange.bind(this)} checked={person.personId === this.state.personId} /></td>
+                    <td><input type="radio" name={this.props.name + "Radio"} value={person.personId} onChange={this.handleSelectChange.bind(this)} checked={person.personId === this.state.personId} /></td>
                     <td>{person.data.firstName}</td>
                     <td>{person.data.middleName}</td>
                     <td>{person.data.lastName}</td>

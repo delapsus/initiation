@@ -74,6 +74,14 @@ app.post('/data/person', function (req, res) {
         .catch(console.error);
 });
 
+app.post('/data/submit-person-picker', async function (req, res) {
+    try {
+        let personId = await submit.submitPersonPicker(req.body);
+        res.send(JSON.stringify({personId: personId}));
+    }
+    catch(err) { console.error(err); }
+});
+
 app.post('/data/person-with-data', function (req, res) {
 
     dataCache.getPersonWithFullData(req.body.personId)
@@ -128,6 +136,7 @@ app.post('/data/submit-application', function (req, res) {
         .catch(console.error);
 });
 
+// index.html?page=report-form
 app.post('/data/submit-initiation-report', function (req, res) {
     submit.submitInitiationReport(req.body)
         .then(value => { res.send(JSON.stringify(value)); })

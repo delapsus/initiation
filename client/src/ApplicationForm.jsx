@@ -23,6 +23,11 @@ export class ApplicationForm extends React.Component {
         //        {name:'initiationId', type:'number', isPrimary:true},
         //        {name:'degreeId', type:'number'},
 
+        // person pickers
+        this.personId = React.createRef();
+        this.sponsor1_personId = React.createRef();
+        this.sponsor2_personId = React.createRef();
+
         this.state = {
             errors:[],
             message: "",
@@ -31,9 +36,8 @@ export class ApplicationForm extends React.Component {
 
             degreeId: getDegreeByName('1').degreeId,
             personId: null,
-            firstName: '',
-            middleName: '',
-            lastName: '',
+            sponsor1_personId: null,
+            sponsor2_personId: null,
 
             birthCountry: '',
             birthPlace:'',
@@ -69,10 +73,7 @@ export class ApplicationForm extends React.Component {
 
             initiatorName: '',
             initiatorPhone: '',
-            initiatorEmail: '',
-
-            sponsor1Name: '',
-            sponsor2Name: ''
+            initiatorEmail: ''
         };
 
     }
@@ -111,33 +112,25 @@ export class ApplicationForm extends React.Component {
 
     handlePersonChange (event) {
         const target = event.target;
-        const name = target.name;
-        const nameNew = target.nameNew;
-        const id = target.person.personId;
-
-        if (id === -1) {
-            this.setState({
-                [name]: id,
-                [nameNew]: target.person.data
-            });
-        }
-        else {
-            this.setState({
-                [name]: id,
-                [nameNew]: null
-            });
-        }
-
+        this.setState({ [target.name]: target.personId });
     }
+
     handleDegreeChange(event) {
         this.setState({degreeId: +event.target.value});
     }
 
-    handleSubmit (event) {
+    async handleSubmit (event) {
 
         let errors = [];
 
-        if (!this.state.hasOwnProperty('personId') || this.state.personId === null) {
+        let data = JSON.parse(JSON.stringify(this.state));
+
+        // make sure to save all of the person pickers
+        data.personId = await this.personId.current.save();
+        data.sponsor1_personId = await this.sponsor1_personId.current.save();
+        data.sponsor2_personId = await this.sponsor2_personId.current.save();
+
+        if (data.personId === null) {
             errors.push('Must select a person or indicate that a new person entry be created.');
         }
 
@@ -145,7 +138,7 @@ export class ApplicationForm extends React.Component {
             this.setState({errors: errors});
         }
         else {
-            submitApplication(this.state).then(result => {
+            submitApplication(data).then(result => {
                 this.setState({message: "save complete. (this should redirect to the initiation page?)"});
                 window.location = "index.html?initiationid=" + result.initiationId;
             });
@@ -284,7 +277,7 @@ export class ApplicationForm extends React.Component {
             <div className="formLine">
                 <div className="formItem">
                     <div className="formItemTitle">Candidate</div>
-                    <PersonPicker name="personId" nameNew="person" onChange={this.handlePersonChange.bind(this)} lookupDegreeId={prevDegreeId} />
+                    <PersonPicker name="personId" ref={this.personId} lookupDegreeId={prevDegreeId} />
                 </div>
             </div>
 
@@ -399,14 +392,14 @@ export class ApplicationForm extends React.Component {
             <div className="formLine">
                 <div className="formItem">
                     <div className="formItemTitle">Sponsor 1</div>
-                    <PersonPicker name="sponsor1_personId" nameNew="sponsor1" onChange={this.handlePersonChange.bind(this)} />
+                    <PersonPicker name="sponsor1_personId" ref={this.sponsor1_personId} />
                 </div>
             </div>
 
             <div className="formLine">
                 <div className="formItem">
                     <div className="formItemTitle">Sponsor 2</div>
-                    <PersonPicker name="sponsor2_personId" nameNew="sponsor2" onChange={this.handlePersonChange.bind(this)} />
+                    <PersonPicker name="sponsor2_personId" ref={this.sponsor2_personId} />
                 </div>
             </div>
 

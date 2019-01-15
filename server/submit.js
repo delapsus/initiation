@@ -7,50 +7,6 @@ exports.submitApplication = function(post) {
 
     let saving = [];
 
-    // First create the people if needed
-    if (post.data.personId === -1) {
-        let person = Person.create({data:{
-                firstName: post.data.person.firstName,
-                middleName: post.data.person.middleName,
-                lastName: post.data.person.lastName
-            }});
-
-        saving.push(Person.save(person).then(() => {
-            post.data.personId = person.personId;
-            console.log('person created from initiation: ' + person.personId);
-        }));
-    }
-    else {
-        // update the address if need be
-    }
-
-    if (post.data.sponsor1_personId === -1) {
-
-        let person = Person.create({data:{
-            firstName: post.data.sponsor1.firstName,
-            middleName: post.data.sponsor1.middleName,
-            lastName: post.data.sponsor1.lastName
-        }});
-
-        saving.push(Person.save(person).then(() => {
-            post.data.sponsor1_personId = person.personId;
-            console.log('person created as sponsor: ' + person.personId);
-        }));
-    }
-
-    if (post.data.sponsor2_personId === -1) {
-        let person = Person.create({data:{
-                firstName: post.data.sponsor2.firstName,
-                middleName: post.data.sponsor2.middleName,
-                lastName: post.data.sponsor2.lastName
-            }});
-
-        saving.push(Person.save(person).then(() => {
-            post.data.sponsor2_personId = person.personId;
-            console.log('person created as sponsor: ' + person.personId);
-        }));
-    }
-
     // create any locations if needed
     if (post.data.performedAt_locationId === -1) {
         let location = Person.create({data:{
@@ -91,7 +47,18 @@ exports.submitApplication = function(post) {
 };
 
 exports.submitInitiationReport = function(post) {
+
+
+
+
     return Promise.resolve({});
+};
+
+exports.submitPersonPicker = async function(post) {
+    let person = {data:post.person};
+    await Person.save(person);
+    dataCache.clearCache();
+    return person.personId;
 };
 
 exports.submitEditPerson = function(post) {
