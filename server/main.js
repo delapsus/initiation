@@ -82,6 +82,14 @@ app.post('/data/submit-person-picker', async function (req, res) {
     catch(err) { console.error(err); }
 });
 
+app.post('/data/submit-location-picker', async function (req, res) {
+    try {
+        let locationId = await submit.submitLocationPicker(req.body);
+        res.send(JSON.stringify({locationId: locationId}));
+    }
+    catch(err) { console.error(err); }
+});
+
 app.post('/data/person-with-data', function (req, res) {
 
     dataCache.getPersonWithFullData(req.body.personId)

@@ -61,6 +61,14 @@ exports.submitPersonPicker = async function(post) {
     return person.personId;
 };
 
+exports.submitLocationPicker = async function(post) {
+    let location = {data:post.location};
+    await Location.save(location);
+    dataCache.clearCache();
+    return location.locationId;
+};
+
+
 exports.submitEditPerson = function(post) {
     return Person.save(post.person)
         .then(dataCache.clearCache)

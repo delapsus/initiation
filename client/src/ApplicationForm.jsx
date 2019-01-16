@@ -28,6 +28,10 @@ export class ApplicationForm extends React.Component {
         this.sponsor1_personId = React.createRef();
         this.sponsor2_personId = React.createRef();
 
+        // location pickers
+        this.performedAt_locationId = React.createRef();
+        this.submittedThrough_locationId = React.createRef();
+
         this.state = {
             errors:[],
             message: "",
@@ -89,32 +93,6 @@ export class ApplicationForm extends React.Component {
         });
     }
 
-    handleLocationChange (event) {
-        const target = event.target;
-        const name = target.name;
-        const nameNew = target.nameNew;
-        const id = target.location.locationId;
-
-        if (id === -1) {
-            this.setState({
-                [name]: id,
-                [nameNew]: target.location.data
-            });
-        }
-        else {
-            this.setState({
-                [name]: id,
-                [nameNew]: null
-            });
-        }
-
-    }
-
-    handlePersonChange (event) {
-        const target = event.target;
-        this.setState({ [target.name]: target.personId });
-    }
-
     handleDegreeChange(event) {
         this.setState({degreeId: +event.target.value});
     }
@@ -129,6 +107,11 @@ export class ApplicationForm extends React.Component {
         data.personId = await this.personId.current.save();
         data.sponsor1_personId = await this.sponsor1_personId.current.save();
         data.sponsor2_personId = await this.sponsor2_personId.current.save();
+
+        // and location pickers
+        data.performedAt_locationId = await this.performedAt_locationId.current.save();
+        data.submittedThrough_locationId = await this.submittedThrough_locationId.current.save();
+
 
         if (data.personId === null) {
             errors.push('Must select a person or indicate that a new person entry be created.');
@@ -348,11 +331,11 @@ export class ApplicationForm extends React.Component {
                 </div>
                 <div className="formItem">
                     <div className="formItemTitle">L/O/C to perform initiation</div>
-                    <div><LocationPicker name="performedAt_locationId" nameNew="performedAt_location" onChange={this.handleLocationChange.bind(this)} /></div>
+                    <div><LocationPicker ref={this.performedAt_locationId} name="performedAt_locationId" /></div>
                 </div>
                 <div className="formItem">
                     <div className="formItemTitle">Submitted through Lodge / Oasis</div>
-                    <div><LocationPicker name="submittedThrough_locationId" nameNew="submittedThrough_location" onChange={this.handleLocationChange.bind(this)} /></div>
+                    <div><LocationPicker ref={this.submittedThrough_locationId} name="submittedThrough_locationId" /></div>
                 </div>
             </div>
 
