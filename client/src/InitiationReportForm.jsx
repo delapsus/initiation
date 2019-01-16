@@ -19,7 +19,7 @@ export class InitiationReportForm extends React.Component {
     constructor(props) {
         super(props);
 
-        this.officerPickers = [];
+        this.officerPickers = {};
         this.candidatePickers = [React.createRef()];
 
         this.state = {
@@ -48,7 +48,7 @@ export class InitiationReportForm extends React.Component {
         this.setState({degreeId: +event.target.value});
     }
 
-    handleSubmit (event) {
+    async handleSubmit (event) {
 
         let errors = [];
 
@@ -56,11 +56,32 @@ export class InitiationReportForm extends React.Component {
         //    errors.push('Must select a person or indicate that a new person entry be created.');
         //}
 
+        let data = JSON.parse(JSON.stringify(this.state));
+
+        data.candidates = [];
+        for (let i = 0; i < this.state.candidateCount; i++) {
+            let personId = await this.candidatePickers[i].current.save();
+            data.candidates[i] = {
+                personId: personId
+            }
+        }
+
+        data.officers = [];
+        for (let i = 0; i < this.officers.length; i++) {
+            let officerId = this.officers[i].officerId;
+            let key = officerId.toString();
+            let personId = await this.officerPickers[key].current.save();
+            data.officers.push({
+                personId: personId,
+                officerId: officerId
+            });
+        }
+
         if (errors.length > 0) {
             this.setState({errors: errors});
         }
         else {
-            submitInitiationReport(this.state).then(result => {
+            submitInitiationReport(data).then(result => {
                 this.setState({message: "save complete. (this should redirect to the initiation page?)"});
                 //window.location = "index.html?initiationid=" + result.initiationId;
             });
@@ -98,6 +119,7 @@ export class InitiationReportForm extends React.Component {
 
         // manage officers
         let officers = getOfficerByDegreeId(this.state.degreeId);
+        this.officers = officers;
 
         // fix the pickers
         let target = officers.map(o => { return o.officerId.toString(); });
