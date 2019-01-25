@@ -43,7 +43,7 @@ let dataFields = [
     {name:'contactPhone'},
     {name:'contactEmail'},
 
-    {name: 'officers', type:'array'}
+    {name: 'officers', type:'array'} // {"officerId":2,"name":"Rayan Rivera-Montez","personId":9440}
 ];
 
 exports.createTable = () => {

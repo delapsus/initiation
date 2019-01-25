@@ -1,4 +1,5 @@
 
+/*
 let database = require('./database');
 
 let tableName = 'InitiationOfficer';
@@ -27,3 +28,4 @@ exports.save = o => {
 exports.selectByInitiationId = initiationId => {
     return database.selectMany(tableName, fields, {initiationId: initiationId});
 };
+*/

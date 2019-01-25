@@ -2,9 +2,6 @@
 
 let path = require('path');
 let database = require('./data2/database');
-let Person = require('./data2/person');
-let Initiation = require('./data2/initiation');
-let Location = require('./data2/location');
 let dataCache = require('./data-cache');
 let submit = require('./submit');
 

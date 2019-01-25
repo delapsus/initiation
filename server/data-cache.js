@@ -456,7 +456,7 @@ exports.getPerson = function(personId) {
 
 };
 
-exports.getPersonWithFullData = function(personId) {
+exports.getPersonWithFullData = async function(personId) {
 
     return loadCache().then(cache => {
         let original = cache.peopleLookup[personId];

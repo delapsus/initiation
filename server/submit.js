@@ -15,9 +15,85 @@ exports.submitApplication = function(post) {
     });
 };
 
-exports.submitInitiationReport = function(post) {
-    return Promise.resolve({});
+exports.submitInitiationReport = async function(post) {
+
+    let degreeId = post.data.degreeId;
+    let candidates = post.data.candidates;
+
+    let initiations = [];
+
+    // first find the initiations
+    await Promise.all(candidates.map(async o => {
+        let person = await dataCache.getPersonWithFullData(o.personId);
+
+        let initiation = person.initiations.find(init => {
+            return init.data.degreeId === degreeId;
+        });
+
+        // if the person does not yet have the initiation, lets create it
+        if (initiation === null) {
+            // TODO create the initiation record and save
+        }
+
+        initiations.push(initiation);
+    }));
+
+    // update the initiations
+    let actualDate = new Date(post.data.initiationDate);
+    let reportedDate = new Date(post.data.reportedDate);
+    let officers = post.data.officers.map(o => { return {personId: o.personId, officerId: o.officerId}; });
+    await Promise.all(initiations.map(async init => {
+        init.data.actualDate = actualDate;
+        init.data.reportedDate = reportedDate;
+        // TODO initiation cert received
+        init.data.officers = JSON.parse(JSON.stringify(officers));
+
+        await Initiation.save(init);
+    }));
+
+    return {};
 };
+
+/*
+
+    {name:'actualDate', type:'datetime'},
+    {name:'reportedDate', type:'datetime'},
+    {name:'certReceivedDate', type:'datetime'},
+
+actualDate:2003-07-19
+reportedDate:2003-08-28
+Cert Received:2003-08-28
+
+{
+  "errors": [],
+  "message": "",
+  "degreeId": 2,
+  "initiationDate",
+  "reportedDate",
+  "candidates": [
+    {
+      "personId": 4484
+    },
+    {
+      "personId": 7954
+    }
+  ],
+  "officers": [
+    {
+      "personId": 3197,
+      "officerId": 1
+    },
+    {
+      "personId": 9312,
+      "officerId": 2
+    },
+    {
+      "personId": 7543,
+      "officerId": 3
+    }
+  ]
+}
+ */
 
 exports.submitPersonPicker = async function(post) {
     let person = {data:post.person};

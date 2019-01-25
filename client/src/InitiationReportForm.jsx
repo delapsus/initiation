@@ -1,8 +1,8 @@
 import React from 'react';
+import {postAjax} from './http';
 import {getDegreeById, getDegreeByName, allDegrees} from './degree';
 import {getOfficerByDegreeId} from './officer';
 import {PersonPicker} from './PersonPicker.jsx';
-import {submitInitiationReport} from "./webservice";
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 
@@ -11,6 +11,14 @@ import {LocationPicker} from "./LocationPicker.jsx";
 
 
 
+export function submitInitiationReport(state) {
+    return new Promise((resolve, reject) => {
+        postAjax("http://localhost:2020/data/submit-initiation-report", {data:state}, result => {
+            result = JSON.parse(result);
+            resolve(result);
+        });
+    });
+}
 
 // https://blog.logrocket.com/an-imperative-guide-to-forms-in-react-927d9670170a
 
@@ -27,6 +35,9 @@ export class InitiationReportForm extends React.Component {
             message: "",
 
             degreeId: getDegreeByName('1').degreeId,
+
+            initiationDate: new Date(new Date() - 1000*60*60*24),
+            reportedDate: new Date(),
 
             candidateCount: 1
         };
@@ -57,6 +68,7 @@ export class InitiationReportForm extends React.Component {
         //}
 
         let data = JSON.parse(JSON.stringify(this.state));
+        delete data.candidateCount;
 
         data.candidates = [];
         for (let i = 0; i < this.state.candidateCount; i++) {
@@ -170,8 +182,11 @@ export class InitiationReportForm extends React.Component {
             </div>
 
             <div className="formLine indent" style={{marginTop:'1em'}}>
-                {this.createFormItem('Date of Initiation', false, <DatePicker selected={moment(this.state.signedDate)} onChange={m => {this.handleChange({target:{type:'DatePicker', value:m.toDate(), name:'signedDate'}})}} />)}
+
                 {this.createFormItem('Degree Initiated', false, <select value={this.state.degreeId} onChange={this.handleDegreeChange.bind(this)}>{degrees}</select>)}
+                {this.createFormItem('Date of Initiation', false, <DatePicker selected={moment(this.state.initiationDate)} onChange={m => {this.handleChange({target:{type:'DatePicker', value:m.toDate(), name:'initiationDate'}})}} />)}
+                {this.createFormItem('Reported Date', false, <DatePicker selected={moment(this.state.reportedDate)} onChange={m => {this.handleChange({target:{type:'DatePicker', value:m.toDate(), name:'reportedDate'}})}} />)}
+
             </div>
 
             <div>
