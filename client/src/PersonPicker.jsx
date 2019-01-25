@@ -26,8 +26,15 @@ export class PersonPicker extends React.Component {
     constructor(props) {
         super(props);
 
+        let savedPerson = props.hasOwnProperty('savedPerson') ? props.savedPerson.person : null;
+        let savedPersonId = props.hasOwnProperty('savedPerson') ? props.savedPerson.personId : null;
+
         this.state = {
-            personId: null,
+            // this should show ABOVE the selector as the selected option
+            savedPersonId: savedPersonId,
+            savedPerson: savedPerson,
+
+            personId: savedPersonId,
 
             firstName: '',
             middleName: '',
@@ -86,13 +93,16 @@ export class PersonPicker extends React.Component {
             let personId = this.state.personId;
 
             if (personId !== null && personId !== -1) {
+
                 // if personId is not in the new result set, reset it
                 let found = false;
                 result.people.forEach(person => {
                     if (person.personId === personId) found = true;
                 });
 
-                this.setState({suggestions: result, personId: found ? personId : null});
+                let newPersonId = this.state.savedPersonId;
+
+                this.setState({suggestions: result, personId: found ? personId : newPersonId});
             }
             else {
                 this.setState({suggestions: result});
@@ -126,6 +136,21 @@ export class PersonPicker extends React.Component {
 
         let picks = [];
 
+        // saved person entry
+        if (this.state.savedPerson !== null) {
+            let initDateCol = this.state.lookupDegreeId === null ? '' : '';//<td>{getInitiationDate(initiation)}</td>;
+            let person = this.state.savedPerson;
+
+            picks.push(<tr key={-3}>
+                <td><input type="radio" name={this.props.name + "Radio"} value={this.state.savedPersonId} onChange={this.handleSelectChange.bind(this)} checked={this.state.savedPersonId === this.state.personId} /></td>
+                <td>{person.data.firstName}</td>
+                <td>{person.data.middleName}</td>
+                <td>{person.data.lastName}</td>
+                {initDateCol}
+            </tr>);
+        }
+
+        // text entry
         picks.push(<tr key={-2}>
             <td className="indentBlock"></td>
             <td><input type="text" name="firstName" value={this.state.firstName} onChange={this.handleTextChange.bind(this)} autoComplete="new-password" /></td>
@@ -135,12 +160,17 @@ export class PersonPicker extends React.Component {
 
         if (this.state.suggestions !== null) {
 
+            // new person option
             picks.push(<tr key={-1}>
                 <td><input type="radio" name={this.props.name + "Radio"} value={-1} onChange={this.handleSelectChange.bind(this)} /></td>
                 <td colSpan="3">Create a New Person Entry</td>
             </tr>);
 
+            // then each of the options
             this.state.suggestions.people.forEach((person, i) => {
+
+                // dont show the saved person
+                if (person.personId === this.state.savedPersonId) return;
 
                 let initiation = person.initiations.find(init => {
                     if (init.data.degreeId === this.state.lookupDegreeId) return true;

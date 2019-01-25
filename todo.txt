@@ -1,5 +1,3 @@
-* Make application input pages for all forms
- - finish initiation report
 
 * Allow initiation data to be edited.
  - person, location done
@@ -15,7 +13,8 @@
 
 
 
-
+- Initiation report could be better
+* check box by each person that represents that a cert has been received
 
 * show unique people sponsored on people list
 

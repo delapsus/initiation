@@ -3,19 +3,35 @@ import {getInitiation} from './webservice';
 import {formatDate, formatTime, putObjectInLines} from './common.js';
 import {PersonLink} from './PersonLink.jsx';
 import {LocationLink} from './LocationLink.jsx';
+import {PersonPicker} from "./PersonPicker.jsx";
+import {getOfficerByDegreeId} from "./officer";
 
 
 
-export class InitiationPage extends React.Component {
+export class EditInitiation extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             initiation: null
         };
+
+        this.officers = {};
+        this.officerPickers = {};
     }
 
     getData() {
         getInitiation(this.props.initiationId).then(result => {
+
+            //init.data.officers.forEach()
+
+            this.officers = getOfficerByDegreeId(result.degree.degreeId);
+
+            // fix the pickers
+            this.officers.forEach(o => {
+                let key = o.officerId.toString();
+                this.officerPickers[key] = React.createRef();
+            });
+
             this.setState({
                 initiation: result
             });
@@ -35,14 +51,24 @@ export class InitiationPage extends React.Component {
 
         let init = this.state.initiation;
 
-        let officers = init.data.officers.map((o, i) => {
-            return <div key={i}>
-                <div className="title">{o.officer.name}:</div><div><PersonLink person={o.person} altName={o.name} /></div>
-            </div>
-        });
 
-        let otherPeople = init.otherPeople.map((p, i) => {
-            return <div key={i}><PersonLink person={p} /></div>
+
+
+        // create the officer rows
+        let officerInput = this.officers.map((officer, i) => {
+            let key = officer.officerId.toString();
+
+            // get the personId if available
+            let officerEntry = this.state.initiation.data.officers.find(o => {
+                return o.officerId === officer.officerId;
+            });
+
+            return <div className="formLine" key={i}>
+                <div className="formItem">
+                    <div className="formItemTitle">{officer.name}</div>
+                    <PersonPicker ref={this.officerPickers[key]} name={"officer" + key} index={i} savedPerson={officerEntry} />
+                </div>
+            </div>;
         });
 
         let editLink = "index.html?page=edit-initiation&initiationid=" + this.props.initiationId;
@@ -60,8 +86,10 @@ export class InitiationPage extends React.Component {
             <div><div className="title">Local body Membership:</div><div>{init.data.localBody}</div></div>
 
             <div style={{marginTop:"1em"}}><div className="title">Location:</div><div><LocationLink location={init.location} altName={init.data.location}></LocationLink></div></div>
-            {officers}
-            <div><div className="title">Others Initiated:</div><div>{otherPeople}</div></div>
+
+            <div>
+                {officerInput}
+            </div>
 
             <div style={{marginTop:"1em"}}><div className="title">localBodyDate:</div><div>{formatDate(init.data.localBodyDate)}</div></div>
             <div><div className="title">signedDate:</div><div>{formatDate(init.data.signedDate)}</div></div>

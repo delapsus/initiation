@@ -12,6 +12,7 @@ import {InitiationPage} from "./InitiationPage.jsx";
 import {InitiationList} from "./InitiationList.jsx";
 import {EditPerson} from "./EditPerson.jsx";
 import {EditLocation} from "./EditLocation.jsx";
+import {EditInitiation} from "./EditInitiation.jsx";
 import {InitiationReportForm} from "./InitiationReportForm.jsx";
 
 
@@ -55,6 +56,8 @@ class Index extends React.Component {
 
         else if (this.state.page === 'initiations') return <InitiationList />;
         else if (this.state.page === 'initiation') return <InitiationPage initiationId={this.state.initiationId}/>;
+        else if (this.state.page === 'edit-initiation') return <EditInitiation initiationId={this.state.initiationId}/>;
+
         else if (this.state.page === 'application') return <ApplicationForm />;
         else if (this.state.page === 'report-form') return <InitiationReportForm />;
 
