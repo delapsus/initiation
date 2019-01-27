@@ -24,7 +24,7 @@ export class LocationPicker extends React.Component {
     constructor(props) {
         super(props);
 
-        let savedLocation = props.hasOwnProperty('savedLocation') ? props.savedLocation.location : null;
+        let savedLocation = props.hasOwnProperty('savedLocation') ? props.savedLocation : null;
         let savedLocationId = props.hasOwnProperty('savedLocation') ? props.savedLocation.locationId : null;
 
         this.state = {
@@ -33,7 +33,7 @@ export class LocationPicker extends React.Component {
             savedLocation: savedLocation,
 
             name: '',
-            locationId: null,
+            locationId: savedLocationId,
             suggestions: null
         };
 
@@ -89,7 +89,8 @@ export class LocationPicker extends React.Component {
                     if (location.locationId === locationId) found = true;
                 });
 
-                this.setState({suggestions: result, locationId: found ? locationId : null});
+                let newLocationId = this.state.savedLocationId;
+                this.setState({suggestions: result, locationId: found ? locationId : newLocationId});
             }
             else {
                 this.setState({suggestions: result});
@@ -113,7 +114,7 @@ export class LocationPicker extends React.Component {
 
         // saved location entry
         if (this.state.savedLocation !== null) {
-            let location = this.state.savedPerson;
+            let location = this.state.savedLocation;
 
             picks.push(<tr key={-3}>
                 <td><input type="radio" name={this.props.name + "Radio"} value={location.locationId} onChange={this.handleSelectChange.bind(this)} checked={location.locationId === this.state.locationId} /></td>
@@ -134,6 +135,10 @@ export class LocationPicker extends React.Component {
             </tr>);
 
             this.state.suggestions.locations.forEach((location, i) => {
+
+                // dont show the saved location
+                if (location.locationId === this.state.savedLocationId) return;
+
                 picks.push(<tr key={i}>
                     <td><input type="radio" name={this.props.name + "Radio"} value={location.locationId} onChange={this.handleSelectChange.bind(this)} checked={location.locationId === this.state.locationId} /></td>
                     <td>{location.data.name}</td>
