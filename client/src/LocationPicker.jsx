@@ -24,7 +24,14 @@ export class LocationPicker extends React.Component {
     constructor(props) {
         super(props);
 
+        let savedLocation = props.hasOwnProperty('savedLocation') ? props.savedLocation.location : null;
+        let savedLocationId = props.hasOwnProperty('savedLocation') ? props.savedLocation.locationId : null;
+
         this.state = {
+            // this should show ABOVE the selector as the selected option
+            savedLocationId: savedLocationId,
+            savedLocation: savedLocation,
+
             name: '',
             locationId: null,
             suggestions: null
@@ -103,6 +110,16 @@ export class LocationPicker extends React.Component {
     render() {
 
         let picks = [];
+
+        // saved location entry
+        if (this.state.savedLocation !== null) {
+            let location = this.state.savedPerson;
+
+            picks.push(<tr key={-3}>
+                <td><input type="radio" name={this.props.name + "Radio"} value={location.locationId} onChange={this.handleSelectChange.bind(this)} checked={location.locationId === this.state.locationId} /></td>
+                <td>{location.data.name}</td>
+            </tr>);
+        }
 
         picks.push(<tr key={-2}>
             <td className="indentBlock"></td>

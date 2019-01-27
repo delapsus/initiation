@@ -26,8 +26,8 @@ export class PersonPicker extends React.Component {
     constructor(props) {
         super(props);
 
-        let savedPerson = props.hasOwnProperty('savedPerson') ? props.savedPerson.person : null;
-        let savedPersonId = props.hasOwnProperty('savedPerson') ? props.savedPerson.personId : null;
+        let savedPerson = props.hasOwnProperty('savedPerson') ? props.savedPerson : null;
+        let savedPersonId = savedPerson === null ? null : savedPerson.personId;
 
         this.state = {
             // this should show ABOVE the selector as the selected option
