@@ -36,7 +36,7 @@ export class ApplicationForm extends React.Component {
             errors:[],
             message: "",
 
-            signedDate: new Date(),
+            signedDate: null,
 
             degreeId: getDegreeByName('1').degreeId,
             personId: null,
@@ -45,6 +45,7 @@ export class ApplicationForm extends React.Component {
 
             birthCountry: '',
             birthPlace:'',
+            birthDate: null,
             birthTime:'',
             profession:'',
 
@@ -69,7 +70,7 @@ export class ApplicationForm extends React.Component {
             convictedOfFelony: false,
             deniedInitiation:false,
 
-            proposedDate: new Date(),
+            proposedDate: null,
 
             contactName: '',
             contactPhone: '',
@@ -87,6 +88,16 @@ export class ApplicationForm extends React.Component {
         let value = (target.hasOwnProperty('type') && target.type === 'checkbox') ? target.checked : target.value;
         if (target.type === 'radio') value = value === 'true';
         const name = target.name;
+
+        this.setState({
+            [name]: value
+        });
+    }
+
+    handleDateChange(e) {
+        let name = e.name;
+        // get a pure UTC date
+        let value = (e.value === null) ? null : new Date(`${e.value.year()}-${e.value.month()+1}-${e.value.date()}Z`);
 
         this.setState({
             [name]: value
@@ -168,7 +179,7 @@ export class ApplicationForm extends React.Component {
         if (this.state.degreeId === 1) {
             minervalSpecific1 = <div className="formLine indent">
                 {this.createFormItem('Profession', false, <input type="text" name="profession" value={this.state.profession} onChange={this.handleChange.bind(this)} />)}
-                {this.createFormItem('Birthdate', false, <DatePicker selected={moment(this.state.birthDate)} onChange={m => {this.handleChange({target:{type:'DatePicker', value:m.toDate(), name:'birthDate'}})}} />)}
+                {this.createFormItem('Birthdate', false, <DatePicker utcOffset={0} selected={this.state.birthDate === null ? null : moment.utc(this.state.birthDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'birthDate'})}} />)}
                 {this.createFormItem('Birthtime', false, <input type="text" name="birthTime" value={this.state.birthTime} onChange={this.handleChange.bind(this)} />)}
                 </div>;
 
@@ -250,7 +261,7 @@ export class ApplicationForm extends React.Component {
 
             <div className="formLine">
                 {this.createFormItem('Degree', false, <select value={this.state.degreeId} onChange={this.handleDegreeChange.bind(this)}>{degrees}</select>)}
-                {this.createFormItem('Date Signed', false, <DatePicker selected={moment(this.state.signedDate)} onChange={m => {this.handleChange({target:{type:'DatePicker', value:m.toDate(), name:'signedDate'}})}} />)}
+                {this.createFormItem('Date Signed', false, <DatePicker utcOffset={0} selected={this.state.signedDate === null ? null : moment.utc(this.state.signedDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'signedDate'})}} />)}
                 <div className="formItem">
                     <div className="formItemTitle">Notes</div>
                     <div><textarea type="text" cols="70" rows="2" name="notes" value={this.state.notes} onChange={this.handleChange.bind(this)} /></div>
@@ -326,7 +337,7 @@ export class ApplicationForm extends React.Component {
                 <div className="formItem">
                     <div className="formItemTitle">Proposed date of initiation</div>
                     <div>
-                        <DatePicker selected={moment(this.state.proposedDate)} onChange={m => {this.handleChange({target:{type:'DatePicker', value:m.toDate(), name:'proposedDate'}})}} />
+                        <DatePicker utcOffset={0} selected={this.state.proposedDate === null ? null : moment.utc(this.state.proposedDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'proposedDate'})}} />
                     </div>
                 </div>
                 <div className="formItem">

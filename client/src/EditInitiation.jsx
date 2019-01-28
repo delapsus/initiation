@@ -3,7 +3,6 @@ import {getInitiation} from './webservice';
 import {formatDate, formatTime, putObjectInLines} from './common.js';
 import {PersonLink} from './PersonLink.jsx';
 import {LocationPicker} from './LocationPicker.jsx';
-import {LocationLink} from './LocationLink.jsx';
 import {PersonPicker} from "./PersonPicker.jsx";
 import {getOfficerByDegreeId} from "./officer";
 import DatePicker from 'react-datepicker';

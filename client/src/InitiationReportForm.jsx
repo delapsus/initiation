@@ -36,7 +36,7 @@ export class InitiationReportForm extends React.Component {
 
             degreeId: getDegreeByName('1').degreeId,
 
-            initiationDate: new Date(new Date() - 1000*60*60*24),
+            initiationDate: null,
             reportedDate: new Date(),
 
             candidateCount: 1
@@ -49,6 +49,16 @@ export class InitiationReportForm extends React.Component {
         let value = (target.hasOwnProperty('type') && target.type === 'checkbox') ? target.checked : target.value;
         if (target.type === 'radio') value = value === 'true';
         const name = target.name;
+
+        this.setState({
+            [name]: value
+        });
+    }
+
+    handleDateChange(e) {
+        let name = e.name;
+        // get a pure UTC date
+        let value = (e.value === null) ? null : new Date(`${e.value.year()}-${e.value.month()+1}-${e.value.date()}Z`);
 
         this.setState({
             [name]: value
@@ -184,8 +194,8 @@ export class InitiationReportForm extends React.Component {
             <div className="formLine indent" style={{marginTop:'1em'}}>
 
                 {this.createFormItem('Degree Initiated', false, <select value={this.state.degreeId} onChange={this.handleDegreeChange.bind(this)}>{degrees}</select>)}
-                {this.createFormItem('Date of Initiation', false, <DatePicker selected={moment(this.state.initiationDate)} onChange={m => {this.handleChange({target:{type:'DatePicker', value:m.toDate(), name:'initiationDate'}})}} />)}
-                {this.createFormItem('Reported Date', false, <DatePicker selected={moment(this.state.reportedDate)} onChange={m => {this.handleChange({target:{type:'DatePicker', value:m.toDate(), name:'reportedDate'}})}} />)}
+                {this.createFormItem('Date of Initiation', false, <DatePicker utcOffset={0} selected={this.state.initiationDate === null ? null : moment.utc(this.state.initiationDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'initiationDate'})}} />)}
+                {this.createFormItem('Reported Date', false, <DatePicker utcOffset={0} selected={this.state.reportedDate === null ? null : moment.utc(this.state.reportedDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'reportedDate'})}} />)}
 
             </div>
 
