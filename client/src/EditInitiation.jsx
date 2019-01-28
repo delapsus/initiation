@@ -6,23 +6,27 @@ import {LocationPicker} from './LocationPicker.jsx';
 import {LocationLink} from './LocationLink.jsx';
 import {PersonPicker} from "./PersonPicker.jsx";
 import {getOfficerByDegreeId} from "./officer";
-
+import DatePicker from 'react-datepicker';
+import moment from "moment";
 
 export class EditInitiation extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
-            initiation: null
+            live: null, // the data as it exists in client memory
+            prev: null,  // the data as it exists in the database,
+            saving: false
         };
+
 
         this.officers = {};
         this.officerPickers = {};
         this.sponsor1Picker = React.createRef();
         this.sponsor2Picker = React.createRef();
         this.locationPicker = React.createRef();
-    }
 
-    getData() {
+        // get the initiation, setup the pickers
         getInitiation(this.props.initiationId).then(result => {
 
             //init.data.officers.forEach()
@@ -35,33 +39,35 @@ export class EditInitiation extends React.Component {
                 this.officerPickers[key] = React.createRef();
             });
 
-
-
-            this.setState({
-                initiation: result
-            });
+            let copy = JSON.parse(JSON.stringify(result));
+            this.setState({ prev: result, live: copy });
         });
     }
 
-    componentDidMount() {
-        this.getData();
+    handleDateChange(e) {
+        let name = e.name;
+        // get a pure UTC date
+        let value = (e.value === null) ? null : new Date(`${e.value.year()}-${e.value.month()+1}-${e.value.date()}Z`);
+
+        this.state.live.data[name] = value;
+
+        this.setState({
+            live: this.state.live
+        });
     }
     
     render() {
 
-        if (this.state.initiation === null) return <div></div>;
+        if (this.state.live === null) return <div></div>;
 
-        //let html = {__html: putObjectInLines(this.state.initiation)};
-        let html = {__html:  "<div></div>"};
-
-        let init = this.state.initiation;
+        let init = this.state.live;
 
         // create the officer rows
         let officerInput = this.officers.map((officer, i) => {
             let key = officer.officerId.toString();
 
             // get the personId if available
-            let officerEntry = this.state.initiation.data.officers.find(o => {
+            let officerEntry = init.data.officers.find(o => {
                 return o.officerId === officer.officerId;
             });
 
@@ -108,7 +114,10 @@ export class EditInitiation extends React.Component {
                 {officerInput}
             </div>
 
-            <div style={{marginTop:"1em"}}><div className="title">localBodyDate:</div><div>{formatDate(init.data.localBodyDate)}</div></div>
+            <div style={{marginTop:"1em"}}>
+                <div className="title">localBodyDate:</div>
+                <div><DatePicker utcOffset={0} selected={init.data.localBodyDate === null ? null : moment.utc(init.data.localBodyDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'localBodyDate'})}} /></div>
+            </div>
             <div><div className="title">signedDate:</div><div>{formatDate(init.data.signedDate)}</div></div>
             <div><div className="title">proposedDate:</div><div>{formatDate(init.data.proposedDate)}</div></div>
             <div><div className="title">approvedDate:</div><div>{formatDate(init.data.approvedDate)}</div></div>
