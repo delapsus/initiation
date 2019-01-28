@@ -138,7 +138,7 @@ export class PersonPicker extends React.Component {
 
         // saved person entry
         if (this.state.savedPerson !== null) {
-            let initDateCol = this.state.lookupDegreeId === null ? '' : '';//<td>{getInitiationDate(initiation)}</td>;
+            let initDateCol = this.state.lookupDegreeId === null ? null : null;//<td>{getInitiationDate(initiation)}</td>;
             let person = this.state.savedPerson;
 
             picks.push(<tr key={-3}>
@@ -176,7 +176,7 @@ export class PersonPicker extends React.Component {
                     if (init.data.degreeId === this.state.lookupDegreeId) return true;
                 }) || null;
 
-                let initDateCol = this.state.lookupDegreeId === null ? '' : <td>{getInitiationDate(initiation)}</td>;
+                let initDateCol = this.state.lookupDegreeId === null ? null : <td>{getInitiationDate(initiation)}</td>;
 
                 picks.push(<tr key={i}>
                     <td><input type="radio" name={this.props.name + "Radio"} value={person.personId} onChange={this.handleSelectChange.bind(this)} checked={person.personId === this.state.personId} /></td>
@@ -189,7 +189,7 @@ export class PersonPicker extends React.Component {
 
         }
 
-        let degreeHeader = '';
+        let degreeHeader = null;
         if (this.state.lookupDegreeId) {
             let degree = getDegreeById(this.state.lookupDegreeId);
             degreeHeader = <th>{degree.longName || degree.name}</th>;
