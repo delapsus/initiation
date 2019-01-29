@@ -63,15 +63,18 @@ export class InitiationPage extends React.Component {
             {officers}
             <div><div className="title">Others Initiated:</div><div>{otherPeople}</div></div>
 
-            <div style={{marginTop:"1em"}}><div className="title">localBodyDate:</div><div>{formatDate(init.data.localBodyDate)}</div></div>
+            <div style={{marginTop:"1em", fontWeight:'bold'}}><div>Application:</div></div>
+            <div><div className="title">localBodyDate:</div><div>{formatDate(init.data.localBodyDate)}</div></div>
             <div><div className="title">signedDate:</div><div>{formatDate(init.data.signedDate)}</div></div>
-            <div><div className="title">proposedDate:</div><div>{formatDate(init.data.proposedDate)}</div></div>
             <div><div className="title">approvedDate:</div><div>{formatDate(init.data.approvedDate)}</div></div>
+
+            <div style={{marginTop:"1em", fontWeight:'bold'}}><div>Initiation:</div></div>
+            <div><div className="title">proposedDate:</div><div>{formatDate(init.data.proposedDate)}</div></div>
             <div><div className="title">actualDate:</div><div>{formatDate(init.data.actualDate)}</div></div>
             <div><div className="title">reportedDate:</div><div>{formatDate(init.data.reportedDate)}</div></div>
 
-            <div style={{marginTop:"1em"}}><div>Cert:</div></div>
-            <div><div className="title">Received:</div><div>{formatDate(init.data.certReceivedDate)}</div></div>
+            <div style={{marginTop:"1em", fontWeight:'bold'}}><div>Certificate:</div></div>
+            <div><div className="title">Received from body:</div><div>{formatDate(init.data.certReceivedDate)}</div></div>
             <div><div className="title">Sent Out For Signature:</div><div>{formatDate(init.data.certSentOutForSignatureDate)}</div></div>
             <div><div className="title">Sent Out To Body:</div><div>{formatDate(init.data.certSentOutToBodyDate)}</div></div>
 

@@ -70,10 +70,12 @@ export class EditInitiation extends React.Component {
                 return o.officerId === officer.officerId;
             });
 
+            let savedPerson = (officerEntry) ? officerEntry.person : null;
+
             return <div className="formLine" key={i}>
                 <div className="formItem">
                     <div className="formItemTitle">{officer.name}</div>
-                    <PersonPicker ref={this.officerPickers[key]} name={"officer" + key} index={i} savedPerson={officerEntry.person} />
+                    <PersonPicker ref={this.officerPickers[key]} name={"officer" + key} index={i} savedPerson={savedPerson} />
                 </div>
             </div>;
         });
@@ -83,7 +85,7 @@ export class EditInitiation extends React.Component {
         return <div className="initiationPage">
 
             <div className="pageTitleDiv">
-                <span className="pageTitle">Initiation</span> | <a href={editLink}>Edit Initiation Data</a>
+                <span className="pageTitle">Edit Initiation</span>
             </div>
 
             <div><div className="title">Person:</div><div><PersonLink person={init.person} /></div></div>
@@ -113,20 +115,47 @@ export class EditInitiation extends React.Component {
                 {officerInput}
             </div>
 
-            <div style={{marginTop:"1em"}}>
+            <div style={{marginTop:"1em", fontWeight:"bold"}}><div>Application:</div></div>
+            <div>
                 <div className="title">localBodyDate:</div>
                 <div><DatePicker utcOffset={0} selected={init.data.localBodyDate === null ? null : moment.utc(init.data.localBodyDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'localBodyDate'})}} /></div>
             </div>
-            <div><div className="title">signedDate:</div><div>{formatDate(init.data.signedDate)}</div></div>
-            <div><div className="title">proposedDate:</div><div>{formatDate(init.data.proposedDate)}</div></div>
-            <div><div className="title">approvedDate:</div><div>{formatDate(init.data.approvedDate)}</div></div>
-            <div><div className="title">actualDate:</div><div>{formatDate(init.data.actualDate)}</div></div>
-            <div><div className="title">reportedDate:</div><div>{formatDate(init.data.reportedDate)}</div></div>
+            <div>
+                <div className="title">signedDate:</div>
+                <div><DatePicker utcOffset={0} selected={init.data.signedDate === null ? null : moment.utc(init.data.signedDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'signedDate'})}} /></div>
+            </div>
+            <div>
+                <div className="title">approvedDate:</div>
+                <div><DatePicker utcOffset={0} selected={init.data.approvedDate === null ? null : moment.utc(init.data.approvedDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'approvedDate'})}} /></div>
+            </div>
 
-            <div style={{marginTop:"1em"}}><div>Cert:</div></div>
-            <div><div className="title">Received:</div><div>{formatDate(init.data.certReceivedDate)}</div></div>
-            <div><div className="title">Sent Out For Signature:</div><div>{formatDate(init.data.certSentOutForSignatureDate)}</div></div>
-            <div><div className="title">Sent Out To Body:</div><div>{formatDate(init.data.certSentOutToBodyDate)}</div></div>
+            <div style={{marginTop:"1em", fontWeight:"bold"}}><div>Initiation:</div></div>
+            <div>
+                <div className="title">proposedDate:</div>
+                <div><DatePicker utcOffset={0} selected={init.data.proposedDate === null ? null : moment.utc(init.data.proposedDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'proposedDate'})}} /></div>
+            </div>
+            <div>
+                <div className="title">actualDate:</div>
+                <div><DatePicker utcOffset={0} selected={init.data.actualDate === null ? null : moment.utc(init.data.actualDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'actualDate'})}} /></div>
+            </div>
+            <div>
+                <div className="title">reportedDate:</div>
+                <div><DatePicker utcOffset={0} selected={init.data.reportedDate === null ? null : moment.utc(init.data.reportedDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'reportedDate'})}} /></div>
+            </div>
+
+            <div style={{marginTop:"1em", fontWeight:"bold"}}><div>Certificate:</div></div>
+            <div>
+                <div className="title">Received from body:</div>
+                <div><DatePicker utcOffset={0} selected={init.data.certReceivedDate === null ? null : moment.utc(init.data.certReceivedDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'certReceivedDate'})}} /></div>
+            </div>
+            <div>
+                <div className="title">Sent Out For Signature:</div>
+                <div><DatePicker utcOffset={0} selected={init.data.certSentOutForSignatureDate === null ? null : moment.utc(init.data.certSentOutForSignatureDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'certSentOutForSignatureDate'})}} /></div>
+            </div>
+            <div>
+                <div className="title">Sent Out To Body:</div>
+                <div><DatePicker utcOffset={0} selected={init.data.certSentOutToBodyDate === null ? null : moment.utc(init.data.certSentOutToBodyDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'certSentOutToBodyDate'})}} /></div>
+            </div>
 
         </div>;
     }

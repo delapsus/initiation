@@ -209,7 +209,9 @@ input, textarea, select {
     vertical-align: top;
 }
 .initiationPage > div > div.title {
-    width:8em;
+    width: 11em;
+    text-align: right;
+    margin-right: 1em;
 }
 
 
