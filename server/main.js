@@ -154,6 +154,12 @@ app.post('/data/submit-edit-person', function (req, res) {
         .catch(console.error);
 });
 
+app.post('/data/submit-edit-initiation', function (req, res) {
+    submit.submitEditInitiation(req.body)
+        .then(value => { res.send(JSON.stringify(value)); })
+        .catch(console.error);
+});
+
 app.post('/data/submit-edit-location', function (req, res) {
     submit.submitEditLocation(req.body)
         .then(value => { res.send(JSON.stringify(value)); })

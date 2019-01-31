@@ -1,5 +1,5 @@
 import React from 'react';
-import {getInitiation} from './webservice';
+import {getInitiation, submitEditPerson} from './webservice';
 import {formatDate, formatTime, putObjectInLines} from './common.js';
 import {PersonLink} from './PersonLink.jsx';
 import {LocationPicker} from './LocationPicker.jsx';
@@ -7,6 +7,16 @@ import {PersonPicker} from "./PersonPicker.jsx";
 import {getOfficerByDegreeId} from "./officer";
 import DatePicker from 'react-datepicker';
 import moment from "moment";
+import {postAjax} from "./http";
+
+async function submitEditInitiation(initiation) {
+    return new Promise((resolve, reject) => {
+        postAjax("http://localhost:2020/data/submit-edit-initiation", {initiation:initiation}, result => {
+            result = JSON.parse(result);
+            resolve(result);
+        });
+    });
+}
 
 export class EditInitiation extends React.Component {
     constructor(props) {
@@ -43,6 +53,19 @@ export class EditInitiation extends React.Component {
         });
     }
 
+    handleChange(event) {
+        const target = event.target;
+        let value = (target.hasOwnProperty('type') && target.type === 'checkbox') ? target.checked : target.value;
+        if (target.type === 'radio') value = value === 'true';
+        const name = target.name;
+
+        this.state.live.data[name] = value;
+
+        this.setState({
+            live: this.state.live
+        });
+    }
+
     handleDateChange(e) {
         let name = e.name;
         // get a pure UTC date
@@ -54,8 +77,62 @@ export class EditInitiation extends React.Component {
             live: this.state.live
         });
     }
-    
+
+    async onSave() {
+
+        // load the IDs
+        this.state.live.data.sponsor1_personId = await this.sponsor1Picker.current.save();
+        this.state.live.data.sponsor2_personId = await this.sponsor2Picker.current.save();
+        this.state.live.data.performedAt_locationId = await this.locationPicker.current.save();
+
+        //this.officerPickers = {};
+        this.state.live.data.officers = [];
+        await Promise.all(Object.keys(this.officerPickers).map(async officerId => {
+            let picker = this.officerPickers[officerId];
+
+            let personId = await picker.current.save();
+
+            this.state.live.data.officers.push({officerId: +officerId, personId: personId});
+        }));
+
+        // create the saving record
+        let record = {
+            initiationId: this.state.live.initiationId,
+            data: JSON.parse(JSON.stringify(this.state.live.data))
+        };
+
+        // send save request
+        submitEditInitiation(record).then(() => {
+
+            // redirect to initiation page
+            //setTimeout(() => {}, 1000);
+            window.location = "index.html?initiationid=" + this.props.initiationId;
+        });
+
+        // set page to saving state
+        this.setState({
+            saving: true
+        });
+
+    }
+
     render() {
+        if (this.state.live === null) return <div>loading...</div>;
+
+        let buttons = <div>
+            <button onClick={this.onSave.bind(this)}>Save</button>
+            <button>Cancel</button>
+        </div>;
+
+        if (this.state.saving) buttons = <div>Saving, please wait...</div>;
+
+        return <div className="personPage">
+            {this.renderEditSection()}
+            {buttons}
+        </div>;
+    }
+    
+    renderEditSection() {
 
         if (this.state.live === null) return <div></div>;
 

@@ -116,6 +116,12 @@ exports.submitEditPerson = function(post) {
         .then(() => {return {};});
 };
 
+exports.submitEditInitiation = function(post) {
+    return Initiation.save(post.initiation)
+        .then(dataCache.clearCache)
+        .then(() => {return {};});
+};
+
 exports.submitEditLocation = function(post) {
     return Location.save(post.location)
         .then(dataCache.clearCache)
