@@ -34,7 +34,7 @@ export class InitiationReportForm extends React.Component {
             errors:[],
             message: "",
 
-            degreeId: getDegreeByName('1').degreeId,
+            degreeId: getDegreeByName('0').degreeId,
 
             initiationDate: null,
             reportedDate: new Date(),
