@@ -1,8 +1,4 @@
 
-* Allow initiation data to be edited.
- - person, location done
- - maybe better reloading of cache?
-
 * Allow the various dates around initiations to be easily inputted (updating cert dates etc.)
 
 * Allow merging of entities (location)
@@ -34,11 +30,4 @@ Other items that I think are already there:
 
 
 
-
-done:
--- Get a list of people someone sponsored.
--- Get a list of All X degree members
--- Get a list of all initiations at X Body
--- Get a list of all initiations for X person
--- Get a list of all times X officered
--- Get a list of all times X initiated
+ - maybe better reloading of cache?
