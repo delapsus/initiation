@@ -25,7 +25,7 @@ export class LocationPicker extends React.Component {
         super(props);
 
         let savedLocation = props.hasOwnProperty('savedLocation') ? props.savedLocation : null;
-        let savedLocationId = props.hasOwnProperty('savedLocation') ? props.savedLocation.locationId : null;
+        let savedLocationId = savedLocation !== null ? savedLocation.locationId : null;
 
         this.state = {
             // this should show ABOVE the selector as the selected option
