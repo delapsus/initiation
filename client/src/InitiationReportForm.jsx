@@ -39,7 +39,8 @@ export class InitiationReportForm extends React.Component {
             initiationDate: null,
             reportedDate: new Date(),
 
-            candidateCount: 1
+            candidateCount: 1,
+            candidateCertificate: [false]
         };
 
     }
@@ -69,6 +70,11 @@ export class InitiationReportForm extends React.Component {
         this.setState({degreeId: +event.target.value});
     }
 
+    handleChangeCert(index, event) {
+        this.state.candidateCertificate[index] = !this.state.candidateCertificate[index];
+        this.setState({candidateCertificate: this.state.candidateCertificate});
+    }
+
     async handleSubmit (event) {
 
         let errors = [];
@@ -84,7 +90,8 @@ export class InitiationReportForm extends React.Component {
         for (let i = 0; i < this.state.candidateCount; i++) {
             let personId = await this.candidatePickers[i].current.save();
             data.candidates[i] = {
-                personId: personId
+                personId: personId,
+                hasCertificate: this.state.candidateCertificate[i]
             }
         }
 
@@ -123,7 +130,8 @@ export class InitiationReportForm extends React.Component {
 
     addCandidate() {
         this.candidatePickers.push(React.createRef());
-        this.setState({ candidateCount: this.state.candidateCount + 1});
+        this.state.candidateCertificate.push(false);
+        this.setState({ candidateCount: this.state.candidateCount + 1, candidateCertificate: this.state.candidateCertificate});
     }
 
     render() {
@@ -173,7 +181,8 @@ export class InitiationReportForm extends React.Component {
             let o = <div className="formLine" key={i}>
                 <div className="formItem">
                     <div className="formItemTitle">Candidate {i+1}</div>
-                    <PersonPicker ref={this.candidatePickers[i]} name={"candidate" + i.toString()} index={i} />
+                    <div style={{display: "inline-block"}}><PersonPicker ref={this.candidatePickers[i]} name={"candidate" + i.toString()} index={i} /></div>
+                    <div style={{display: "inline-block", verticalAlign: "top", marginTop: "1.2em"}}><input type="checkbox" name="status" value="" checked={this.state.candidateCertificate[i]} onChange={this.handleChangeCert.bind(this, i)} index={i} /> Certificate Received</div>
                 </div>
             </div>;
 
@@ -186,10 +195,7 @@ export class InitiationReportForm extends React.Component {
                 <div className="formItemTitle">L/O/C performed initiation</div>
                 <div><LocationPicker name="performedAt_locationId" /></div>
             </div>
-            <div className="formItem">
-                <div className="formItemTitle">Submitted through Lodge / Oasis</div>
-                <div><LocationPicker name="submittedThrough_locationId" /></div>
-            </div>
+
 
             <div className="formLine indent" style={{marginTop:'1em'}}>
 

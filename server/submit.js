@@ -35,13 +35,19 @@ exports.submitInitiationReport = async function(post) {
             // TODO create the initiation record and save
         }
 
+        if (o.hasCertificate) initiation.data.certReceivedDate = new Date();
+
         initiations.push(initiation);
     }));
 
     // update the initiations
     let actualDate = new Date(post.data.initiationDate);
     let reportedDate = new Date(post.data.reportedDate);
-    let officers = post.data.officers.map(o => { return {personId: o.personId, officerId: o.officerId}; });
+
+    let officers = post.data.officers
+        .filter(o => {return o.personId !== null})
+        .map(o => { return {personId: o.personId, officerId: o.officerId}; });
+
     await Promise.all(initiations.map(async init => {
         init.data.actualDate = actualDate;
         init.data.reportedDate = reportedDate;
@@ -50,6 +56,8 @@ exports.submitInitiationReport = async function(post) {
 
         await Initiation.save(init);
     }));
+
+    dataCache.clearCache();
 
     return {};
 };
