@@ -8,3 +8,7 @@ to run on mac:
 
 run-withBuild pulls down the latest version and builds it but it takes a while
 If you do not expect any changes have been made to the database code, you can just use run, which should start up instantly
+
+If for some reason the .command files won't execute you need to open up terminal and run:
+chmod u+x ~/desktop/initiation/run-withBuild.command
+(assuming initiation lives in the desktop folder)
