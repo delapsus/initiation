@@ -73,7 +73,7 @@ function areAllEmpty(o, keys) {
 }
 
 function noNull(s) {
-    return (s === null) ? '' : s.toString();
+    return (typeof s === 'undefined' || s === null) ? '' : s.toString();
 }
 
 function createTextField(key) {
