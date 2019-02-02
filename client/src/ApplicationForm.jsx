@@ -1,7 +1,5 @@
 import React from 'react';
 import {getDegreeById, getDegreeByName, allDegrees} from './degree';
-import {formatDate, formatTime} from './common.js';
-import {PersonLink} from './PersonLink.jsx';
 import {PersonPicker} from './PersonPicker.jsx';
 import {submitApplication} from "./webservice";
 import DatePicker from 'react-datepicker';
@@ -38,7 +36,7 @@ export class ApplicationForm extends React.Component {
 
             signedDate: null,
 
-            degreeId: getDegreeByName('1').degreeId,
+            degreeId: getDegreeByName('0').degreeId,
             personId: null,
             sponsor1_personId: null,
             sponsor2_personId: null,
