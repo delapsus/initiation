@@ -1,29 +1,28 @@
 
-* Allow the various dates around initiations to be easily inputted (updating cert dates etc.)
+- Initiation report could be better
+* check box by each person that represents that a cert has been received
 
-* Allow merging of entities (location)
- - person complete
+
+* Allow the various dates around initiations to be easily inputted (updating cert dates etc.)
+- Put in dates from initiation list?
+- add a "today" button on initiation page?
+
+
+- show initiation count in pickers to better tell?
+- show last init taken in picker?
+
+
+* Allow merging of locations
 
 * allow deleting of entities
  - people can be archived on merge, need to add to person page?
 
-
-
-- Initiation report could be better
-* check box by each person that represents that a cert has been received
-
 * show unique people sponsored on people list
 
-* show active states in people list
+* show active states in people list (shows where the person is most active)
 
-* Be able to run a report that gives me all apps submitted in the last year that do not have matching ISRs.
-This will enable me to be able to catch expired apps, but also send the LB a report showing which ISRs they should be submitting and which apps they should expire.
 
-* ISRs submitted but no certs submitted. (exception would be minerval). I'd like to run a report that shows which ISRs were submitted without certs.
 
--- Note that both of those likely have a TON of legacy/old items.
-Its not going to be useful for me to know that horizon has 400 "expired" applications etc.
-So maybe there's a way to ignore data that is over X old?
 
 Other items that I think are already there:
 -- Get a list of all officers for X person.
@@ -31,3 +30,6 @@ Other items that I think are already there:
 
 
  - maybe better reloading of cache?
+
+
+separate toPerformLocationId, performedLocationId, submittedThrough?
