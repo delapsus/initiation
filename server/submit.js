@@ -3,16 +3,55 @@ let Initiation = require('./data2/initiation');
 let Location = require('./data2/location');
 let dataCache = require('./data-cache');
 
-exports.submitApplication = function(post) {
+let userFields = [
+    'birthCountry',
+    'birthPlace',
+    'birthDate',
+    'birthTime',
+    'profession',
+    'previousName',
+    'magicalName',
+    'primaryAddress',
+    'primaryCity',
+    'primaryPrincipality',
+    'primaryZip',
+    'mailAddress',
+    'mailCity',
+    'mailPrincipality',
+    'mailZip',
+    'phone',
+    'email',
+    'bodyMembership',
+    'healthConcerns',
+    'unableToDrinkAlcohol',
+    'medications',
+    'allergies',
+    'convictedOfFelony',
+    'deniedInitiation'
+];
+
+
+exports.submitApplication = async function(post) {
+
+    let person = await dataCache.getPersonWithFullData(post.data.personId);
+
+    userFields.forEach(key => {
+        if (post.data.hasOwnProperty(key)) {
+            person.data[key] = post.data[key];
+        }
+    });
+
+    await Person.save(person);
+
 
     // then save the initiation
     let init = Initiation.create({data:post.data});
 
-    return Initiation.save(init).then(() => {
-        dataCache.clearCache();
-        console.log('initiation saved ' + init.initiationId);
-        return init;
-    });
+    await Initiation.save(init);
+
+    dataCache.clearCache();
+    console.log('initiation saved ' + init.initiationId);
+    return init;
 };
 
 exports.submitInitiationReport = async function(post) {

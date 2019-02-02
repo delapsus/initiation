@@ -50,10 +50,15 @@ export class ApplicationForm extends React.Component {
             previousName: '', // TODO there should be a checkbox "find by previous name", this forces the find by name to be "find by previous name" and three new boxes for the new name appear
             magicalName: '',
 
-            address: '',
-            city: '',
-            state: '',
-            zipCode: '',
+            primaryAddress: '',
+            primaryCity: '',
+            primaryPrincipality: '',
+            primaryZip: '',
+
+            mailAddress: '',
+            mailCity: '',
+            mailPrincipality: '',
+            mailZip: '',
 
             phone: '',
             email: '',
@@ -163,10 +168,10 @@ export class ApplicationForm extends React.Component {
 
         // address
         let optionalAddress = <div className="formLine indent">
-            {this.createFormItem('Permanent Address', false, <input type="text" name="address" value={this.state.address} onChange={this.handleChange.bind(this)} />)}
-            {this.createFormItem('City', false, <input type="text" name="city" value={this.state.city} onChange={this.handleChange.bind(this)} />)}
-            {this.createFormItem('State', false, <input type="text" name="state" value={this.state.state} onChange={this.handleChange.bind(this)} />)}
-            {this.createFormItem('Zipcode', false, <input type="text" name="zipCode" value={this.state.zipCode} onChange={this.handleChange.bind(this)} />)}
+            {this.createFormItem('Permanent Address', false, <input type="text" name="mailAddress" value={this.state.mailAddress} onChange={this.handleChange.bind(this)} />)}
+            {this.createFormItem('City', false, <input type="text" name="mailCity" value={this.state.mailCity} onChange={this.handleChange.bind(this)} />)}
+            {this.createFormItem('State', false, <input type="text" name="mailPrincipality" value={this.state.mailPrincipality} onChange={this.handleChange.bind(this)} />)}
+            {this.createFormItem('Zipcode', false, <input type="text" name="mailZip" value={this.state.mailZip} onChange={this.handleChange.bind(this)} />)}
         </div>;
         let addressTitle = "Address";
         if (this.state.degreeId !== 1) optionalAddress = '';
@@ -278,10 +283,10 @@ export class ApplicationForm extends React.Component {
             {magicalName}
 
             <div className="formLine indent">
-                {this.createFormItem(addressTitle, false, <input type="text" name="address" value={this.state.address} onChange={this.handleChange.bind(this)} />)}
-                {this.createFormItem('City', false, <input type="text" name="city" value={this.state.city} onChange={this.handleChange.bind(this)} />)}
-                {this.createFormItem('State', false, <input type="text" name="state" value={this.state.state} onChange={this.handleChange.bind(this)} />)}
-                {this.createFormItem('Zipcode', false, <input type="text" name="zipCode" value={this.state.zipCode} onChange={this.handleChange.bind(this)} />)}
+                {this.createFormItem(addressTitle, false, <input type="text" name="primaryAddress" value={this.state.primaryAddress} onChange={this.handleChange.bind(this)} />)}
+                {this.createFormItem('City', false, <input type="text" name="primaryCity" value={this.state.primaryCity} onChange={this.handleChange.bind(this)} />)}
+                {this.createFormItem('State', false, <input type="text" name="primaryPrincipality" value={this.state.primaryPrincipality} onChange={this.handleChange.bind(this)} />)}
+                {this.createFormItem('Zipcode', false, <input type="text" name="primaryZip" value={this.state.primaryZip} onChange={this.handleChange.bind(this)} />)}
             </div>
             {optionalAddress}
 
