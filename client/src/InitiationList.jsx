@@ -10,7 +10,8 @@ function getInitiations(state) {
             index: state.pageIndex,
             degreeId: state.degreeId,
             status: state.status,
-            sort: state.sort
+            sort: state.sort,
+            maxDays: state.maxDays
         }, result => {
             result = JSON.parse(result);
             resolve(result);
@@ -29,7 +30,8 @@ export class InitiationList extends React.Component {
             recordCount: 0,
             degreeId: null,
             status: "",
-            sort: "actualDateDesc"
+            sort: "actualDateDesc",
+            maxDays: 0
         };
         this.onClickNext = this.onClickNext.bind(this);
         this.onClickPrev = this.onClickPrev.bind(this);
@@ -56,6 +58,7 @@ export class InitiationList extends React.Component {
             && prevState.degreeId === this.state.degreeId
             && prevState.status === this.state.status
             && prevState.sort === this.state.sort
+            && prevState.maxDays === this.state.maxDays
         ) return;
         this.getData();
     }
@@ -73,6 +76,9 @@ export class InitiationList extends React.Component {
     }
     handleSortChange(event) {
         this.setState({sort: event.target.value, pageIndex:0});
+    }
+    handleMaxDaysChange(event) {
+        this.setState({maxDays: +event.target.value, pageIndex:0});
     }
 
     render() {
@@ -136,6 +142,19 @@ export class InitiationList extends React.Component {
                     <div><input type="radio" name="status" value="receivedCertFromBody" checked={this.state.status === "receivedCertFromBody"} onChange={this.handleStatusChange.bind(this)} /> Received cert, need to send for signature</div>
                     <div><input type="radio" name="status" value="sentForSig" checked={this.state.status === "sentForSig"} onChange={this.handleStatusChange.bind(this)} /> Sent For Signature</div>
                     <div><input type="radio" name="status" value="certSentToBody" checked={this.state.status === "certSentToBody"} onChange={this.handleStatusChange.bind(this)} /> Cert Sent to Body (complete)</div>
+                </div>
+
+                <div className="item">
+                    Last Update: <select value={this.state.maxDays} onChange={this.handleMaxDaysChange.bind(this)}>
+                    <option value="0">All</option>
+                    <option value={30}>30 Days</option>
+                    <option value={90}>90 Days</option>
+                    <option value={365}>1 Year</option>
+                    <option value={365*2}>2 Years</option>
+                    <option value={365*3}>3 Years</option>
+                    <option value={365*4}>4 Years</option>
+                    <option value={365*5}>5 Years</option>
+                </select>
                 </div>
 
             </div>

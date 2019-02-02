@@ -666,16 +666,19 @@ let initStatusFunctions = {
     }
 };
 
-
+let initStatusFilterDate = {
+    waitingForReport: "approvedDate",
+    waitingForCert: key0,
+    receivedCertFromBody: key1,
+    sentForSig: key2,
+    certSentToBody: key3
+};
 
 exports.getInitiations = (post) => {
     return loadCache().then(cache => {
 
         // start with the full list
         let initiations = cache.initiationList;
-
-        // filter by date
-
 
         // filter by degree
         if (post.degreeId && post.degreeId !== 0) {
@@ -690,8 +693,25 @@ exports.getInitiations = (post) => {
         }
 
         // filter by status
-        if (post.status && post.status.length > 0 && initStatusFunctions.hasOwnProperty(post.status)) {
-            initiations = initiations.filter(initStatusFunctions[post.status]);
+        if (post.status && post.status.length > 0) {
+
+            // filter by status
+            if (initStatusFunctions.hasOwnProperty(post.status))
+                initiations = initiations.filter(initStatusFunctions[post.status]);
+
+            // initStatusFilterDate
+            if (post.hasOwnProperty('maxDays') && post.maxDays > 0 && initStatusFilterDate.hasOwnProperty(post.status)) {
+                let minDate = new Date(new Date() - 24*60*60*1000 * post.maxDays);
+                let dateKey = initStatusFilterDate[post.status];
+                initiations = initiations.filter(init => {
+                    if (!init.data.hasOwnProperty(dateKey) || init.data[dateKey] === null) return false;
+
+                    let date = init.data[dateKey];
+                    if (typeof date === 'string') date = new Date(date);
+                    return date > minDate;
+                });
+            }
+
         }
 
         // SORT
