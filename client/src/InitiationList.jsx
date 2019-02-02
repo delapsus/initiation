@@ -130,6 +130,8 @@ export class InitiationList extends React.Component {
 
                 <div className="item">
                     <div><input type="radio" name="status" value="" checked={this.state.status === ""} onChange={this.handleStatusChange.bind(this)} /> Show All</div>
+                    <div><input type="radio" name="status" value="waitingForReport" checked={this.state.status === "waitingForReport"} onChange={this.handleStatusChange.bind(this)} /> Waiting For Initiation Report</div>
+
                     <div><input type="radio" name="status" value="waitingForCert" checked={this.state.status === "waitingForCert"} onChange={this.handleStatusChange.bind(this)} /> Waiting For Cert From Body</div>
                     <div><input type="radio" name="status" value="receivedCertFromBody" checked={this.state.status === "receivedCertFromBody"} onChange={this.handleStatusChange.bind(this)} /> Received cert, need to send for signature</div>
                     <div><input type="radio" name="status" value="sentForSig" checked={this.state.status === "sentForSig"} onChange={this.handleStatusChange.bind(this)} /> Sent For Signature</div>

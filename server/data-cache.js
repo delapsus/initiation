@@ -626,11 +626,56 @@ exports.getInitiationWithData = function(initiationId) {
     });
 };
 
+let key0 = "actualDate";
+let key1 = "certReceivedDate";
+let key2 = "certSentOutForSignatureDate";
+let key3 = "certSentOutToBodyDate";
+
+let initStatusFunctions = {
+    waitingForReport: function(init) {
+        if (init.data.hasOwnProperty(key0) && init.data[key0] !== null) return false;
+        if (init.data.hasOwnProperty(key3) && init.data[key3] !== null) return false;
+        if (init.data.hasOwnProperty(key2) && init.data[key2] !== null) return false;
+        if (init.data.hasOwnProperty(key1) && init.data[key1] !== null) return false;
+        return true;
+    },
+    waitingForCert: function(init) {
+        if (init.data.hasOwnProperty(key0) && init.data[key0] === null) return false; // must have a initiation report date
+        if (init.data.hasOwnProperty(key3) && init.data[key3] !== null) return false;
+        if (init.data.hasOwnProperty(key2) && init.data[key2] !== null) return false;
+        if (init.data.hasOwnProperty(key1) && init.data[key1] !== null) return false;
+        return true;
+    },
+    receivedCertFromBody: function(init) {
+        if (init.data.hasOwnProperty(key0) && init.data[key0] === null) return false; // must have a initiation report date
+        if (init.data.hasOwnProperty(key3) && init.data[key3] !== null) return false; // cant yet have sent to body
+        if (init.data.hasOwnProperty(key2) && init.data[key2] !== null) return false; // cant yet have sent for sig
+        if (!init.data.hasOwnProperty(key1) || init.data[key1] === null) return false; // needs to have received cert
+        return true;
+    },
+    sentForSig: function(init) {
+        if (init.data.hasOwnProperty(key0) && init.data[key0] === null) return false; // must have a initiation report date
+        if (init.data.hasOwnProperty(key3) && init.data[key3] !== null) return false; // cant yet have sent to body
+        if (!init.data.hasOwnProperty(key2) || init.data[key2] === null) return false; // needs to have this value
+        return true;
+    },
+    certSentToBody: function(init) {
+        if (init.data.hasOwnProperty(key0) && init.data[key0] === null) return false; // must have a initiation report date
+        if (!init.data.hasOwnProperty(key3) || init.data[key3] === null) return false; // needs to have this value
+        return true;
+    }
+};
+
+
+
 exports.getInitiations = (post) => {
     return loadCache().then(cache => {
 
         // start with the full list
         let initiations = cache.initiationList;
+
+        // filter by date
+
 
         // filter by degree
         if (post.degreeId && post.degreeId !== 0) {
@@ -644,37 +689,9 @@ exports.getInitiations = (post) => {
             });
         }
 
-        if (post.status && post.status.length > 0) {
-            initiations = initiations.filter(init => {
-
-                let key1 = "certReceivedDate";
-                let key2 = "certSentOutForSignatureDate";
-                let key3 = "certSentOutToBodyDate";
-
-                if (post.status === 'waitingForCert') {
-                    if (init.data.hasOwnProperty(key3) && init.data[key3] !== null) return false;
-                    if (init.data.hasOwnProperty(key2) && init.data[key2] !== null) return false;
-                    if (init.data.hasOwnProperty(key1) && init.data[key1] !== null) return false;
-                }
-
-                else if (post.status === 'receivedCertFromBody') {
-                    if (init.data.hasOwnProperty(key3) && init.data[key3] !== null) return false; // cant yet have sent to body
-                    if (init.data.hasOwnProperty(key2) && init.data[key2] !== null) return false; // cant yet have sent for sig
-
-                    if (!init.data.hasOwnProperty(key1) || init.data[key1] === null) return false; // needs to have received cert
-                }
-
-                else if (post.status === 'sentForSig') {
-                    if (init.data.hasOwnProperty(key3) && init.data[key3] !== null) return false; // cant yet have sent to body
-
-                    if (!init.data.hasOwnProperty(key2) || init.data[key2] === null) return false; // needs to have this value
-                }
-                else if (post.status === 'certSentToBody') {
-                    if (!init.data.hasOwnProperty(key3) || init.data[key3] === null) return false; // needs to have this value
-                }
-
-                return true;
-            });
+        // filter by status
+        if (post.status && post.status.length > 0 && initStatusFunctions.hasOwnProperty(post.status)) {
+            initiations = initiations.filter(initStatusFunctions[post.status]);
         }
 
         // SORT
