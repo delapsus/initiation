@@ -1,4 +1,16 @@
 
+1. We need an annual report that includes:
+
+— Number of each degree done for the previous calendar year for each local body.
+— Number of each degree done for the previous calendar year for all of USGL
+
+2. Sponsor reports
+
+— Report that tells total number of minervals a person has sponsored.
+
+
+
+
 - Initiation report could be better
 * check box by each person that represents that a cert has been received
 
@@ -33,3 +45,6 @@ Other items that I think are already there:
 
 
 separate toPerformLocationId, performedLocationId, submittedThrough?
+
+
+how many of each degree done in the US in calendar year
