@@ -1,6 +1,6 @@
-let sqlite3 = require('sqlite3').verbose();
-let path = require('path');
-let fs = require('fs');
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+const fs = require('fs');
 
 exports.db = null;
 
@@ -11,6 +11,14 @@ exports.storageType = {
     file: exports.dbPath,
     memory: ':memory:'
 };
+
+function backup(filename) {
+
+    fs.copyFile('source.txt', 'destination.txt', (err) => {
+        if (err) throw err;
+        console.log('source.txt was copied to destination.txt');
+    });
+}
 
 exports.init = (filename, createIfMissing) => {
 
@@ -24,6 +32,8 @@ exports.init = (filename, createIfMissing) => {
             return Promise.reject(new Error('.db not found'));
         }
     }
+
+
 
     return new Promise((resolve, reject) => {
         // just init in memory for now
