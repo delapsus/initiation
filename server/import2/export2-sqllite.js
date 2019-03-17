@@ -16,7 +16,7 @@ function execute() {
     (() => {
         let fieldCount = 0;
         for (let key in data[0]) {fieldCount++;}
-        if (fieldCount !== 402) throw new Error('Invalid field count, possibly bad export from FileMakerPro db, make sure not to apply the layout');
+        if (fieldCount !== 402) throw new Error(`Invalid field count ${fieldCount}, possibly bad export from FileMakerPro db, make sure not to apply the layout`);
         console.log('field count:' + fieldCount);
     })();
 
@@ -24,7 +24,7 @@ function execute() {
     console.log('person count: ' + persons.length);
 
 
-    return database.init(database.storageType.file)
+    return database.init(database.storageType.file, true)
     //return database.init(database.storageType.memory)
         .then(person.createTable)
         .then(location.createTable)
