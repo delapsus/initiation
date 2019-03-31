@@ -209,7 +209,7 @@ export class ApplicationForm extends React.Component {
 
             minervalSpecific1_2 = <div className="formLine indent">
                 {this.createFormItem('Birth Date', false, <DatePicker utcOffset={0} selected={this.state.birthDate === null ? null : moment.utc(this.state.birthDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'birthDate'})}} />)}
-                {this.createFormItem('Birth Time', false, <input type="text" name="birthTimeText" value={this.state.birthTimeText} onChange={this.handleChange.bind(this)} />)}
+                {this.createFormItem('Birth Time (hh:mm)', false, <input type="text" name="birthTimeText" value={this.state.birthTimeText} onChange={this.handleChange.bind(this)} />)}
                 {this.createFormItem('Parsed Time', false, <span>{(this.state.birthTime !== null ? formatTime(this.state.birthTime) : "Invalid Time")}</span>)}
 
             </div>;
