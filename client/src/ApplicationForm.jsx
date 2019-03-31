@@ -7,6 +7,7 @@ import moment from 'moment';
 
 import 'react-datepicker/dist/react-datepicker.css';
 import {LocationPicker} from "./LocationPicker.jsx";
+import {formatTime, parseTime} from "./common";
 
 
 
@@ -47,10 +48,14 @@ export class ApplicationForm extends React.Component {
             // minerval things
             profession:'',
             birthDate: null,
-            birthTime:'',
+            birthTime: null,
             birthCity: '',
             birthPrincipality: '',
             birthCountryMinerval: '',
+
+            // minerval helpers
+            birthTimeText:'',
+            birthTimeError:'',
 
             previousName: '', // TODO there should be a checkbox "find by previous name", this forces the find by name to be "find by previous name" and three new boxes for the new name appear
             magicalName: '',
@@ -97,9 +102,24 @@ export class ApplicationForm extends React.Component {
         if (target.type === 'radio') value = value === 'true';
         const name = target.name;
 
-        this.setState({
+        // create the new state
+        let newState = {
             [name]: value
-        });
+        };
+
+        // try to parse the time
+        if (name === 'birthTimeText') {
+            try {
+                let time = parseTime(value);
+                newState.birthTime = time;
+            }
+            catch (e) {
+                newState.birthTimeError = e.message;
+                newState.birthTime = null;
+            }
+        }
+
+        this.setState(newState);
     }
 
     handleDateChange(e) {
@@ -141,7 +161,7 @@ export class ApplicationForm extends React.Component {
         }
         else {
             submitApplication(data).then(result => {
-                this.setState({message: "save complete. (this should redirect to the initiation page?)"});
+                this.setState({message: "save complete, redirecting to initiation page..."});
                 window.location = "index.html?initiationid=" + result.initiationId;
             });
             this.setState({errors: errors, message: "saving..."});
@@ -191,7 +211,9 @@ export class ApplicationForm extends React.Component {
 
             minervalSpecific1_2 = <div className="formLine indent">
                 {this.createFormItem('Birth Date', false, <DatePicker utcOffset={0} selected={this.state.birthDate === null ? null : moment.utc(this.state.birthDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'birthDate'})}} />)}
-                {this.createFormItem('Birth Time', false, <input type="text" name="birthTime" value={this.state.birthTime} onChange={this.handleChange.bind(this)} />)}
+                {this.createFormItem('Birth Time', false, <input type="text" name="birthTimeText" value={this.state.birthTimeText} onChange={this.handleChange.bind(this)} />)}
+                {this.createFormItem('Birth Time', false, <span>{formatTime(this.state.birthTime)}</span>)}
+
             </div>;
             minervalSpecific1_3 = <div className="formLine indent">
                 {this.createFormItem('Birth City', false, <input type="text" name="birthCity" value={this.state.birthCity} onChange={this.handleChange.bind(this)} />)}

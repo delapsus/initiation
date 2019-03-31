@@ -30,6 +30,19 @@ export function formatTime(time) {
     return `${hour}:${minute}`;
 }
 
+let reParseTime = /(\d?\d):(\d\d)/;
+export function parseTime(text) {
+    let m = reParseTime.exec(text);
+    if (m !== null) {
+        let hh = +m[1];
+        let mm = +m[2];
+        let time = hh/24 + mm/(60*24);
+
+        return time;
+    }
+    return null;
+}
+
 export function putObjectInLines(o) {
     let lines = [];
 
