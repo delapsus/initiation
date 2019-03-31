@@ -41,11 +41,16 @@ export class ApplicationForm extends React.Component {
             sponsor1_personId: null,
             sponsor2_personId: null,
 
-            birthCountry: '',
-            birthPlace:'',
+            // first things
+            birthCountryFirst: '',
+
+            // minerval things
+            profession:'',
             birthDate: null,
             birthTime:'',
-            profession:'',
+            birthCity: '',
+            birthPrincipality: '',
+            birthCountryMinerval: '',
 
             previousName: '', // TODO there should be a checkbox "find by previous name", this forces the find by name to be "find by previous name" and three new boxes for the new name appear
             magicalName: '',
@@ -178,13 +183,21 @@ export class ApplicationForm extends React.Component {
         else addressTitle = "Present Address";
 
         // minerval specific
-        let minervalSpecific1 = "", minervalSpecific2 = "", deniedInitiation="";
+        let minervalSpecific1 = "", minervalSpecific2 = "", deniedInitiation="", minervalSpecific1_2="",minervalSpecific1_3="";
         if (this.state.degreeId === 1) {
             minervalSpecific1 = <div className="formLine indent">
                 {this.createFormItem('Profession', false, <input type="text" name="profession" value={this.state.profession} onChange={this.handleChange.bind(this)} />)}
-                {this.createFormItem('Birthdate', false, <DatePicker utcOffset={0} selected={this.state.birthDate === null ? null : moment.utc(this.state.birthDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'birthDate'})}} />)}
-                {this.createFormItem('Birthtime', false, <input type="text" name="birthTime" value={this.state.birthTime} onChange={this.handleChange.bind(this)} />)}
                 </div>;
+
+            minervalSpecific1_2 = <div className="formLine indent">
+                {this.createFormItem('Birth Date', false, <DatePicker utcOffset={0} selected={this.state.birthDate === null ? null : moment.utc(this.state.birthDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'birthDate'})}} />)}
+                {this.createFormItem('Birth Time', false, <input type="text" name="birthTime" value={this.state.birthTime} onChange={this.handleChange.bind(this)} />)}
+            </div>;
+            minervalSpecific1_3 = <div className="formLine indent">
+                {this.createFormItem('Birth City', false, <input type="text" name="birthCity" value={this.state.birthCity} onChange={this.handleChange.bind(this)} />)}
+                {this.createFormItem('Birth State/Prov', false, <input type="text" name="birthPrincipality" value={this.state.birthPrincipality} onChange={this.handleChange.bind(this)} />)}
+                {this.createFormItem('Birth Country', false, <input type="text" name="birthCountryMinerval" value={this.state.birthCountryMinerval} onChange={this.handleChange.bind(this)} />)}
+            </div>;
 
             minervalSpecific2 = <div><div className="formLine indent">
                 {this.createFormItem('Schools/Degrees', false, <input type="text" name="education" value={this.state.education} onChange={this.handleChange.bind(this)} />)}
@@ -202,10 +215,10 @@ export class ApplicationForm extends React.Component {
         }
 
         // 1st degree specific
-        let birthCountry = <div className="formLine">
-            {this.createFormItem('Country of Birth', true, <input type="text" name="birthCountry" value={this.state.birthCountry} onChange={this.handleChange.bind(this)} />)}
+        let birthCountryFirst = <div className="formLine">
+            {this.createFormItem('Country of Birth', true, <input type="text" name="birthCountryFirst" value={this.state.birthCountryFirst} onChange={this.handleChange.bind(this)} />)}
         </div>;
-        if (this.state.degreeId !== 2) birthCountry = '';
+        if (this.state.degreeId !== 2) birthCountryFirst = '';
 
         // not asked for in minerval
         let magicalName = <div className="formLine">
@@ -278,7 +291,7 @@ export class ApplicationForm extends React.Component {
                 </div>
             </div>
 
-            {birthCountry}
+            {birthCountryFirst}
 
             {magicalName}
 
@@ -302,6 +315,8 @@ export class ApplicationForm extends React.Component {
             </div>
 
             {minervalSpecific1}
+            {minervalSpecific1_2}
+            {minervalSpecific1_3}
 
             {bodyMembership}
 

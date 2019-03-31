@@ -3,44 +3,69 @@ let Initiation = require('./data2/initiation');
 let Location = require('./data2/location');
 let dataCache = require('./data-cache');
 
-let userFields = [
-    'birthCountry',
-    'birthPlace',
-    'birthDate',
-    'birthTime',
-    'profession',
-    'previousName',
-    'magicalName',
-    'primaryAddress',
-    'primaryCity',
-    'primaryPrincipality',
-    'primaryZip',
-    'mailAddress',
-    'mailCity',
-    'mailPrincipality',
-    'mailZip',
-    'phone',
-    'email',
-    'bodyMembership',
-    'healthConcerns',
-    'unableToDrinkAlcohol',
-    'medications',
-    'allergies',
-    'convictedOfFelony',
-    'deniedInitiation'
-];
+let userFields = {
+    all: [
+        'previousName',
+        'magicalName',
+        'primaryAddress',
+        'primaryCity',
+        'primaryPrincipality',
+        'primaryZip',
+        'mailAddress',
+        'mailCity',
+        'mailPrincipality',
+        'mailZip',
+        'phone',
+        'email',
+        'bodyMembership',
+        'healthConcerns',
+        'unableToDrinkAlcohol',
+        'medications',
+        'allergies',
+        'convictedOfFelony',
+        'deniedInitiation'
+    ],
+
+    // minerval only fields
+    1: [
+        'profession',
+        'birthDate',
+        'birthTime',
+        'birthCity',
+        'birthPrincipality',
+        'birthCountryMinerval'
+    ],
+
+    // first degree fields
+    2: [
+        'birthCountryFirst'
+    ]
+};
+
 
 
 exports.submitApplication = async function(post) {
 
+    // get the person record from the cache
     let person = await dataCache.getPersonWithFullData(post.data.personId);
 
-    userFields.forEach(key => {
+    // overwrite certain fields
+    userFields.all.forEach(key => {
         if (post.data.hasOwnProperty(key)) {
             person.data[key] = post.data[key];
         }
     });
 
+    // also specific ones for this degree
+    if (userFields.hasOwnProperty(post.data.degreeId)) {
+        userFields[post.data.degreeId].forEach(key => {
+            if (post.data.hasOwnProperty(key)) {
+                person.data[key] = post.data[key];
+            }
+        });
+    }
+
+    // save the record
     await Person.save(person);
 
 
