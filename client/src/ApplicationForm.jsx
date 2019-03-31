@@ -55,7 +55,6 @@ export class ApplicationForm extends React.Component {
 
             // minerval helpers
             birthTimeText:'',
-            birthTimeError:'',
 
             previousName: '', // TODO there should be a checkbox "find by previous name", this forces the find by name to be "find by previous name" and three new boxes for the new name appear
             magicalName: '',
@@ -114,7 +113,6 @@ export class ApplicationForm extends React.Component {
                 newState.birthTime = time;
             }
             catch (e) {
-                newState.birthTimeError = e.message;
                 newState.birthTime = null;
             }
         }
@@ -212,7 +210,7 @@ export class ApplicationForm extends React.Component {
             minervalSpecific1_2 = <div className="formLine indent">
                 {this.createFormItem('Birth Date', false, <DatePicker utcOffset={0} selected={this.state.birthDate === null ? null : moment.utc(this.state.birthDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'birthDate'})}} />)}
                 {this.createFormItem('Birth Time', false, <input type="text" name="birthTimeText" value={this.state.birthTimeText} onChange={this.handleChange.bind(this)} />)}
-                {this.createFormItem('Birth Time', false, <span>{formatTime(this.state.birthTime)}</span>)}
+                {this.createFormItem('Parsed Time', false, <span>{(this.state.birthTime !== null ? formatTime(this.state.birthTime) : "Invalid Time")}</span>)}
 
             </div>;
             minervalSpecific1_3 = <div className="formLine indent">

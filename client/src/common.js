@@ -30,13 +30,15 @@ export function formatTime(time) {
     return `${hour}:${minute}`;
 }
 
-let reParseTime = /(\d?\d):(\d\d)/;
+let reParseTime = /(\d?\d):(\d\d)(:?am|pm|)/;
 export function parseTime(text) {
     let m = reParseTime.exec(text);
     if (m !== null) {
         let hh = +m[1];
         let mm = +m[2];
+        let isPM = m[3].toLowerCase() === 'pm';
         let time = hh/24 + mm/(60*24);
+        if (isPM) time = time + 0.5;
 
         return time;
     }
