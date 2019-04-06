@@ -55,6 +55,7 @@ export class ApplicationForm extends React.Component {
 
             // minerval helpers
             birthTimeText:'',
+            reasonForAdmission: '',
 
             previousName: '', // TODO there should be a checkbox "find by previous name", this forces the find by name to be "find by previous name" and three new boxes for the new name appear
             magicalName: '',
@@ -201,7 +202,7 @@ export class ApplicationForm extends React.Component {
         else addressTitle = "Present Address";
 
         // minerval specific
-        let minervalSpecific1 = "", minervalSpecific2 = "", deniedInitiation="", minervalSpecific1_2="",minervalSpecific1_3="";
+        let minervalSpecific1 = "", minervalSpecific2 = "", deniedInitiation="", minervalSpecific1_2="",minervalSpecific1_3="", minervalSpecific2_1="";
         if (this.state.degreeId === 1) {
             minervalSpecific1 = <div className="formLine indent">
                 {this.createFormItem('Profession', false, <input type="text" name="profession" value={this.state.profession} onChange={this.handleChange.bind(this)} />)}
@@ -219,11 +220,17 @@ export class ApplicationForm extends React.Component {
                 {this.createFormItem('Birth Country', false, <input type="text" name="birthCountryMinerval" value={this.state.birthCountryMinerval} onChange={this.handleChange.bind(this)} />)}
             </div>;
 
-            minervalSpecific2 = <div><div className="formLine indent">
+            minervalSpecific2 = <div className="formLine indent">
                 {this.createFormItem('Schools/Degrees', false, <input type="text" name="education" value={this.state.education} onChange={this.handleChange.bind(this)} />)}
                 {this.createFormItem('Qualified to Teach', false, <input type="text" name="teach" value={this.state.teach} onChange={this.handleChange.bind(this)} />)}
-                {this.createFormItem('Object in Seeking Admission', false, <input type="text" name="reasonForAdmission" value={this.state.reasonForAdmission} onChange={this.handleChange.bind(this)} />)}
-            </div></div>;
+                </div>;
+
+            minervalSpecific2_1 = <div className="formLine indent">
+                <div className="formItem">
+                    <div className="formItemTitle">Object in Seeking Admission</div>
+                    <div><textarea type="text" cols="70" rows="2" name="reasonForAdmission" value={this.state.reasonForAdmission} onChange={this.handleChange.bind(this)} /></div>
+                </div>
+            </div>;
 
             deniedInitiation = <div className="formItem">
                 <div className="formItemTitle">Denied Initiation?</div>
@@ -364,6 +371,7 @@ export class ApplicationForm extends React.Component {
             {bodyMembershipMinerval}
 
             {minervalSpecific2}
+            {minervalSpecific2_1}
 
             <div className="formLine">
                 <div className="formItem">
