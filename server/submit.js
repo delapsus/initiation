@@ -99,10 +99,14 @@ exports.submitInitiationReport = async function(post) {
             initiation = Initiation.create({data:{
                     degreeId: degreeId,
                     personId: person.personId,
-                    locationId: post.data.locationId
+                    performedAt_locationId: post.data.performedAt_locationId
                 }});
 
             await Initiation.save(initiation);
+        }
+        else {
+            // overwrite the location
+            initiation.data.performedAt_locationId = post.data.performedAt_locationId;
         }
 
         // indicate the cert has been received

@@ -59,7 +59,7 @@ export class LocationPicker extends React.Component {
         // if the ID is -1, we'll need to create the location record
         if (this.state.locationId === -1) {
             let locationId = await submitLocationPicker({
-                name: name
+                name: this.state.name
             });
             return locationId;
         }

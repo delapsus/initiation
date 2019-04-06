@@ -88,8 +88,7 @@ export class InitiationReportForm extends React.Component {
         delete data.candidateCount;
 
         // save the location's record if needed
-        let locationId = await this.locationPicker.current.save();
-        data.locationId = locationId;
+        data.performedAt_locationId = await this.locationPicker.current.save();
 
         // save the candidates new person records if needed
         data.candidates = [];
