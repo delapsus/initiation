@@ -92,13 +92,20 @@ exports.submitInitiationReport = async function(post) {
 
         let initiation = person.initiations.find(init => {
             return init.data.degreeId === degreeId;
-        });
+        }) || null;
 
         // if the person does not yet have the initiation, lets create it
         if (initiation === null) {
-            // TODO create the initiation record and save
+            initiation = Initiation.create({data:{
+                    degreeId: degreeId,
+                    personId: person.personId,
+                    locationId: post.data.locationId
+                }});
+
+            await Initiation.save(initiation);
         }
 
+        // indicate the cert has been received
         if (o.hasCertificate) initiation.data.certReceivedDate = new Date();
 
         initiations.push(initiation);
@@ -115,9 +122,7 @@ exports.submitInitiationReport = async function(post) {
     await Promise.all(initiations.map(async init => {
         init.data.actualDate = actualDate;
         init.data.reportedDate = reportedDate;
-        // TODO initiation cert received
         init.data.officers = JSON.parse(JSON.stringify(officers));
-
         await Initiation.save(init);
     }));
 

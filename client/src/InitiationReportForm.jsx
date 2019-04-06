@@ -27,6 +27,7 @@ export class InitiationReportForm extends React.Component {
     constructor(props) {
         super(props);
 
+        this.locationPicker = React.createRef();
         this.officerPickers = {};
         this.candidatePickers = [React.createRef()];
 
@@ -86,6 +87,11 @@ export class InitiationReportForm extends React.Component {
         let data = JSON.parse(JSON.stringify(this.state));
         delete data.candidateCount;
 
+        // save the location's record if needed
+        let locationId = await this.locationPicker.current.save();
+        data.locationId = locationId;
+
+        // save the candidates new person records if needed
         data.candidates = [];
         for (let i = 0; i < this.state.candidateCount; i++) {
             let personId = await this.candidatePickers[i].current.save();
@@ -95,6 +101,7 @@ export class InitiationReportForm extends React.Component {
             }
         }
 
+        // save the officers new person records if needed
         data.officers = [];
         for (let i = 0; i < this.officers.length; i++) {
             let officerId = this.officers[i].officerId;
@@ -193,7 +200,7 @@ export class InitiationReportForm extends React.Component {
 
             <div className="formItem">
                 <div className="formItemTitle">L/O/C performed initiation</div>
-                <div><LocationPicker name="performedAt_locationId" /></div>
+                <div><LocationPicker name="performedAt_locationId" ref={this.locationPicker} /></div>
             </div>
 
 
@@ -212,7 +219,7 @@ export class InitiationReportForm extends React.Component {
             {candidates}
 
             <div className="formLine indent">
-                <input type="button" value="Add Candidate" onClick={this.addCandidate.bind(this)} />
+                <input type="button" value="Add Additional Candidate Entry" onClick={this.addCandidate.bind(this)} />
             </div>
 
             <div className="formLine">
