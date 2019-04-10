@@ -39,9 +39,11 @@ export class PersonPage extends React.Component {
 
         // sponsoredInitiations
         let sponsoredInits = [];
+        let minervalCount = 0;
         if (this.state.person.sponsoredInitiations) {
             this.state.person.sponsoredInitiations.forEach((o, i) => {
                 sponsoredInits.push(<InitiationDisplay initiation={o} key={i} showPerson={true} dontShowIf={this.state.person} />);
+                if (+o.data.degreeId === 1) minervalCount += 1;
             });
         }
 
@@ -60,8 +62,8 @@ export class PersonPage extends React.Component {
             <InitiationDisplayHeader showPerson={false} />
             {inits}
 
-            <h3>Candidates Sponsored: {sponsoredInits.length.toString()}</h3>
-            <InitiationDisplayHeader showPerson={true} showOnlyOneSponsor={true}/>
+            <h3>Candidates Sponsored: {sponsoredInits.length.toString()} <span style={{fontSize:'0.8em', marginLeft:'1em'}}>( {minervalCount} minervals )</span></h3>
+             <InitiationDisplayHeader showPerson={true} showOnlyOneSponsor={true}/>
             {sponsoredInits}
 
             <h3>Initiations Officered: {officeredInits.length.toString()}</h3>
