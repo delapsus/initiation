@@ -11,8 +11,18 @@ function getInitiations(state) {
             degreeId: state.degreeId,
             status: state.status,
             sort: state.sort,
-            maxDays: state.maxDays
+            maxDays: state.maxDays,
+            locationId: state.locationId
         }, result => {
+            result = JSON.parse(result);
+            resolve(result);
+        });
+    });
+}
+
+function getLocations() {
+    return new Promise((resolve, reject) => {
+        postAjax("http://localhost:2020/data/locations", {}, result => {
             result = JSON.parse(result);
             resolve(result);
         });
@@ -24,18 +34,26 @@ export class InitiationList extends React.Component {
         super(props);
         this.state = {
             initiations: [],
-            pageSize: 40,
+            pageSize: 30,
             pageIndex: 0,
             pageCount: 0,
             recordCount: 0,
             degreeId: null,
             status: "",
             sort: "actualDateDesc",
-            maxDays: 0
+            maxDays: 0,
+            locations: [],
+            locationId: 0
         };
         this.onClickNext = this.onClickNext.bind(this);
         this.onClickPrev = this.onClickPrev.bind(this);
         this.handleDegreeChange = this.handleDegreeChange.bind(this);
+
+        getLocations().then(res => {
+            this.setState({
+                locations: res.locations
+            });
+        });
     }
 
 
@@ -46,7 +64,6 @@ export class InitiationList extends React.Component {
                 pageCount: Math.ceil(result.count / this.state.pageSize),
                 recordCount: result.count
             });
-
         });
     }
 
@@ -59,6 +76,7 @@ export class InitiationList extends React.Component {
             && prevState.status === this.state.status
             && prevState.sort === this.state.sort
             && prevState.maxDays === this.state.maxDays
+            && prevState.locationId === this.state.locationId
         ) return;
         this.getData();
     }
@@ -80,6 +98,10 @@ export class InitiationList extends React.Component {
     handleMaxDaysChange(event) {
         this.setState({maxDays: +event.target.value, pageIndex:0});
     }
+    handleLocationChange(event) {
+        this.setState({locationId: +event.target.value, pageIndex:0});
+    }
+
 
     render() {
 
@@ -92,6 +114,10 @@ export class InitiationList extends React.Component {
 
         let inits = this.state.initiations.map((init, i) => {
             return <InitiationDisplay initiation={init} key={i} showPerson={true} dontShowSponsors={true} />;
+        });
+
+        let locationOptions = this.state.locations.map((location, i) => {
+            return <option value={location.locationId} key={i}>{location.data.name}</option>
         });
 
         /*
@@ -146,14 +172,21 @@ export class InitiationList extends React.Component {
 
                 <div className="item">
                     Last Update: <select value={this.state.maxDays} onChange={this.handleMaxDaysChange.bind(this)}>
+                        <option value="0">All</option>
+                        <option value={30}>30 Days</option>
+                        <option value={90}>90 Days</option>
+                        <option value={365}>1 Year</option>
+                        <option value={365*2}>2 Years</option>
+                        <option value={365*3}>3 Years</option>
+                        <option value={365*4}>4 Years</option>
+                        <option value={365*5}>5 Years</option>
+                    </select>
+                </div>
+
+                <div className="item" style={{marginTop: '1em'}}>
+                    Location: <select value={this.state.locationId} onChange={this.handleLocationChange.bind(this)}>
                     <option value="0">All</option>
-                    <option value={30}>30 Days</option>
-                    <option value={90}>90 Days</option>
-                    <option value={365}>1 Year</option>
-                    <option value={365*2}>2 Years</option>
-                    <option value={365*3}>3 Years</option>
-                    <option value={365*4}>4 Years</option>
-                    <option value={365*5}>5 Years</option>
+                    {locationOptions}
                 </select>
                 </div>
 

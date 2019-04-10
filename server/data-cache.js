@@ -680,6 +680,18 @@ exports.getInitiations = (post) => {
         // start with the full list
         let initiations = cache.initiationList;
 
+        // filter by location
+        if (post.locationId && post.locationId !== 0) {
+            initiations = initiations.filter(init => {
+
+                if (post.locationId === -1) {
+                    return init.data.performedAt_locationId === null;
+                }
+
+                return init.data.performedAt_locationId === post.locationId;
+            });
+        }
+
         // filter by degree
         if (post.degreeId && post.degreeId !== 0) {
             initiations = initiations.filter(init => {
