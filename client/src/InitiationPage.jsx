@@ -47,6 +47,8 @@ export class InitiationPage extends React.Component {
 
         let editLink = "index.html?page=edit-initiation&initiationid=" + this.props.initiationId;
 
+        let submittedThrough = init.submittedThroughLocation === null ? "" : <div style={{marginTop:"0.5em"}}><div className="title">Submitted Through:</div><div><LocationLink location={init.submittedThroughLocation}></LocationLink></div></div>;
+
         return <div className="initiationPage">
 
             <div className="pageTitleDiv">
@@ -57,9 +59,13 @@ export class InitiationPage extends React.Component {
             <div><div className="title">Degree:</div><div>{init.degree.name}</div></div>
             <div><div className="title">Sponsor 1:</div><div><PersonLink person={init.sponsor1_person} altNameFirst={init.data.sponsor1First} altNameLast={init.data.sponsor1Last} /></div></div>
             <div><div className="title">Sponsor 2:</div><div><PersonLink person={init.sponsor2_person} altNameFirst={init.data.sponsor2First} altNameLast={init.data.sponsor2Last} /></div></div>
-            <div><div className="title">Local body Membership:</div><div>{init.data.localBody}</div></div>
 
-            <div style={{marginTop:"1em"}}><div className="title">Location:</div><div><LocationLink location={init.location} altName={init.data.location}></LocationLink></div></div>
+
+            <div style={{marginTop:"0.5em"}}><div className="title">Location:</div><div><LocationLink location={init.location} altName={init.data.location}></LocationLink></div></div>
+            {submittedThrough}
+
+            <div style={{marginBottom:"1em"}}>&nbsp;</div>
+
             {officers}
             <div><div className="title">Others Initiated:</div><div>{otherPeople}</div></div>
 

@@ -320,6 +320,9 @@ function luLocation(locationId) {
 function addLocation(init) {
     init.location = luLocation(init.data.performedAt_locationId);
     if (init.location !== null) init.location = copy(init.location);
+
+    init.submittedThroughLocation = luLocation(init.data.submittedThrough_locationId);
+    if (init.submittedThroughLocation !== null) init.submittedThroughLocation = copy(init.submittedThroughLocation);
 }
 
 function addSponsors(init) {
