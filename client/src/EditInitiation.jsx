@@ -34,6 +34,7 @@ export class EditInitiation extends React.Component {
         this.sponsor1Picker = React.createRef();
         this.sponsor2Picker = React.createRef();
         this.locationPicker = React.createRef();
+        this.locationPickerSubmitted = React.createRef();
 
         // get the initiation, setup the pickers
         getInitiation(this.props.initiationId).then(result => {
@@ -84,6 +85,7 @@ export class EditInitiation extends React.Component {
         this.state.live.data.sponsor1_personId = await this.sponsor1Picker.current.save();
         this.state.live.data.sponsor2_personId = await this.sponsor2Picker.current.save();
         this.state.live.data.performedAt_locationId = await this.locationPicker.current.save();
+        this.state.live.data.submittedThrough_locationId = await this.locationPickerSubmitted.current.save();
 
         //this.officerPickers = {};
         this.state.live.data.officers = [];
@@ -179,12 +181,16 @@ export class EditInitiation extends React.Component {
                 </div>
             </div>
 
-            <div><div className="title">Local body Membership:</div><div>{init.data.localBody}</div></div>
-
             <div className="formLine" style={{marginTop:"1em"}}>
                 <div className="formItem">
                     <div className="formItemTitle">Location:</div>
-                    <div><LocationPicker ref={this.locationPicker} savedLocation={init.location} ></LocationPicker></div>
+                    <div><LocationPicker ref={this.locationPicker} name={"locationPicker"} savedLocation={init.location} ></LocationPicker></div>
+                </div>
+            </div>
+            <div className="formLine" style={{marginTop:"1em"}}>
+                <div className="formItem">
+                    <div className="formItemTitle">Submitted Through Body:</div>
+                    <div><LocationPicker ref={this.locationPickerSubmitted} name={"locationPickerSubmitted"} savedLocation={init.submittedThroughLocation} ></LocationPicker></div>
                 </div>
             </div>
 
