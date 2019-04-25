@@ -173,7 +173,7 @@ app.get('/report/annual', async function (req, res) {
     // read year from QS
     let year = 1985;
     if (req.query.hasOwnProperty('year')) {
-        year = req.query.year;
+        year = +req.query.year;
     }
 
     // generate the data
