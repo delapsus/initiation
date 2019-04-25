@@ -111,12 +111,15 @@ async function generate(year) {
 
     // the headers
     let headers = ['Location', 'Type', '0 APP'];
+    let total = ['TOTAL', '', 0];
     Degree.values.forEach(degree => {
         headers.push(degree.shortName);
+        total.push(0);
     });
     lines.push(headers);
 
     //locations.sort((a, b))
+
     locations.forEach(location => {
 
         // sort inits by degreeid
@@ -137,17 +140,31 @@ async function generate(year) {
         let line = [location.data.name, location.data.type];
 
         // minerval app
-        if (appCount.hasOwnProperty(1)) line.push(appCount[1]);
+        if (appCount.hasOwnProperty(1)) {
+            let n = appCount[1];
+            line.push(n);
+            total[2] += n;
+        }
         else line.push(0);
 
         // then each init
-        Degree.values.forEach(degree => {
-            if (count.hasOwnProperty(degree.degreeId)) line.push(count[degree.degreeId]);
-            else line.push(0);
+        Degree.values.forEach((degree, i) => {
+            if (count.hasOwnProperty(degree.degreeId)){
+                let n = count[degree.degreeId];
+                line.push(n);
+                total[3+i] += n;
+            }
+            else {
+                line.push(0);
+            }
+
+
         });
 
         lines.push(line);
     });
+
+    lines.push(total);
 
     return lines;
     //const fs = require('fs');
