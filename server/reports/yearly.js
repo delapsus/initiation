@@ -1,19 +1,17 @@
 let Initiation = require('../data2/initiation');
 let Location = require('../data2/location');
 let Degree = require('../data2/degree');
-let Database = require('../data2/database');
+//let Database = require('../data2/database');
 
 
-(async () => {
-
-    let year = 2016;
+async function generate(year) {
 
     let raw = {
         initiations: null,
         locations: null
     };
 
-    Database.init(Database.storageType.file);
+    //Database.init(Database.storageType.file);
 
     // load the data
     await Promise.all([
@@ -75,7 +73,7 @@ let Database = require('../data2/database');
     let locations = [];
     initiations.forEach(initiation => {
         if (initiation.data.performedAt_locationId === null) {
-            console.log('unknown');
+            //console.log('unknown');
             initiation.data.performedAt_locationId = -1;
             //return false;
         }
@@ -93,7 +91,7 @@ let Database = require('../data2/database');
 
     apps.forEach(initiation => {
         if (initiation.data.performedAt_locationId === null) {
-            console.log('unknown');
+            //console.log('unknown');
             initiation.data.performedAt_locationId = -1;
         }
 
@@ -116,7 +114,7 @@ let Database = require('../data2/database');
     Degree.values.forEach(degree => {
         headers.push(degree.shortName);
     });
-    lines.push(headers.join('\t'));
+    lines.push(headers);
 
     //locations.sort((a, b))
     locations.forEach(location => {
@@ -139,20 +137,21 @@ let Database = require('../data2/database');
         let line = [location.data.name, location.data.type];
 
         // minerval app
-        if (appCount.hasOwnProperty(1)) line.push(appCount[1].toString());
+        if (appCount.hasOwnProperty(1)) line.push(appCount[1]);
         else line.push(0);
 
         // then each init
         Degree.values.forEach(degree => {
-            if (count.hasOwnProperty(degree.degreeId)) line.push(count[degree.degreeId].toString());
+            if (count.hasOwnProperty(degree.degreeId)) line.push(count[degree.degreeId]);
             else line.push(0);
         });
 
-        lines.push(line.join('\t'));
+        lines.push(line);
     });
 
+    return lines;
+    //const fs = require('fs');
+    //fs.writeFileSync(`annual${year}.txt`, lines.join('\n'));
+}
 
-    const fs = require('fs');
-    fs.writeFileSync(`annual${year}.txt`, lines.join('\n'));
-
-})();
+exports.generate = generate;

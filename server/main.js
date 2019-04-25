@@ -4,9 +4,11 @@ let path = require('path');
 let database = require('./data2/database');
 let dataCache = require('./data-cache');
 let submit = require('./submit');
+let annualReport = require('./reports/yearly');
 
 let express = require('express');
-var bodyParser = require('body-parser');
+let bodyParser = require('body-parser');
+let XLSX = require('xlsx');
 
 exports.start = () => {
     // open the database
@@ -166,6 +168,51 @@ app.post('/data/submit-edit-location', function (req, res) {
         .catch(console.error);
 });
 
+app.get('/report/annual', async function (req, res) {
+
+    // read year from QS
+    let year = 1985;
+    if (req.query.hasOwnProperty('year')) {
+        year = req.query.year;
+    }
+
+    // generate the data
+    let data = await annualReport.generate(year);
+
+    // create the workbook
+    let wb = XLSX.utils.book_new(), ws = XLSX.utils.aoa_to_sheet(data);
+
+    // add worksheet to workbook
+    let ws_name = year.toString();
+    XLSX.utils.book_append_sheet(wb, ws, ws_name);
+
+    // write the XLSX to response
+    let wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
+    let filename = `annual-report-${year}_${getDateTimeString()}.xlsx`;
+    res.header('Content-Type', "application/octet-stream");
+    res.header('Content-disposition', 'attachment;filename=' + filename);
+    res.header('Content-Length', wbout.length);
+
+    res.end(new Buffer(wbout, 'binary'));
+});
+
+function getDateTimeString() {
+    var now = new Date();
+
+    var yy = now.getFullYear().toString().substr(2);
+    var mm = forceLeadingZero((now.getMonth() + 1).toString());
+    var dd = forceLeadingZero(now.getDate().toString());
+    var HH = forceLeadingZero(now.getHours().toString());
+    var MM = forceLeadingZero(now.getMinutes().toString());
+    var SS = forceLeadingZero(now.getSeconds().toString());
+
+    return yy + mm + dd + '-' + HH + MM + SS;
+}
+
+function forceLeadingZero(s) {
+    if (s.length == 1) return '0' + s;
+    return s;
+}
 
 
 
