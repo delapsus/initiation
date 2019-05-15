@@ -26,6 +26,9 @@ var config = {
                 use: [ 'style-loader', 'css-loader' ]
             }
         ]
+    },
+    stats: {
+        warnings: false
     }
 };
 
