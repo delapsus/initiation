@@ -120,6 +120,9 @@ export class PersonInformation extends React.Component {
 
         let editLink = "index.html?page=edit-person&personid=" + this.props.person.personId;
 
+        let felonFlag = data.convictedOfFelony ? <div class="felon">CONVICTED OF FELONY</div> : null;
+        let deniedInitiationFlag = data.deniedInitiation ? <div class="deniedInitiation">PREVIOUSLY DENIED INITIATION</div> : null;
+
         return <div>
 
             <div className="pageTitleDiv">
@@ -128,19 +131,25 @@ export class PersonInformation extends React.Component {
 
             <table><tbody>
             <tr>
+                <td>
+                    {info}
+                </td>
 
-            <td>
-                {info}
-                {contactInfo}
-            </td>
+                <td>
+                    {contactInfo}
+                </td>
 
-            <td>
-            {birthInfo}
-            </td>
+                <td>
+                    {birthInfo}
+                </td>
             </tr>
             </tbody></table>
 
+            {felonFlag}
+            {deniedInitiationFlag}
+
             {comments}
+
         </div>;
     }
 }

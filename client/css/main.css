@@ -219,7 +219,21 @@ input, textarea, select {
 }
 
 
+.felon {
+    font-size: 2em;
+    font-weight: bold;
+    color: red;
+    text-align: center;
+    margin: 0.5em;
+}
 
+.deniedInitiation {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #ff8000;
+    text-align: center;
+    margin: 0.5em;
+}
 
 
 .green {

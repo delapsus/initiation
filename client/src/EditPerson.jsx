@@ -76,6 +76,10 @@ function noNull(s) {
     return (typeof s === 'undefined' || s === null) ? '' : s.toString();
 }
 
+function noNullBoolean(s) {
+    return (typeof s === 'undefined' || s === null || s === 'false' || s === false) ? false : true;
+}
+
 function createTextField(key) {
     let live = noNull(this.props.live.data[key]);
     let prev = noNull(this.props.prev.data[key]);
@@ -99,12 +103,23 @@ function createTextArea(key) {
     return <textarea name={key} value={live} style={style} disabled={this.props.disabled} onChange={this.props.handleChange} cols="80" rows="4" />
 }
 
+function createRadioYesNo(key) {
+    let live = noNullBoolean(this.props.live.data[key]);
+    let prev = noNullBoolean(this.props.prev.data[key]);
+
+    return <div>
+        <input type="radio" name={key} value={false} checked={!live} onChange={this.props.handleChange} /> No
+        <input type="radio" name={key} value={true} checked={live} onChange={this.props.handleChange} /> Yes
+    </div>;
+}
+
 class EditPersonInformation extends React.Component {
 
     render() {
 
         let getTextField = createTextField.bind(this);
         let getTextArea = createTextArea.bind(this);
+        let getRadioYesNo = createRadioYesNo.bind(this);
 
         let data = this.props.person.data;
 
@@ -141,17 +156,27 @@ class EditPersonInformation extends React.Component {
 
             <table><tbody>
             <tr>
-
                 <td>
                     {info}
+                </td>
+                <td>
                     {contactInfo}
                 </td>
-
                 <td>
                     {birthInfo}
                 </td>
             </tr>
             </tbody></table>
+
+            <div>
+                <div>Convicted of Felony?</div>
+                <div>{getRadioYesNo('convictedOfFelony')}</div>
+            </div>
+
+            <div>
+                <div>Denied initiation before?</div>
+                <div>{getRadioYesNo('deniedInitiation')}</div>
+            </div>
 
             <div>Comments:<br/>{getTextArea('comments')}</div>
 
@@ -160,6 +185,8 @@ class EditPersonInformation extends React.Component {
 }
 
 /*
+
+
 
 {name:'fax'},
 
