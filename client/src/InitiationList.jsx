@@ -131,7 +131,7 @@ export class InitiationList extends React.Component {
             <div id="peopleFilters">
 
                 <div className="item">
-                    Degree: <select value={this.state.degreeId} onChange={this.handleDegreeChange}>
+                    Degree: <select value={this.state.degreeId || 0} onChange={this.handleDegreeChange}>
                     <option value="0"></option>
                     <option value="-1">none</option>
                     <option value="1">0</option>
