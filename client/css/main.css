@@ -78,6 +78,8 @@ input, textarea, select {
     border: solid 1px #ad78bd;
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 1em;
+    border-radius: 7px;
+    padding-left: 3px;
 }
 
 .label {
@@ -111,6 +113,8 @@ input, textarea, select {
     border-top: 1px solid #ffe8ff;
     border-bottom: 1px solid #ffe8ff;
     margin-top: 1em;
+    border-radius: 7px;
+    padding: 0px 0px 2px 0px;
 }
 #resultsHeader .item {
     display: inline-block;
