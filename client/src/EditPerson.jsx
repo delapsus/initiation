@@ -128,50 +128,6 @@ class EditPersonInformation extends React.Component {
         <tr><td className="label">Tracking Number</td><td>{getTextField('trackingNumber')}</td></tr>
         </tbody></table>;
 
-        let addressPrimary = <div>
-            <div>Primary Address:</div>
-            <table><tbody>
-            <tr><td className="label">Address 1</td><td>{getTextField('primaryAddress')}</td></tr>
-            <tr><td className="label">Address 2</td><td>{getTextField('primaryAddress2')}</td></tr>
-            <tr><td className="label">City</td><td>{getTextField('primaryCity')}</td></tr>
-            <tr><td className="label">State</td><td>{getTextField('primaryPrincipality')}</td></tr>
-            <tr><td className="label">Zip</td><td>{getTextField('primaryZip')}</td></tr>
-            <tr><td className="label">Country</td><td>{getTextField('primaryCountry')}</td></tr>
-            </tbody></table>
-        </div>;
-
-        let addressMail = <div>
-            <div>Mailing Address:</div>
-            <table><tbody>
-            <tr><td className="label">Address 1</td><td>{getTextField('mailAddress')}</td></tr>
-            <tr><td className="label">Address 2</td><td>{getTextField('mailAddress2')}</td></tr>
-            <tr><td className="label">City</td><td>{getTextField('mailCity')}</td></tr>
-            <tr><td className="label">State</td><td>{getTextField('mailPrincipality')}</td></tr>
-            <tr><td className="label">Zip</td><td>{getTextField('mailZip')}</td></tr>
-            <tr><td className="label">Country</td><td>{getTextField('mailCountry')}</td></tr>
-            </tbody></table>
-        </div>;
-
-        let a1 = ['mailAddress', 'mailAddress2', 'mailCity', 'mailPrincipality', 'mailZip', 'mailCountry'];
-        //if (areAllEmpty(data, a1)) addressMail = "";
-
-
-        let addressOther = <div>
-            <div>Other Address:</div>
-            <table><tbody>
-            <tr><td className="label">Address 1</td><td>{getTextField('otherAddress')}</td></tr>
-            <tr><td className="label">Address 2</td><td>{getTextField('otherAddress2')}</td></tr>
-            <tr><td className="label">City</td><td>{getTextField('otherCity')}</td></tr>
-            <tr><td className="label">Zip</td><td>{getTextField('otherPrincipality')}</td></tr>
-            <tr><td className="label">State</td><td>{getTextField('otherZip')}</td></tr>
-            <tr><td className="label">Country</td><td>{getTextField('otherCountry')}</td></tr>
-            </tbody></table>
-        </div>;
-
-        let a2 = ['otherAddress', 'otherAddress2', 'otherCity', 'otherPrincipality', 'otherZip', 'otherCountry'];
-        //if (areAllEmpty(data, a2)) addressOther = "";
-
-
         let birthInfo = <table><tbody>
         <tr><td className="label">Birth Date</td><td>{formatDate(data.birthDate)}</td></tr>
         <tr><td className="label">Birth Time</td><td>{formatTime(data.birthTime)}</td></tr>
@@ -192,12 +148,6 @@ class EditPersonInformation extends React.Component {
                 </td>
 
                 <td>
-                    {addressPrimary}
-                    {addressMail}
-                    {addressOther}
-                </td>
-
-                <td>
                     {birthInfo}
                 </td>
             </tr>
@@ -210,8 +160,6 @@ class EditPersonInformation extends React.Component {
 }
 
 /*
-
-{name:'addressComments'},
 
 {name:'fax'},
 

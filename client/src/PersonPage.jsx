@@ -106,50 +106,6 @@ export class PersonInformation extends React.Component {
         <tr><td className="label">Tracking Number</td><td>{data.trackingNumber}</td></tr>
         </tbody></table>;
 
-        let addressPrimary = <div>
-            <div>Primary Address:</div>
-            <table><tbody>
-            <tr><td className="label">Address 1</td><td>{data.primaryAddress}</td></tr>
-            <tr><td className="label">Address 2</td><td>{data.primaryAddress2}</td></tr>
-            <tr><td className="label">City</td><td>{data.primaryCity}</td></tr>
-            <tr><td className="label">State</td><td>{data.primaryPrincipality}</td></tr>
-            <tr><td className="label">Zip</td><td>{data.primaryZip}</td></tr>
-            <tr><td className="label">Country</td><td>{data.primaryCountry}</td></tr>
-            </tbody></table>
-        </div>;
-
-        let addressMail = <div>
-            <div>Mailing Address:</div>
-            <table><tbody>
-            <tr><td className="label">Address 1</td><td>{data.mailAddress}</td></tr>
-            <tr><td className="label">Address 2</td><td>{data.mailAddress2}</td></tr>
-            <tr><td className="label">City</td><td>{data.mailCity}</td></tr>
-            <tr><td className="label">State</td><td>{data.mailPrincipality}</td></tr>
-            <tr><td className="label">Zip</td><td>{data.mailZip}</td></tr>
-            <tr><td className="label">Country</td><td>{data.mailCountry}</td></tr>
-            </tbody></table>
-        </div>;
-
-        let a1 = ['mailAddress', 'mailAddress2', 'mailCity', 'mailPrincipality', 'mailZip', 'mailCountry'];
-        if (areAllEmpty(data, a1)) addressMail = "";
-
-
-        let addressOther = <div>
-            <div>Other Address:</div>
-            <table><tbody>
-            <tr><td className="label">Address 1</td><td>{data.otherAddress}</td></tr>
-            <tr><td className="label">Address 2</td><td>{data.otherAddress2}</td></tr>
-            <tr><td className="label">City</td><td>{data.otherCity}</td></tr>
-            <tr><td className="label">Zip</td><td>{data.otherPrincipality}</td></tr>
-            <tr><td className="label">State</td><td>{data.otherZip}</td></tr>
-            <tr><td className="label">Country</td><td>{data.otherCountry}</td></tr>
-            </tbody></table>
-        </div>;
-
-        let a2 = ['otherAddress', 'otherAddress2', 'otherCity', 'otherPrincipality', 'otherZip', 'otherCountry'];
-        if (areAllEmpty(data, a2)) addressOther = "";
-
-
         let birthInfo = <table><tbody>
         <tr><td className="label">Birth Date</td><td>{formatDate(data.birthDate)}</td></tr>
         <tr><td className="label">Birth Time</td><td>{formatTime(data.birthTime)}</td></tr>
@@ -176,12 +132,6 @@ export class PersonInformation extends React.Component {
             <td>
                 {info}
                 {contactInfo}
-            </td>
-
-            <td>
-                {addressPrimary}
-                {addressMail}
-                {addressOther}
             </td>
 
             <td>

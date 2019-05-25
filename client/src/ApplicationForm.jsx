@@ -46,7 +46,6 @@ export class ApplicationForm extends React.Component {
             birthCountryFirst: '',
 
             // minerval things
-            profession:'',
             birthDate: null,
             birthTime: null,
             birthCity: '',
@@ -55,39 +54,19 @@ export class ApplicationForm extends React.Component {
 
             // minerval helpers
             birthTimeText:'',
-            reasonForAdmission: '',
 
             previousName: '', // TODO there should be a checkbox "find by previous name", this forces the find by name to be "find by previous name" and three new boxes for the new name appear
             magicalName: '',
 
-            primaryAddress: '',
-            primaryCity: '',
-            primaryPrincipality: '',
-            primaryZip: '',
-
-            mailAddress: '',
-            mailCity: '',
-            mailPrincipality: '',
-            mailZip: '',
-
             phone: '',
             email: '',
 
-            bodyMembership: '', // lodge/oasis/camp membership
-
-            healthConcerns: '',
-            unableToDrinkAlcohol: false, // yes/no
-            medications: '',
-            allergies: '',
-
             convictedOfFelony: false,
-            deniedInitiation:false,
+            deniedInitiation: false,
 
             proposedDate: null,
 
             contactName: '',
-            contactPhone: '',
-            contactEmail: '',
 
             initiatorName: '',
             initiatorPhone: '',
@@ -190,23 +169,9 @@ export class ApplicationForm extends React.Component {
             return <option value={degree.degreeId} key={i}>{degree.name}</option>;
         });
 
-        // address
-        let optionalAddress = <div className="formLine indent">
-            {this.createFormItem('Permanent Address', false, <input type="text" name="mailAddress" value={this.state.mailAddress} onChange={this.handleChange.bind(this)} />)}
-            {this.createFormItem('City', false, <input type="text" name="mailCity" value={this.state.mailCity} onChange={this.handleChange.bind(this)} />)}
-            {this.createFormItem('State', false, <input type="text" name="mailPrincipality" value={this.state.mailPrincipality} onChange={this.handleChange.bind(this)} />)}
-            {this.createFormItem('Zipcode', false, <input type="text" name="mailZip" value={this.state.mailZip} onChange={this.handleChange.bind(this)} />)}
-        </div>;
-        let addressTitle = "Address";
-        if (this.state.degreeId !== 1) optionalAddress = '';
-        else addressTitle = "Present Address";
-
         // minerval specific
-        let minervalSpecific1 = "", minervalSpecific2 = "", deniedInitiation="", minervalSpecific1_2="",minervalSpecific1_3="", minervalSpecific2_1="";
+        let deniedInitiation="", minervalSpecific1_2="",minervalSpecific1_3="";
         if (this.state.degreeId === 1) {
-            minervalSpecific1 = <div className="formLine indent">
-                {this.createFormItem('Profession', false, <input type="text" name="profession" value={this.state.profession} onChange={this.handleChange.bind(this)} />)}
-                </div>;
 
             minervalSpecific1_2 = <div className="formLine indent">
                 {this.createFormItem('Birth Date', false, <DatePicker utcOffset={0} selected={this.state.birthDate === null ? null : moment.utc(this.state.birthDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'birthDate'})}} />)}
@@ -218,18 +183,6 @@ export class ApplicationForm extends React.Component {
                 {this.createFormItem('Birth City', false, <input type="text" name="birthCity" value={this.state.birthCity} onChange={this.handleChange.bind(this)} />)}
                 {this.createFormItem('Birth State/Prov', false, <input type="text" name="birthPrincipality" value={this.state.birthPrincipality} onChange={this.handleChange.bind(this)} />)}
                 {this.createFormItem('Birth Country', false, <input type="text" name="birthCountryMinerval" value={this.state.birthCountryMinerval} onChange={this.handleChange.bind(this)} />)}
-            </div>;
-
-            minervalSpecific2 = <div className="formLine indent">
-                {this.createFormItem('Schools/Degrees', false, <input type="text" name="education" value={this.state.education} onChange={this.handleChange.bind(this)} />)}
-                {this.createFormItem('Qualified to Teach', false, <input type="text" name="teach" value={this.state.teach} onChange={this.handleChange.bind(this)} />)}
-                </div>;
-
-            minervalSpecific2_1 = <div className="formLine indent">
-                <div className="formItem">
-                    <div className="formItemTitle">Object in Seeking Admission</div>
-                    <div><textarea type="text" cols="70" rows="2" name="reasonForAdmission" value={this.state.reasonForAdmission} onChange={this.handleChange.bind(this)} /></div>
-                </div>
             </div>;
 
             deniedInitiation = <div className="formItem">
@@ -252,44 +205,8 @@ export class ApplicationForm extends React.Component {
             {this.createFormItem('Magical Name', true, <input type="text" name="magicalName" value={this.state.magicalName} onChange={this.handleChange.bind(this)} />)}
         </div>;
 
-        let bodyMembership = <div className="formLine indent">
-            <div className="formItem">
-                <div className="formItemTitle">Lodge / Oasis / Camp membership</div>
-                <div><input type="text" name="bodyMembership" value={this.state.bodyMembership} onChange={this.handleChange.bind(this)} /></div>
-            </div>
-        </div>;
-        let bodyMembershipMinerval= "";
-
         if (this.state.degreeId === 1) {
-            bodyMembershipMinerval = bodyMembership;
             magicalName = '';
-            bodyMembership = '';
-
-
-        }
-
-        // health info
-        let healthAlcohol = this.createFormItem('Are you able to drink alcohol?', false, <div>
-            <input type="radio" name="unableToDrinkAlcohol" value={false} checked={!this.state.unableToDrinkAlcohol} onChange={this.handleChange.bind(this)} /> Yes
-            <input type="radio" name="unableToDrinkAlcohol" value={true} checked={!!this.state.unableToDrinkAlcohol} onChange={this.handleChange.bind(this)} /> No
-        </div>);
-        let healthMeds = this.createFormItem('Medications currently being taken', false, <input type="text" name="medications" value={this.state.medications} onChange={this.handleChange.bind(this)} />);
-        let healthAllergies = this.createFormItem('Allergies', false, <input type="text" name="allergies" value={this.state.allergies} onChange={this.handleChange.bind(this)} />);
-
-        let healthInfo = <div className="formLine indent">
-            {healthAlcohol}
-            {healthMeds}
-            {healthAllergies}
-        </div>;
-        let healthInfoMinerval = "";
-
-        if (this.state.degreeId === 1) {
-            healthInfo = "";
-            healthInfoMinerval = <div className="formLine indent">
-                {healthAllergies}
-                {healthMeds}
-                {healthAlcohol}
-            </div>;
         }
 
         // TODO add change name checkbox
@@ -323,14 +240,6 @@ export class ApplicationForm extends React.Component {
             {magicalName}
 
             <div className="formLine indent">
-                {this.createFormItem(addressTitle, false, <input type="text" name="primaryAddress" value={this.state.primaryAddress} onChange={this.handleChange.bind(this)} />)}
-                {this.createFormItem('City', false, <input type="text" name="primaryCity" value={this.state.primaryCity} onChange={this.handleChange.bind(this)} />)}
-                {this.createFormItem('State', false, <input type="text" name="primaryPrincipality" value={this.state.primaryPrincipality} onChange={this.handleChange.bind(this)} />)}
-                {this.createFormItem('Zipcode', false, <input type="text" name="primaryZip" value={this.state.primaryZip} onChange={this.handleChange.bind(this)} />)}
-            </div>
-            {optionalAddress}
-
-            <div className="formLine indent">
                 <div className="formItem">
                     <div className="formItemTitle">Phone</div>
                     <div><input type="text" name="phone" value={this.state.phone} onChange={this.handleChange.bind(this)} /></div>
@@ -341,21 +250,8 @@ export class ApplicationForm extends React.Component {
                 </div>
             </div>
 
-            {minervalSpecific1}
             {minervalSpecific1_2}
             {minervalSpecific1_3}
-
-            {bodyMembership}
-
-
-            {healthInfoMinerval}
-            <div className="formLine indent">
-                <div className="formItem">
-                    <div className="formItemTitle">Health Conditions/Concerns</div>
-                    <div><textarea type="text" cols="70" rows="2" name="healthConcerns" value={this.state.healthConcerns} onChange={this.handleChange.bind(this)} /></div>
-                </div>
-            </div>
-            {healthInfo}
 
             <div className="formLine indent">
                 <div className="formItem">
@@ -367,11 +263,6 @@ export class ApplicationForm extends React.Component {
                 </div>
                 {deniedInitiation}
             </div>
-
-            {bodyMembershipMinerval}
-
-            {minervalSpecific2}
-            {minervalSpecific2_1}
 
             <div className="formLine">
                 <div className="formItem">
@@ -401,14 +292,6 @@ export class ApplicationForm extends React.Component {
                 <div className="formItem">
                     <div className="formItemTitle">Name</div>
                     <div><input type="text" name="contactName" value={this.state.contactName} onChange={this.handleChange.bind(this)} /></div>
-                </div>
-                <div className="formItem">
-                    <div className="formItemTitle">Phone</div>
-                    <div><input type="text" name="contactPhone" value={this.state.contactPhone} onChange={this.handleChange.bind(this)} /></div>
-                </div>
-                <div className="formItem">
-                    <div className="formItemTitle">Email</div>
-                    <div><input type="text" name="contactEmail" value={this.state.contactEmail} onChange={this.handleChange.bind(this)} /></div>
                 </div>
             </div>
 
@@ -443,8 +326,6 @@ export class ApplicationForm extends React.Component {
                 </div>
             </div>
 
-
-
             <div className="formLine">
                 <div className="formItem">
                     <input type="button" value="Save Application" onClick={this.handleSubmit.bind(this)} />
@@ -452,8 +333,6 @@ export class ApplicationForm extends React.Component {
                     <div>{this.state.message}</div>
                 </div>
             </div>
-
-
 
         </div>;
     }
