@@ -188,8 +188,8 @@ export class ApplicationForm extends React.Component {
             deniedInitiation = <div className="formItem">
                 <div className="formItemTitle">Denied Initiation?</div>
                 <div>
-                    <input type="radio" name="convictedOfFelony" value={true} checked={!!this.state.deniedInitiation} onChange={this.handleChange.bind(this)} /> No
-                    <input type="radio" name="convictedOfFelony" value={false} checked={!this.state.deniedInitiation} onChange={this.handleChange.bind(this)} /> Yes
+                    <input type="radio" name="deniedInitiation" value={false} checked={!this.state.deniedInitiation} onChange={this.handleChange.bind(this)} /> No
+                    <input type="radio" name="deniedInitiation" value={true} checked={this.state.deniedInitiation} onChange={this.handleChange.bind(this)} /> Yes
                 </div>
             </div>;
         }
@@ -257,8 +257,8 @@ export class ApplicationForm extends React.Component {
                 <div className="formItem">
                     <div className="formItemTitle">Convicted of a felony?</div>
                     <div>
-                        <input type="radio" name="convictedOfFelony" value={true} checked={!!this.state.convictedOfFelony} onChange={this.handleChange.bind(this)} /> No
-                        <input type="radio" name="convictedOfFelony" value={false} checked={!this.state.convictedOfFelony} onChange={this.handleChange.bind(this)} /> Yes
+                        <input type="radio" name="convictedOfFelony" value={false} checked={!this.state.convictedOfFelony} onChange={this.handleChange.bind(this)} /> No
+                        <input type="radio" name="convictedOfFelony" value={true} checked={this.state.convictedOfFelony} onChange={this.handleChange.bind(this)} /> Yes
                     </div>
                 </div>
                 {deniedInitiation}
