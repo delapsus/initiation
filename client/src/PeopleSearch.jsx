@@ -37,7 +37,7 @@ export class PeopleSearch extends React.Component {
             degreeId: 0,
             sortBy: 'lastName',
 
-            showMerge: false,
+            showMerge: true,
             mergeMaster: null,
             mergeSlave: null,
             submittingMerge: false
