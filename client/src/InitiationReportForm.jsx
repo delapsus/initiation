@@ -41,7 +41,8 @@ export class InitiationReportForm extends React.Component {
             reportedDate: new Date(),
 
             candidateCount: 1,
-            candidateCertificate: [false]
+            candidateCertificate: [false],
+            candidateDeleted: [false]
         };
 
     }
@@ -93,11 +94,15 @@ export class InitiationReportForm extends React.Component {
         // save the candidates new person records if needed
         data.candidates = [];
         for (let i = 0; i < this.state.candidateCount; i++) {
+
+            // ignore the deleted entries
+            if (this.state.candidateDeleted[i]) continue;
+
             let personId = await this.candidatePickers[i].current.save();
-            data.candidates[i] = {
+            data.candidates.push({
                 personId: personId,
                 hasCertificate: this.state.candidateCertificate[i]
-            }
+            });
         }
 
         // save the officers new person records if needed
@@ -137,7 +142,19 @@ export class InitiationReportForm extends React.Component {
     addCandidate() {
         this.candidatePickers.push(React.createRef());
         this.state.candidateCertificate.push(false);
-        this.setState({ candidateCount: this.state.candidateCount + 1, candidateCertificate: this.state.candidateCertificate});
+        this.state.candidateDeleted.push(false);
+        this.setState({
+            candidateCount: this.state.candidateCount + 1,
+            candidateCertificate: this.state.candidateCertificate,
+            candidateDeleted: this.state.candidateDeleted
+        });
+    }
+
+    removeCandidate(index) {
+        this.state.candidateDeleted[index] = true;
+        this.setState({
+            candidateDeleted: this.state.candidateDeleted
+        });
     }
 
     render() {
@@ -183,10 +200,17 @@ export class InitiationReportForm extends React.Component {
 
         // create the candidate rows
         let candidates = [];
+        let cCount = 0;
         for (let i = 0; i < this.state.candidateCount; i++) {
+
+            if (this.state.candidateDeleted[i]) continue;
+
+            cCount++;
+
             let o = <div className="formLine" key={i}>
                 <div className="formItem">
-                    <div className="formItemTitle">Candidate {i+1}</div>
+                    <div className="formItemTitle">Candidate {cCount}</div>
+                    <div style={{display: "inline-block", verticalAlign: 'top'}}><input type="button" value="X" style={{padding: '0 6px'}} onClick={this.removeCandidate.bind(this, i)} /></div>
                     <div style={{display: "inline-block"}}><PersonPicker ref={this.candidatePickers[i]} name={"candidate" + i.toString()} index={i} /></div>
                     <div style={{display: "inline-block", verticalAlign: "top", marginTop: "1.2em"}}><input type="checkbox" name="status" value="" checked={this.state.candidateCertificate[i]} onChange={this.handleChangeCert.bind(this, i)} index={i} /> Certificate Received</div>
                 </div>
