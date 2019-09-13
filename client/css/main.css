@@ -300,3 +300,14 @@ input, textarea, select {
 .react-autosuggest__suggestion--highlighted {
     background-color: #ddd;
 }
+
+.reportTitle {
+    font-weight: bold;
+}
+.reportSub {
+    margin-top: 0.5em;
+    margin-left: 1em;
+}
+.reportSub .year {
+ width:2em;
+}

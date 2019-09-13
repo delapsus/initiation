@@ -5,6 +5,7 @@ let database = require('./data2/database');
 let dataCache = require('./data-cache');
 let submit = require('./submit');
 let annualReport = require('./reports/yearly');
+let waitingForInitiationReport = require('./reports/waitingForInitiation');
 
 let express = require('express');
 let bodyParser = require('body-parser');
@@ -189,6 +190,35 @@ app.get('/report/annual', async function (req, res) {
     // write the XLSX to response
     let wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
     let filename = `annual-report-${year}_${getDateTimeString()}.xlsx`;
+    res.header('Content-Type', "application/octet-stream");
+    res.header('Content-disposition', 'attachment;filename=' + filename);
+    res.header('Content-Length', wbout.length);
+
+    res.end(new Buffer(wbout, 'binary'));
+});
+
+app.get('/report/waiting', async function (req, res) {
+
+    // read year from QS
+    let minDegreeId, maxDegreeId, minYearsWaiting, maxYearsWaiting;
+    minDegreeId = +req.query.minDegreeId;
+    maxDegreeId = +req.query.maxDegreeId;
+    minYearsWaiting = +req.query['minYears'];
+    maxYearsWaiting = +req.query['maxYears'];
+
+    // generate the data
+    let data = await waitingForInitiationReport.generate(minDegreeId, maxDegreeId, minYearsWaiting, maxYearsWaiting);
+
+    // create the workbook
+    let wb = XLSX.utils.book_new(), ws = XLSX.utils.aoa_to_sheet(data);
+
+    // add worksheet to workbook
+    let ws_name = "waiting for initiation";
+    XLSX.utils.book_append_sheet(wb, ws, ws_name);
+
+    // write the XLSX to response
+    let wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
+    let filename = `waiting-for-initiation_${getDateTimeString()}.xlsx`;
     res.header('Content-Type', "application/octet-stream");
     res.header('Content-disposition', 'attachment;filename=' + filename);
     res.header('Content-Length', wbout.length);
