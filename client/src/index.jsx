@@ -71,7 +71,7 @@ class Index extends React.Component {
         let content = this.getPageContent();
 
         return <div>
-            <div id="menuHeader"><img src="icon.png" className="icon" /> O.T.O. USGL Initiation Database | <span style={{fontSize:'0.8em'}}>v1.2</span> | <a href="index.html?page=people">People</a> | <a href="index.html?page=locations">Locations</a> | <a href="index.html?page=initiations">Initiations</a> | <a href="index.html?page=application">New Application</a> | <a href="index.html?page=report-form">Initiation Report</a> | <a href="index.html?page=reports">Reports</a></div>
+            <div id="menuHeader"><img src="icon.png" className="icon" /> O.T.O. USGL Initiation Database | <span style={{fontSize:'0.8em'}}>v1.3</span> | <a href="index.html?page=people">People</a> | <a href="index.html?page=locations">Locations</a> | <a href="index.html?page=initiations">Initiations</a> | <a href="index.html?page=application">New Application</a> | <a href="index.html?page=report-form">Initiation Report</a> | <a href="index.html?page=reports">Reports</a></div>
             {content}
         </div>
     }
