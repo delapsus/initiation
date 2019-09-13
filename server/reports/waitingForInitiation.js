@@ -2,10 +2,9 @@ let Initiation = require('../data2/initiation');
 let Location = require('../data2/location');
 let Person = require('../data2/person');
 let Degree = require('../data2/degree');
-let Database = require('../data2/database');
 
 async function loadLocations() {
-    let raw = Location.selectAll();
+    let raw = await Location.selectAll();
     let all = {};
     raw.forEach(l => {
         all[l.locationId] = l;
@@ -14,7 +13,7 @@ async function loadLocations() {
 }
 
 async function loadPersons() {
-    let raw = Person.selectAll();
+    let raw = await Person.selectAll();
     let all = {};
     raw.forEach(o => {
         all[o.personId] = o;
@@ -47,7 +46,7 @@ async function generate(minDegreeId, maxDegreeId, minYearsWaiting, maxYearsWaiti
 
         // determine if it is planned
         else {
-            if (entry.planned === null || entry.planned.data.degreeId < initiation.planned.degreeId) {
+            if (entry.planned === null || entry.planned.data.degreeId < initiation.data.degreeId) {
                 entry.planned = initiation;
             }
         }
@@ -104,6 +103,8 @@ async function generate(minDegreeId, maxDegreeId, minYearsWaiting, maxYearsWaiti
 
     for (let degreeId = minDegreeId; degreeId <= maxDegreeId; degreeId++) {
 
+        if (!initiationsByDegree.hasOwnProperty(degreeId)) continue;
+
         // get entries for this degree and sort them
         let entries = initiationsByDegree[degreeId];
         entries.sort((a, b) => {
@@ -115,13 +116,13 @@ async function generate(minDegreeId, maxDegreeId, minYearsWaiting, maxYearsWaiti
         entries.forEach(entry => {
             let fields = [];
 
-            fields.push(entry.last.person.firstName);
-            fields.push(entry.last.person.lastName);
+            fields.push(entry.last.person.data.firstName);
+            fields.push(entry.last.person.data.lastName);
             fields.push(entry.last.degree.shortName);
             fields.push(formatDate(entry.last.data.actualDate));
             if (entry.last.location !== null) {
-                fields.push(entry.last.location.name);
-                fields.push(entry.last.location.state);
+                fields.push(entry.last.location.data.name);
+                fields.push(entry.last.location.data.state);
             }
             else {
                 fields.push('');
@@ -156,7 +157,3 @@ function formatDate(d) {
 }
 
 exports.generate = generate;
-
-
-//const fs = require('fs');
-//fs.writeFileSync(`annual${year}.txt`, lines.join('\n'));
