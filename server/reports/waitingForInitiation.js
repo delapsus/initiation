@@ -63,7 +63,7 @@ async function generate(minDegreeId, maxDegreeId, minYearsWaiting, maxYearsWaiti
         if (entry.last === null) continue;
 
         // remove invalid planned degrees
-        if (entry.planned !== null && entry.planned.degreeId < entry.last.degreeId) entry.planned = null;
+        if (entry.planned !== null && entry.planned.data.degreeId < entry.last.data.degreeId) entry.planned = null;
 
         // create the date
         entry.last.data.actualDate = new Date(entry.last.data.actualDate);
