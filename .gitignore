@@ -5,9 +5,9 @@ initiation.accdb
 .idea
 initiation.db
 /import
-server/import2/officersNotFound\.txt
+server/import/officersNotFound\.txt
 
-server/import2/locations\.txt
+server/import/locations\.txt
 
 install/package-lock\.json
 
