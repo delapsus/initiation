@@ -1,7 +1,7 @@
-let Initiation = require('../data2/initiation');
-let Location = require('../data2/location');
-let Degree = require('../data2/degree');
-//let Database = require('../data2/database');
+let Initiation = require('../data/initiation');
+let Location = require('../data/location');
+let Degree = require('../data/degree');
+//let Database = require('../data/database');
 
 
 async function generate(year) {

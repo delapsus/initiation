@@ -3,10 +3,10 @@ let fs = require('fs');
 let excel = require('./import-excel');
 let fieldMap = require('./fieldmap');
 
-let database = require('../data2/database');
-let location = require('../data2/location');
-let person = require('../data2/person');
-let initiation = require('../data2/initiation');
+let database = require('../data/database');
+let location = require('../data/location');
+let person = require('../data/person');
+let initiation = require('../data/initiation');
 
 function execute() {
     let data = excel.loadWorkbook();

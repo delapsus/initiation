@@ -1,6 +1,6 @@
-let Person = require('./data2/person');
-let Initiation = require('./data2/initiation');
-let Location = require('./data2/location');
+let Person = require('./data/person');
+let Initiation = require('./data/initiation');
+let Location = require('./data/location');
 let dataCache = require('./data-cache');
 
 let userFields = {

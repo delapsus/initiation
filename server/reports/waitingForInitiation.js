@@ -1,7 +1,7 @@
-let Initiation = require('../data2/initiation');
-let Location = require('../data2/location');
-let Person = require('../data2/person');
-let Degree = require('../data2/degree');
+let Initiation = require('../data/initiation');
+let Location = require('../data/location');
+let Person = require('../data/person');
+let Degree = require('../data/degree');
 
 async function loadLocations() {
     let raw = await Location.selectAll();

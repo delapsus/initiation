@@ -1,9 +1,9 @@
 'use strict';
 
 let fs = require('fs');
-let database = require('../data2/database');
-let Person = require('../data2/person');
-let initiation = require('../data2/initiation');
+let database = require('../data/database');
+let Person = require('../data/person');
+let initiation = require('../data/initiation');
 
 function trim(text) {
     return (text || "").toLowerCase().trim();

@@ -1,9 +1,9 @@
-let Person = require('./data2/person');
-let Initiation = require('./data2/initiation');
-let Location = require('./data2/location');
-let Degree = require('./data2/degree');
+let Person = require('./data/person');
+let Initiation = require('./data/initiation');
+let Location = require('./data/location');
+let Degree = require('./data/degree');
 let degreeLookup = Degree.lookup;
-let officerLookup = require('./data2/officer').lookup;
+let officerLookup = require('./data/officer').lookup;
 
 let sortMethods = {
     lastName: function(a, b) {

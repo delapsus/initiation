@@ -1,7 +1,7 @@
 'use strict';
 
 let path = require('path');
-let database = require('./data2/database');
+let database = require('./data/database');
 let dataCache = require('./data-cache');
 let submit = require('./submit');
 let annualReport = require('./reports/yearly');

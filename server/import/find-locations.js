@@ -1,9 +1,9 @@
 'use strict';
 
 const fs = require('fs');
-let database = require('../data2/database');
-let initiation = require('../data2/initiation');
-let location = require('../data2/location');
+let database = require('../data/database');
+let initiation = require('../data/initiation');
+let location = require('../data/location');
 
 let locationCache = {};
 let locationFix = {};
