@@ -250,6 +250,12 @@ function loadAllPeopleWithInits() {
             // give the init to the officers
             o.data.officers.forEach(officer => {
                 if (officer.personId) {
+
+                    if (!lookup.hasOwnProperty(officer.personId)) {
+                        console.log(`Officer Record for initiation [${o.initiationId}] has invalid personId [${officer.personId}]`);
+                        return;
+                    }
+
                     let p = lookup[officer.personId];
                     p.officeredInitiations.push(o);
                 }
@@ -308,6 +314,10 @@ function loadLocations() {
 // *** lookup and add functions, only work when cache is loaded
 function luPerson(personId) {
     if (typeof personId === 'undefined' || personId === null) return null;
+    if (!cache.peopleLookup.hasOwnProperty(personId)) {
+        console.log(`data-cache.luPerson(${personId}) - invalid personId`);
+        return null;
+    }
     let key = personId.toString();
     return cache.peopleLookup[key];
 }
