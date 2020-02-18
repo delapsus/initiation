@@ -7,8 +7,6 @@ let fields = [
 ];
 */
 
-
-
 exports.values = [
     {name:'Minerval', shortName:'0', rank:1, degreeId:1},
     {name:'First', shortName:'1', rank:2, degreeId:2},

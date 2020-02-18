@@ -4,8 +4,7 @@ const fs = require('fs');
 
 exports.db = null;
 
-//exports.dbPath = path.resolve(__dirname, '../../../initiation.db');
-exports.dbPath = path.resolve('./initiation.db'); // just use the database in the root dir
+exports.dbPath = path.resolve(__dirname, '../../initiation.db');
 
 exports.storageType = {
     file: exports.dbPath,
@@ -20,22 +19,23 @@ function backup(filename) {
     });
 }
 
-exports.init = (filename, createIfMissing) => {
+exports.init = async (filename, createIfMissing) => {
 
     console.log('opening database: ' + filename);
 
-    if (!fs.existsSync(filename)) {
+    if (filename === ':memory:') {
+        console.log('initializing from memory');
+    }
+    else if (!fs.existsSync(filename)) {
         if (createIfMissing) {
             console.warn('.db does not exist, creating...');
         }
         else {
-            return Promise.reject(new Error('.db not found'));
+            throw new Error('.db not found');
         }
     }
 
-
-
-    return new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
         // just init in memory for now
         exports.db = new sqlite3.Database(filename, e => {
             if (!!e) return reject(e);
@@ -95,17 +95,3 @@ exports.getRecordCount = table => {
         });
     });
 };
-
-if (module.parent === null) {
-    let record;
-    exports.init(exports.storageType.memory)
-
-        .then(record => {
-            return exports.close();
-        })
-
-        .catch(e => {
-            console.log(e);
-        })
-        .then(process.exit);
-}
