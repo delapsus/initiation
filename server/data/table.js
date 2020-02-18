@@ -1,4 +1,4 @@
-const database = require('./database');
+const Database = require('./database');
 
 /*
 name = table name
@@ -11,9 +11,9 @@ fields = an array of objects, each represents one of the fields
  */
 
 
-exports.create = (name, fields) => {
+exports.create = async (name, fields) => {
 
-    return new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
         let a = [];
         fields.forEach(field => {
             let type = 'TEXT'; // for
@@ -27,7 +27,7 @@ exports.create = (name, fields) => {
 
         let sql = a.join(', ');
         try {
-            database.db.run(`CREATE TABLE ${name} (${sql})`, e => {
+            Database.db.run(`CREATE TABLE ${name} (${sql})`, e => {
                 if (e !== null)
                     return reject(e);
                 console.log('table created: ' + name);

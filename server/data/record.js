@@ -28,9 +28,9 @@ exports.createRecord = (fields, defaultValues, dataFields) => {
     return o;
 };
 
-exports.selectOne = (table, fields, idKey, id, convert) => {
+exports.selectOne = async (table, fields, idKey, id, convert) => {
     // err, row
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
         database.db.get(`select * from ${table} where ${idKey}=?`, id, (err, row) => {
             if (err) return reject(err);
             let o = exports.convertRecordToObject(fields, row);
@@ -40,7 +40,7 @@ exports.selectOne = (table, fields, idKey, id, convert) => {
     });
 };
 
-exports.selectMany = (table, fields, where, convert) => {
+exports.selectMany = async (table, fields, where, convert) => {
 
     let keys = [];
     let values = [];
@@ -50,7 +50,7 @@ exports.selectMany = (table, fields, where, convert) => {
     }
 
     // err, row
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
         database.db.all(`select * from ${table} where ${keys.join(',')}`, values, (err, rows) => {
             if (err) return reject(err);
             let a = rows.map(row => {
@@ -64,9 +64,9 @@ exports.selectMany = (table, fields, where, convert) => {
 
 };
 
-exports.selectAll = (table, fields, convert) => {
+exports.selectAll = async (table, fields, convert) => {
     // err, row
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
         database.db.all(`select * from ${table}`, (err, rows) => {
             if (err) return reject(err);
             let a = rows.map(row => {
@@ -109,10 +109,10 @@ exports.convertRecordToObject = (fields, record) => {
     return o;
 };
 
-exports.save = (table, fields, o) => {
+exports.save = async (table, fields, o) => {
     let primaryKey = null;
     let isInsert = false;
-    return new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
         let fieldNames = [];
         let values = [];
         let valueHolders = [];
@@ -148,14 +148,13 @@ exports.save = (table, fields, o) => {
 
         if (isInsert) {
             let sql = `INSERT INTO ${table} (${fieldNames.join(',')}) VALUES (${valueHolders.join(',')})`;
-            database.db.run(sql, values, err => {
+            database.db.run(sql, values, async err => {
                 if (!!err) return reject(err);
 
-                return getLastInsertRowid().then(rowid => {
-                    o[primaryKey] = rowid;
-                    resolve();
-                });
-
+                // get the row id and add it back to the object
+                const rowid = await getLastInsertRowid();
+                o[primaryKey] = rowid;
+                resolve();
             });
             /*
             let stmt = db.prepare(sql);
@@ -205,9 +204,9 @@ exports.save = (table, fields, o) => {
     });
 };
 
-function getLastInsertRowid() {
+async function getLastInsertRowid() {
     // err, row
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
         database.db.get(`select last_insert_rowid() as rowid`, (err, row) => {
             if (err) return reject(err);
             resolve(row['rowid']);

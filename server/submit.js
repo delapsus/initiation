@@ -203,10 +203,10 @@ exports.submitEditInitiation = function(post) {
         .then(() => {return {};});
 };
 
-exports.submitEditLocation = function(post) {
-    return Location.save(post.location)
-        .then(dataCache.clearCache)
-        .then(() => {return {};});
+exports.submitEditLocation = async function(post) {
+    await Location.save(post.location);
+    dataCache.clearCache();
+    return {};
 };
 
 exports.mergePerson = function(masterPersonId, slavePersonId) {

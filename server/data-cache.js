@@ -297,18 +297,16 @@ function loadAllPeopleWithInits() {
 
 
 
-function loadLocations() {
+async function loadLocations() {
 
-    return Location.selectAll().then(result => {
-        let locations = result;
+    const locations = await Location.selectAll();
 
-        let locationsLookup = {};
-        locations.forEach(loc => {
-            locationsLookup[loc.locationId.toString()] = loc;
-        });
-
-        return {locations: locations, locationsLookup: locationsLookup};
+    let locationsLookup = {};
+    locations.forEach(loc => {
+        locationsLookup[loc.locationId.toString()] = loc;
     });
+
+    return {locations: locations, locationsLookup: locationsLookup};
 }
 
 // *** lookup and add functions, only work when cache is loaded

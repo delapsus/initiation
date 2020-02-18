@@ -166,10 +166,14 @@ app.post('/data/submit-edit-initiation', function (req, res) {
         .catch(console.error);
 });
 
-app.post('/data/submit-edit-location', function (req, res) {
-    submit.submitEditLocation(req.body)
-        .then(value => { res.send(JSON.stringify(value)); })
-        .catch(console.error);
+app.post('/data/submit-edit-location', async function (req, res) {
+    try {
+        const value = await submit.submitEditLocation(req.body);
+        res.send(JSON.stringify(value));
+    }
+    catch (err) {
+        console.error(err);
+    }
 });
 
 app.get('/report/annual', async function (req, res) {
