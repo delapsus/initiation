@@ -1,4 +1,3 @@
-let database = require('./database');
 let table = require('./table');
 let record = require('./record');
 
@@ -8,8 +7,6 @@ let fields = [
     {name:'personId', type:'number', isPrimary:true},
     {name:'data', type: 'json'}
     ];
-
-
 
 let dataFields = [
     {name:'trackingNumber'},
@@ -68,57 +65,28 @@ let dataFields = [
     {name:'importSource'},
 ];
 
-exports.createTable = () => {
-    return table.create(tableName, fields);
+exports.createTable = async () => {
+    return await table.create(tableName, fields);
 };
 
-exports.save = o => {
-    return record.save(tableName, fields, o);
+exports.save = async o => {
+    await record.save(tableName, fields, o);
 };
 
 exports.create = values => {
-    const o = record.createRecord(fields, values, dataFields);
-    return o;
+    return record.createRecord(fields, values, dataFields);
 };
 
-exports.selectOne = personId => {
-    return record.selectOne(tableName, fields, 'personId', personId, convert);
+exports.selectOne = async personId => {
+    return await record.selectOne(tableName, fields, 'personId', personId, convert);
 };
 
-exports.selectAll = () => {
-    return record.selectAll(tableName, fields, convert);
+exports.selectAll = async () => {
+    return await record.selectAll(tableName, fields, convert);
 };
 
-
+// make sure the dates become date objects
 const convert = o => {
     if (o.data.createdDate !== null) o.data.createdDate = new Date(o.data.createdDate);
     return o;
 };
-
-
-if (module.parent === null) {
-    let record;
-    database.init(database.storageType.memory)
-
-        .then(exports.createTable)
-
-        .then(() => {
-            let data = {firstName: 'Scott', lastName: 'Wilde', createdDate:new Date(), isMaster:true};
-            //let json = JSON.stringify(data);
-            record = exports.create({data: data});
-            return exports.save(record);
-        })
-
-        .then(() => {
-            return exports.selectOne(record.personId);
-        })
-
-        .then(record => {
-            return database.close();
-        })
-
-        .catch(e => {
-            console.log(e);
-        })
-        .then(process.exit);
-}

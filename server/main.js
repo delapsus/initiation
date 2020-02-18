@@ -154,10 +154,14 @@ app.post('/data/submit-initiation-report', function (req, res) {
         .catch(console.error);
 });
 
-app.post('/data/submit-edit-person', function (req, res) {
-    submit.submitEditPerson(req.body)
-        .then(value => { res.send(JSON.stringify(value)); })
-        .catch(console.error);
+app.post('/data/submit-edit-person', async function (req, res) {
+    try {
+        const value = await submit.submitEditPerson(req.body);
+        res.send(JSON.stringify(value));
+    }
+    catch (err) {
+        console.error(err);
+    }
 });
 
 app.post('/data/submit-edit-initiation', function (req, res) {

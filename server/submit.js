@@ -191,10 +191,10 @@ exports.submitLocationPicker = async function(post) {
 };
 
 
-exports.submitEditPerson = function(post) {
-    return Person.save(post.person)
-        .then(dataCache.clearCache)
-        .then(() => {return {};});
+exports.submitEditPerson = async function(post) {
+    await Person.save(post.person);
+    dataCache.clearCache();
+    return {};
 };
 
 exports.submitEditInitiation = function(post) {
