@@ -197,10 +197,10 @@ exports.submitEditPerson = async function(post) {
     return {};
 };
 
-exports.submitEditInitiation = function(post) {
-    return Initiation.save(post.initiation)
-        .then(dataCache.clearCache)
-        .then(() => {return {};});
+exports.submitEditInitiation = async function(post) {
+    await Initiation.save(post.initiation);
+    dataCache.clearCache();
+    return {};
 };
 
 exports.submitEditLocation = async function(post) {

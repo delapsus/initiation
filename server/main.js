@@ -164,10 +164,14 @@ app.post('/data/submit-edit-person', async function (req, res) {
     }
 });
 
-app.post('/data/submit-edit-initiation', function (req, res) {
-    submit.submitEditInitiation(req.body)
-        .then(value => { res.send(JSON.stringify(value)); })
-        .catch(console.error);
+app.post('/data/submit-edit-initiation', async function (req, res) {
+    try {
+        const value = await submit.submitEditInitiation(req.body);
+        res.send(JSON.stringify(value));
+    }
+    catch (err) {
+        console.error(err);
+    }
 });
 
 app.post('/data/submit-edit-location', async function (req, res) {
