@@ -47,8 +47,8 @@ exports.init = async (filename, createIfMissing) => {
     });
 };
 
-exports.close = () => {
-    return new Promise((resolve, reject) => {
+exports.close = async () => {
+    await new Promise((resolve, reject) => {
         exports.db.close(e => {
             if (!!e) return reject(e);
             console.log('database closed');

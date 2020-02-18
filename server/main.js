@@ -11,15 +11,18 @@ let express = require('express');
 let bodyParser = require('body-parser');
 let XLSX = require('xlsx');
 
-exports.start = () => {
-    // open the database
-    return database.init(database.storageType.file).then(function() {
+exports.start = async () => {
+    try {
+        // open the database
+        await database.init(database.storageType.file);
+
         // then start accepting connections
         app.listen(getPort());
-    }).catch(e => {
+    }
+    catch(e) {
         console.error(e);
         process.exit();
-    });
+    }
 };
 
 if (module.parent === null) setTimeout(exports.start, 0);

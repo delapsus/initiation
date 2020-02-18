@@ -1,6 +1,7 @@
 const Database = require('../database');
 
 describe("Database", () => {
+
     test("db file", () => {
         expect(Database.dbPath).toBeDefined();
         expect(Database.storageType.file).toBe(Database.dbPath);
