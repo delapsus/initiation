@@ -1,6 +1,6 @@
 #!/bin/bash
 cd -- "$(dirname "$BASH_SOURCE")"
-git pull https://otoinitiation:h4bixKTYeWh3@github.com/asicath/initiation.git
+git pull https://otoinitiation:d61ddeba3de78a584b27625d5161a4b9b025cedd@github.com/asicath/initiation.git
 cd server
 npm install --loglevel=error --no-audit
 cd ../client

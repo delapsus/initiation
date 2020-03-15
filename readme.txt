@@ -25,7 +25,7 @@ source ~/.bash_profile
 
 3. clone the repo
 from terminal:
-git clone https://otoinitiation:h4bixKTYeWh3@github.com/asicath/initiation.git
+git clone https://otoinitiation:d61ddeba3de78a584b27625d5161a4b9b025cedd@github.com/asicath/initiation.git
 
 4. run the library install for client/server
 npm install
