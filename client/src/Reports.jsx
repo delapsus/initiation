@@ -42,6 +42,14 @@ export class Reports extends React.Component {
         this.setState({maxYears: +event.target.value});
     }
 
+
+    onChangeDegreeIdMin(event) {
+        this.setState({minDegreeId: +event.target.value});
+    }
+    onChangeDegreeIdMax(event) {
+        this.setState({maxDegreeId: +event.target.value});
+    }
+
     render() {
 
         let d = new Date();
@@ -67,8 +75,8 @@ export class Reports extends React.Component {
             <hr/>
             <div>
                 <div className='reportTitle'>Waiting for Initiation:</div>
-                <div className='reportSub'>Min Degree: <select value={this.state.minDegreeId} onChange={this.onChangeYear.bind(this)}>{minDegrees}</select></div>
-                <div className='reportSub'>Max Degree: <select value={this.state.maxDegreeId} onChange={this.onChangeYear.bind(this)}>{maxDegrees}</select></div>
+                <div className='reportSub'>Min Degree: <select value={this.state.minDegreeId} onChange={this.onChangeDegreeIdMin.bind(this)}>{minDegrees}</select></div>
+                <div className='reportSub'>Max Degree: <select value={this.state.maxDegreeId} onChange={this.onChangeDegreeIdMax.bind(this)}>{maxDegrees}</select></div>
 
                 <div className='reportSub'>Min Years: <input className="year" type='text' value={this.state.minYears} onChange={this.onChangeYearMin.bind(this)} /></div>
                 <div className='reportSub'>Max Years: <input className="year" type='text' value={this.state.maxYears} onChange={this.onChangeYearMax.bind(this)} /></div>
