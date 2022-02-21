@@ -1,14 +1,14 @@
-let table = require('./table');
-let record = require('./record');
+const table = require('./table');
+const record = require('./record');
 
-let tableName = 'Initiation';
+const tableName = 'Initiation';
 
-let fields = [
+const fields = [
     {name:'initiationId', type:'number', isPrimary:true},
     {name:'data', type: 'json'}
 ];
 
-let dataFields = [
+const dataFields = [
     {name:'degreeId', type:'number'},
     {name:'personId', type:'number'},
     {name:'locationId', type:'number'},
@@ -44,26 +44,25 @@ let dataFields = [
     {name: 'officers', type:'array'} // {"officerId":2,"name":"Rayan Rivera-Montez","personId":9440}
 ];
 
-exports.createTable = async () => {
-    await table.create(tableName, fields);
-};
+async function createTable() {
+    return table.create(tableName, fields);
+}
 
-exports.save = async o => {
-    await record.save(tableName, fields, o);
-};
+async function save(o) {
+    return record.save(tableName, fields, o);
+}
 
-exports.create = values => {
+function create(values) {
     return record.createRecord(fields, values, dataFields);
-};
+}
 
+async function selectOne (initiationId) {
+    return record.selectOne(tableName, fields, 'initiationId', initiationId, convert);
+}
 
-exports.selectOne = async initiationId => {
-    return await record.selectOne(tableName, fields, 'initiationId', initiationId, convert);
-};
-
-exports.selectAll = async () => {
-    return await record.selectAll(tableName, fields, convert);
-};
+async function selectAll() {
+    return record.selectAll(tableName, fields, convert);
+}
 
 const convert = o => {
     o.data.localBodyDate = fixDateString(o.data.localBodyDate);
@@ -83,3 +82,11 @@ function fixDateString(s) {
     if (s === null) return s;
     return new Date(s);
 }
+
+module.exports = {
+    createTable,
+    save,
+    create,
+    selectOne,
+    selectAll
+};

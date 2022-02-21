@@ -7,7 +7,7 @@ let fields = [
 ];
 */
 
-exports.values = [
+const values = [
     {name:'Minerval', shortName:'0', rank:1, degreeId:1},
     {name:'First', shortName:'1', rank:2, degreeId:2},
     {name:'Second', shortName:'2', rank:3, degreeId:3},
@@ -26,9 +26,16 @@ exports.values = [
     {name:'Tenth', shortName:'10', rank:16, degreeId:16}
 ];
 
-exports.lookup = {};
-exports.values.forEach(d => {
-    exports.lookup[d.degreeId] = d;
+// create a lookup
+const lookup = {};
+values.forEach(d => {
+    lookup[d.degreeId] = d;
 });
 
-exports.unknown = {name:'unknown', rank:0, degreeId:0};
+const unknown = {name:'unknown', rank:0, degreeId:0};
+
+module.exports = {
+    values,
+    lookup,
+    unknown
+};

@@ -1,7 +1,7 @@
-let Table = require('./table');
-let Record = require('./record');
+const Table = require('./table');
+const Record = require('./record');
 
-let tableName = 'Location';
+const tableName = 'Location';
 
 const fields = [
     {name:'locationId', type:'number', isPrimary:true},
@@ -15,22 +15,30 @@ const dataFields = [
     {name:'state'}
 ];
 
-exports.createTable = async () => {
+async function createTable() {
     return Table.create(tableName, fields);
-};
+}
 
-exports.save = async o => {
-    await Record.save(tableName, fields, o);
-};
+async function save(o) {
+    return Record.save(tableName, fields, o);
+}
 
-exports.create = values => {
+function create(values) {
     return Record.createRecord(fields, values, dataFields);
-};
+}
 
-exports.selectOne = async locationId => {
+async function selectOne(locationId) {
     return Record.selectOne(tableName, fields, 'locationId', locationId, null);
-};
+}
 
-exports.selectAll = async () => {
+async function selectAll() {
     return Record.selectAll(tableName, fields, null);
+}
+
+module.exports = {
+    createTable,
+    save,
+    create,
+    selectOne,
+    selectAll
 };

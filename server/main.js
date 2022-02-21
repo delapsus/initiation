@@ -135,6 +135,7 @@ app.post('/data/initiation', function (req, res) {
         .catch(console.error);
 });
 
+// used on the initiations page
 app.post('/data/initiations', function (req, res) {
     dataCache.getInitiations(req.body)
         .then(value => { res.send(JSON.stringify(value)); })

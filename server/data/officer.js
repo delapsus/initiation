@@ -8,7 +8,7 @@ let fields = [
 ];
 */
 
-exports.values = [
+const values = [
     {name:'Initiator', rank:1, officerId:1},
     {name:'Wazir', rank:2, officerId:2},
     {name:'Emir', rank:3, officerId:3},
@@ -24,7 +24,9 @@ exports.values = [
     {name:'Grand Marshal', rank:10, officerId:13}
 ];
 
-exports.lookup = {};
-exports.values.forEach(o => {
-    exports.lookup[o.officerId] = o;
+const lookup = {};
+values.forEach(o => {
+    lookup[o.officerId] = o;
 });
+
+module.exports = {values, lookup};

@@ -1,14 +1,14 @@
-let table = require('./table');
-let record = require('./record');
+const table = require('./table');
+const record = require('./record');
 
-let tableName = 'Person';
+const tableName = 'Person';
 
-let fields = [
+const fields = [
     {name:'personId', type:'number', isPrimary:true},
     {name:'data', type: 'json'}
     ];
 
-let dataFields = [
+const dataFields = [
     {name:'trackingNumber'},
     {name:'createdDate', type:'datetime'},
     {name:'firstName'},
@@ -65,28 +65,37 @@ let dataFields = [
     {name:'importSource'},
 ];
 
-exports.createTable = async () => {
-    return await table.create(tableName, fields);
-};
+async function createTable() {
+    return table.create(tableName, fields);
+}
 
-exports.save = async o => {
-    await record.save(tableName, fields, o);
-};
+async function save(o) {
+    return record.save(tableName, fields, o);
+}
 
-exports.create = values => {
+function create(values) {
     return record.createRecord(fields, values, dataFields);
-};
+}
 
-exports.selectOne = async personId => {
-    return await record.selectOne(tableName, fields, 'personId', personId, convert);
-};
+async function selectOne(personId) {
+    return record.selectOne(tableName, fields, 'personId', personId, convert);
+}
 
-exports.selectAll = async () => {
-    return await record.selectAll(tableName, fields, convert);
-};
+async function selectAll() {
+    return record.selectAll(tableName, fields, convert);
+}
 
 // make sure the dates become date objects
-const convert = o => {
+function convert(o) {
     if (o.data.createdDate !== null) o.data.createdDate = new Date(o.data.createdDate);
     return o;
+}
+
+module.exports = {
+    createTable,
+    create,
+    save,
+    selectOne,
+    selectAll,
+    dataFields
 };

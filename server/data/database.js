@@ -2,12 +2,12 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
-exports.db = null;
+let db = null;
 
-exports.dbPath = path.resolve(__dirname, '../../initiation.db');
+const dbPath = path.resolve(__dirname, '../../initiation.db');
 
-exports.storageType = {
-    file: exports.dbPath,
+const storageType = {
+    file: dbPath,
     memory: ':memory:'
 };
 
@@ -19,7 +19,7 @@ function backup(filename) {
     });
 }
 
-exports.init = async (filename, createIfMissing) => {
+async function init(filename, createIfMissing) {
 
     console.log('opening database: ' + filename);
 
@@ -37,7 +37,7 @@ exports.init = async (filename, createIfMissing) => {
 
     await new Promise((resolve, reject) => {
         // just init in memory for now
-        exports.db = new sqlite3.Database(filename, e => {
+        db = new sqlite3.Database(filename, e => {
             if (!!e) return reject(e);
             console.log('database initialized');
             resolve();
@@ -45,53 +45,65 @@ exports.init = async (filename, createIfMissing) => {
 
         //db.serialize(resolve);
     });
-};
+}
 
-exports.close = async () => {
+async function close() {
     await new Promise((resolve, reject) => {
-        exports.db.close(e => {
+        db.close(e => {
             if (!!e) return reject(e);
             console.log('database closed');
             resolve();
         });
     });
-};
+}
 
-exports.query = (sql) => {
+async function query(sql) {
     // err, row
     return new Promise((resolve, reject) => {
-        exports.db.all(sql, (err, rows) => {
+        db.all(sql, (err, rows) => {
             if (err) return reject(err);
             resolve(rows);
         });
     });
-};
+}
 
-
-exports.beginTransaction = () => {
+async function beginTransaction() {
     return new Promise((resolve, reject) => {
-        exports.db.run("BEGIN TRANSACTION", err => {
+        db.run("BEGIN TRANSACTION", err => {
             if (!!err) return reject(err);
             resolve();
         });
     });
-};
+}
 
-exports.commit = () => {
+async function commit() {
     return new Promise((resolve, reject) => {
-        exports.db.run("COMMIT", err => {
+        db.run("COMMIT", err => {
             if (!!err) return reject(err);
             resolve();
         });
     });
-};
+}
 
-exports.getRecordCount = table => {
+async function getRecordCount(table) {
     // err, row
     return new Promise((resolve, reject) => {
-        exports.db.get(`select count(*) as count from ${table}`, (err, row) => {
+        db.get(`select count(*) as count from ${table}`, (err, row) => {
             if (err) return reject(err);
             resolve(row['count']);
         });
     });
+}
+
+module.exports = {
+    init,
+    close,
+    query,
+    beginTransaction,
+    commit,
+    getRecordCount,
+
+    storageType,
+    get db () {return db;},
+    dbPath
 };
