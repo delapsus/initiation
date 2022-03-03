@@ -22,3 +22,5 @@ install\.zip\.gpg
 install\.zip
 
 client/js/bundle\.js
+
+*.db
