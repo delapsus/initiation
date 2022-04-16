@@ -5,9 +5,9 @@
   "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node_modules/.bin/webpack -p",
-    "build-dev": "node_modules/.bin/webpack -d",
-    "watch": "node_modules/.bin/webpack -d --watch"
+    "build": "cd node_modules/.bin && webpack -p",
+    "build-dev": "cd node_modules/.bin && webpack -d",
+    "watch": "cd node_modules/.bin && webpack -d --watch"
   },
   "author": "",
   "license": "ISC",
