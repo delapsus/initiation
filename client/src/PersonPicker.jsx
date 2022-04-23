@@ -2,20 +2,8 @@ import React from "react";
 import {postAjax} from "./http";
 import {getDegreeById} from "./degree";
 import {getInitiationDate} from './common.js';
-import axios from 'axios'
+import {getPeople} from './webservice'
 
-
-function getPeople(state) {
-    return new Promise((resolve, reject) => {
-        axios.get(`http://localhost:2020/data/people?pageSize=10&index=0&textSearch=${state.textSearch}`)
-        .then((e) =>{
-            resolve( e.data);
-        })
-        .catch((e)=>{
-            reject(e)
-        }) 
-    });
-}
 
 export function submitPersonPicker(data) {
     return new Promise((resolve, reject) => {
@@ -85,7 +73,7 @@ export class PersonPicker extends React.Component {
         return this.state.personId;
     }
 
-    getData() {
+    async getData() {
 
         if (this.state.firstName.length === 0 && this.state.lastName.length === 0) {
             this.setState({suggestions: null});
@@ -93,27 +81,20 @@ export class PersonPicker extends React.Component {
         }
 
         let combined = this.state.firstName + " " + this.state.lastName; // + " " + this.state.middleName
-        getPeople({textSearch:combined.trim()}).then(result => {
-
-            let personId = this.state.personId;
-
-            if (personId !== null && personId !== -1) {
-
-                // if personId is not in the new result set, reset it
-                let found = false;
-                result.people.forEach(person => {
-                    if (person.personId === personId) found = true;
-                });
-
-                let newPersonId = this.state.savedPersonId;
-
-                this.setState({suggestions: result, personId: found ? personId : newPersonId});
-            }
-            else {
-                this.setState({suggestions: result});
-            }
-
-        });
+        const result = await getPeople({pageSize:10, index:0, searchText:combined.trim()});
+        let personId = this.state.personId;
+        if (personId !== null && personId !== -1) {
+            // if personId is not in the new result set, reset it
+            let found = false;
+            result.people.forEach(person => {
+                if (person.personId === personId) found = true;
+            });
+            let newPersonId = this.state.savedPersonId;
+            this.setState({suggestions: result, personId: found ? personId : newPersonId});
+        }
+        else {
+            this.setState({suggestions: result});
+        }   
     }
 
     componentDidMount() {

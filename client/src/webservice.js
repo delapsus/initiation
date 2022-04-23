@@ -1,6 +1,14 @@
 import { postAjax } from "./http";
 import axios from "axios";
-export function submitApplication(state) {
+
+const getPeople = async (state) => {
+  const peopleResult = await axios.get(
+    `http://localhost:2020/data/people?pageSize=${state.pageSize}&index=${state.pageIndex}&textSearch=${state.searchText}&degreeId=${state.degreeId}&sortBy=${state.sortBy}`
+  );
+  return peopleResult.data;
+};
+
+const submitApplication = (state) => {
   return new Promise((resolve, reject) => {
     postAjax(
       "http://localhost:2020/data/submit-application",
@@ -11,9 +19,9 @@ export function submitApplication(state) {
       }
     );
   });
-}
+};
 
-export function submitMergePerson(masterPersonId, slavePersonId) {
+const submitMergePerson = (masterPersonId, slavePersonId) => {
   return new Promise((resolve, reject) => {
     postAjax(
       "http://localhost:2020/data/merge-person",
@@ -24,22 +32,16 @@ export function submitMergePerson(masterPersonId, slavePersonId) {
       }
     );
   });
-}
+};
 
-export function getPerson(personId) {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(`http://localhost:2020/data/person?personId=${personId}`)
-      .then((e) => {
-        resolve(e.data);
-      })
-      .catch((e) => {
-        reject(e);
-      });
-  });
-}
+const getPerson = async (personId) => {
+  const personResult = await axios.get(
+    `http://localhost:2020/data/person?personId=${personId}`
+  );
+  return personResult.data;
+};
 
-export function getLocation(locationId) {
+const getLocation = (locationId) => {
   return new Promise((resolve, reject) => {
     postAjax(
       "http://localhost:2020/data/location",
@@ -50,9 +52,9 @@ export function getLocation(locationId) {
       }
     );
   });
-}
+};
 
-export function getLocationWithData(locationId) {
+const getLocationWithData = (locationId) => {
   return new Promise((resolve, reject) => {
     postAjax(
       "http://localhost:2020/data/location-with-data",
@@ -63,9 +65,9 @@ export function getLocationWithData(locationId) {
       }
     );
   });
-}
+};
 
-export function getPersonWithData(personId) {
+const getPersonWithData = (personId) => {
   return new Promise((resolve, reject) => {
     postAjax(
       "http://localhost:2020/data/person-with-data",
@@ -76,9 +78,9 @@ export function getPersonWithData(personId) {
       }
     );
   });
-}
+};
 
-export function submitEditPerson(person) {
+const submitEditPerson = (person) => {
   return new Promise((resolve, reject) => {
     postAjax(
       "http://localhost:2020/data/submit-edit-person",
@@ -89,9 +91,9 @@ export function submitEditPerson(person) {
       }
     );
   });
-}
+};
 
-export function submitEditLocation(location) {
+const submitEditLocation = (location) => {
   return new Promise((resolve, reject) => {
     postAjax(
       "http://localhost:2020/data/submit-edit-location",
@@ -102,9 +104,9 @@ export function submitEditLocation(location) {
       }
     );
   });
-}
+};
 
-export function getInitiation(initiationId) {
+const getInitiation = (initiationId) => {
   return new Promise((resolve, reject) => {
     postAjax(
       "http://localhost:2020/data/initiation",
@@ -115,4 +117,17 @@ export function getInitiation(initiationId) {
       }
     );
   });
-}
+};
+
+export {
+  getPeople,
+  submitApplication,
+  submitMergePerson,
+  getPerson,
+  getLocation,
+  getLocationWithData,
+  getPersonWithData,
+  submitEditPerson,
+  submitEditLocation,
+  getInitiation,
+};

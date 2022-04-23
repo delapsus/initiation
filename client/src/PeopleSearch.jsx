@@ -2,21 +2,10 @@ import React from 'react';
 import {postAjax} from './http';
 import axios from 'axios'
 import {formatDate, getInitiationDate} from './common.js';
-import {submitMergePerson, getPersonWithData} from "./webservice";
+import {submitMergePerson, getPersonWithData,getPeople} from "./webservice";
 
 
-function getPeople(state) {
-    return new Promise((resolve, reject) => {
-        
-        axios.get(`http://localhost:2020/data/people?pageSize=${state.pageSize}&index=${state.pageIndex}&textSearch=${state.searchText}&degreeId=${state.degreeId}&sortBy=${state.sortBy}`)
-        .then((e) =>{
-            resolve( e.data);
-        })
-        .catch((e)=>{
-            reject(e)
-        })        
-    });
-}
+
 
 export class PeopleSearch extends React.Component {
     constructor(props) {
@@ -40,15 +29,14 @@ export class PeopleSearch extends React.Component {
     }
 
 
-    updatePeopleList() {
-        return getPeople(this.state).then(result => {
-            this.setState({
-                people: result.people,
-                pageCount: Math.ceil(result.count / this.state.pageSize),
-                recordCount: result.count
-            });
-
+    async updatePeopleList() {
+        const peopleResult = await getPeople(this.state);
+        this.setState({
+            people: peopleResult.people,
+            pageCount: Math.ceil(peopleResult.count / this.state.pageSize),
+            recordCount: peopleResult.count
         });
+    
     }
 
     updateMergeMaster() {

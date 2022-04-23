@@ -12,10 +12,12 @@ export class EditPerson extends React.Component {
             saving: false
         };
 
-        getPerson(this.props.personId).then(result => {
-            let copy = JSON.parse(JSON.stringify(result));
-            this.setState({ prev: result, live: copy });
-        });
+
+    }
+    async componentDidMount(){
+        const personResult = await getPerson(this.props.personId);
+        let copy = JSON.parse(JSON.stringify(personResult));
+        this.setState({ prev: personResult, live: copy });
     }
 
     handleChange (event) {
