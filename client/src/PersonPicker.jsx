@@ -2,13 +2,18 @@ import React from "react";
 import {postAjax} from "./http";
 import {getDegreeById} from "./degree";
 import {getInitiationDate} from './common.js';
+import axios from 'axios'
+
 
 function getPeople(state) {
     return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/data/people", {pageSize:10, index: 0, textSearch: state.textSearch}, result => {
-            result = JSON.parse(result);
-            resolve(result);
-        });
+        axios.get(`http://localhost:2020/data/people?pageSize=10&index=0&textSearch=${state.textSearch}`)
+        .then((e) =>{
+            resolve( e.data);
+        })
+        .catch((e)=>{
+            reject(e)
+        }) 
     });
 }
 

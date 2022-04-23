@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.26.1",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
     "babel-preset-es2016": "^6.24.1",

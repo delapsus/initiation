@@ -1,25 +1,20 @@
 import React from 'react';
 import {postAjax} from './http';
+import axios from 'axios'
 import {formatDate, getInitiationDate} from './common.js';
 import {submitMergePerson, getPersonWithData} from "./webservice";
 
 
 function getPeople(state) {
     return new Promise((resolve, reject) => {
-
-        let args = {
-            pageSize:state.pageSize,
-            index: state.pageIndex,
-            textSearch: state.searchText,
-            degreeId:state.degreeId,
-            sortBy: state.sortBy
-        };
-
-        postAjax("http://localhost:2020/data/people", args, result => {
-            result = JSON.parse(result);
-            resolve(result);
-        });
-
+        
+        axios.get(`http://localhost:2020/data/people?pageSize=${state.pageSize}&index=${state.pageIndex}&textSearch=${state.searchText}&degreeId=${state.degreeId}&sortBy=${state.sortBy}`)
+        .then((e) =>{
+            resolve( e.data);
+        })
+        .catch((e)=>{
+            reject(e)
+        })        
     });
 }
 
