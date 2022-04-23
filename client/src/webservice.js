@@ -36,11 +36,6 @@ export function getPerson(personId) {
       .catch((e) => {
         reject(e);
       });
-
-    // postAjax("http://localhost:2020/data/person", {personId: personId}, result => {
-    //     result = JSON.parse(result);
-    //     resolve(result);
-    // });
   });
 }
 
