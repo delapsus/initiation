@@ -13,13 +13,9 @@ export class PersonPage extends React.Component {
         };
     }
 
-    getPersonData() {
-        getPersonWithData(this.props.personId).then(result => {
-            this.setState({
-                person: result
-            });
-
-        });
+     async getPersonData() {
+       const result = await getPersonWithData(this.props.personId);
+       this.setState({person:result});
     }
 
     componentDidMount() {

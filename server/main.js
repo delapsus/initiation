@@ -7,7 +7,6 @@ let submit = require('./submit');
 let annualReport = require('./reports/yearly');
 let waitingForInitiationReport = require('./reports/waitingForInitiation');
 let peopleRoutes = require('./routes/people/index');
-let personRoutes = require('./routes/person/index');
 let express = require('express');
 let bodyParser = require('body-parser');
 let XLSX = require('xlsx');
@@ -66,19 +65,40 @@ function getPort() {
   else return 2020;
 }
 app.use('/data/people', peopleRoutes);
-app.use('/data/person', personRoutes);
-
-// app.post('/data/person', function (req, res) {
-
-//     dataCache.getPerson(req.body.personId)
-//         .then(value => { res.send(JSON.stringify(value)); })
-//         .catch(console.error);
-// });
 
 app.post('/data/submit-person-picker', async function (req, res) {
   try {
     let personId = await submit.submitPersonPicker(req.body);
     res.send(JSON.stringify({personId: personId}));
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+// app.post('/data/person-with-data', function (req, res) {
+//   dataCache
+//     .getPersonWithFullData(req.body.personId)
+//     .then(value => {
+//       res.send(JSON.stringify(value));
+//     })
+//     .catch(console.error);
+// });
+
+app.post('/data/merge-person', function (req, res) {
+  let masterPersonId = req.body.masterPersonId;
+  let slavePersonId = req.body.slavePersonId;
+
+  submit
+    .mergePerson(masterPersonId, slavePersonId)
+    .then(value => {
+      res.send(JSON.stringify(value));
+    })
+    .catch(console.error);
+});
+app.post('/data/submit-edit-person', async function (req, res) {
+  try {
+    const value = await submit.submitEditPerson(req.body);
+    res.send(JSON.stringify(value));
   } catch (err) {
     console.error(err);
   }
@@ -91,27 +111,6 @@ app.post('/data/submit-location-picker', async function (req, res) {
   } catch (err) {
     console.error(err);
   }
-});
-
-app.post('/data/person-with-data', function (req, res) {
-  dataCache
-    .getPersonWithFullData(req.body.personId)
-    .then(value => {
-      res.send(JSON.stringify(value));
-    })
-    .catch(console.error);
-});
-
-app.post('/data/merge-person', function (req, res) {
-  let masterPersonId = req.body.masterPersonId;
-  let slavePersonId = req.body.slavePersonId;
-
-  submit
-    .mergePerson(masterPersonId, slavePersonId)
-    .then(value => {
-      res.send(JSON.stringify(value));
-    })
-    .catch(console.error);
 });
 
 app.post('/data/locations', function (req, res) {
@@ -140,6 +139,14 @@ app.post('/data/location-with-data', function (req, res) {
     })
     .catch(console.error);
 });
+app.post('/data/submit-edit-location', async function (req, res) {
+  try {
+    const value = await submit.submitEditLocation(req.body);
+    res.send(JSON.stringify(value));
+  } catch (err) {
+    console.error(err);
+  }
+});
 
 app.post('/data/initiation', function (req, res) {
   dataCache
@@ -149,7 +156,6 @@ app.post('/data/initiation', function (req, res) {
     })
     .catch(console.error);
 });
-
 // used on the initiations page
 app.post('/data/initiations', function (req, res) {
   dataCache
@@ -179,27 +185,9 @@ app.post('/data/submit-initiation-report', function (req, res) {
     .catch(console.error);
 });
 
-app.post('/data/submit-edit-person', async function (req, res) {
-  try {
-    const value = await submit.submitEditPerson(req.body);
-    res.send(JSON.stringify(value));
-  } catch (err) {
-    console.error(err);
-  }
-});
-
 app.post('/data/submit-edit-initiation', async function (req, res) {
   try {
     const value = await submit.submitEditInitiation(req.body);
-    res.send(JSON.stringify(value));
-  } catch (err) {
-    console.error(err);
-  }
-});
-
-app.post('/data/submit-edit-location', async function (req, res) {
-  try {
-    const value = await submit.submitEditLocation(req.body);
     res.send(JSON.stringify(value));
   } catch (err) {
     console.error(err);

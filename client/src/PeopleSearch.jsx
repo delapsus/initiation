@@ -39,11 +39,10 @@ export class PeopleSearch extends React.Component {
     
     }
 
-    updateMergeMaster() {
+    async updateMergeMaster () {
         if (this.state.mergeMaster === null) return;
-        return getPersonWithData(this.state.mergeMaster.personId).then(result => {
-            this.setState({mergeMaster: result});
-        });
+        const result =  getPersonWithData(this.state.mergeMaster.personId);
+        this.setState({mergeMaster: result});
     }
 
     componentDidMount() {

@@ -36,7 +36,7 @@ const submitMergePerson = (masterPersonId, slavePersonId) => {
 
 const getPerson = async (personId) => {
   const personResult = await axios.get(
-    `http://localhost:2020/data/person?personId=${personId}`
+    `http://localhost:2020/data/people/person?personId=${personId}`
   );
   return personResult.data;
 };
@@ -67,17 +67,11 @@ const getLocationWithData = (locationId) => {
   });
 };
 
-const getPersonWithData = (personId) => {
-  return new Promise((resolve, reject) => {
-    postAjax(
-      "http://localhost:2020/data/person-with-data",
-      { personId: personId },
-      (result) => {
-        result = JSON.parse(result);
-        resolve(result);
-      }
-    );
-  });
+const getPersonWithData = async (personId) => {
+  const personResult = await axios.get(
+    `http://localhost:2020/data/people/person-with-data?personId=${personId}`
+  );
+  return personResult.data;
 };
 
 const submitEditPerson = (person) => {

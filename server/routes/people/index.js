@@ -20,4 +20,50 @@ router
       .catch(console.error);
   });
 
+router.get('/person', function (req, res) {
+  dataCache
+    .getPerson(parseInt(req.query.personId, 10))
+    .then(value => {
+      res.send(JSON.stringify(value));
+    })
+    .catch(console.error);
+});
+
+router.get('/person-with-data', function (req, res) {
+  dataCache
+    .getPersonWithFullData(parseInt(req.query.personId, 10))
+    .then(value => {
+      res.send(JSON.stringify(value));
+    })
+    .catch(console.error);
+});
+
+// router.post('/data/submit-person-picker', async function (req, res) {
+//     try {
+//       let personId = await submit.submitPersonPicker(req.body);
+//       res.send(JSON.stringify({personId: personId}));
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   });
+//   router.post('/data/merge-person', function (req, res) {
+//     let masterPersonId = req.body.masterPersonId;
+//     let slavePersonId = req.body.slavePersonId;
+
+//     submit
+//       .mergePerson(masterPersonId, slavePersonId)
+//       .then(value => {
+//         res.send(JSON.stringify(value));
+//       })
+//       .catch(console.error);
+//   });
+//   router.post('/data/submit-edit-person', async function (req, res) {
+//     try {
+//       const value = await submit.submitEditPerson(req.body);
+//       res.send(JSON.stringify(value));
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   });
+
 module.exports = router;
