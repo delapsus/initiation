@@ -4,7 +4,7 @@ let dataCache = require('../../data-cache');
 const router = Express.Router();
 router.get('', function (req, res) {
   dataCache
-    .getPerson(parseInt(req.query.personId))
+    .getPerson(parseInt(req.query.personId, 10))
     .then(value => {
       res.send(JSON.stringify(value));
     })

@@ -6,11 +6,11 @@ router
   // people search
   .get('', function (req, res) {
     let query = {};
-    query.pageSize = parseInt(req.query.pageSize);
-    query.index = parseInt(req.query.index);
+    query.pageSize = parseInt(req.query.pageSize, 10);
+    query.index = parseInt(req.query.index, 10);
     query.textSearch = req.query.textSearch;
-    query.degreeId = parseInt(req.query.degreeId);
-    query.sortBy = parseInt(req.query.sortBy);
+    query.degreeId = parseInt(req.query.degreeId, 10);
+    query.sortBy = parseInt(req.query.sortBy, 10);
 
     dataCache
       .getPeople(query)
