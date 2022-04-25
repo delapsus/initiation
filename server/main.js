@@ -66,24 +66,6 @@ function getPort() {
 }
 app.use('/data/people', peopleRoutes);
 
-app.post('/data/submit-person-picker', async function (req, res) {
-  try {
-    let personId = await submit.submitPersonPicker(req.body);
-    res.send(JSON.stringify({personId: personId}));
-  } catch (err) {
-    console.error(err);
-  }
-});
-
-// app.post('/data/person-with-data', function (req, res) {
-//   dataCache
-//     .getPersonWithFullData(req.body.personId)
-//     .then(value => {
-//       res.send(JSON.stringify(value));
-//     })
-//     .catch(console.error);
-// });
-
 app.post('/data/merge-person', function (req, res) {
   let masterPersonId = req.body.masterPersonId;
   let slavePersonId = req.body.slavePersonId;

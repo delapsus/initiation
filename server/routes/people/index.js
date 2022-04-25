@@ -1,6 +1,6 @@
 const Express = require('express');
 let dataCache = require('../../data-cache');
-
+let submit = require('../../submit');
 const router = Express.Router();
 router
   // people search
@@ -38,14 +38,15 @@ router.get('/person-with-data', function (req, res) {
     .catch(console.error);
 });
 
-// router.post('/data/submit-person-picker', async function (req, res) {
-//     try {
-//       let personId = await submit.submitPersonPicker(req.body);
-//       res.send(JSON.stringify({personId: personId}));
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   });
+router.post('/submit-person-picker', async function (req, res) {
+  try {
+    let personId = await submit.submitPersonPicker(req.body);
+    res.send(JSON.stringify({personId: personId}));
+  } catch (err) {
+    console.error(err);
+  }
+});
+
 //   router.post('/data/merge-person', function (req, res) {
 //     let masterPersonId = req.body.masterPersonId;
 //     let slavePersonId = req.body.slavePersonId;

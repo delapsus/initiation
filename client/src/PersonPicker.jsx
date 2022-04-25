@@ -3,15 +3,12 @@ import {postAjax} from "./http";
 import {getDegreeById} from "./degree";
 import {getInitiationDate} from './common.js';
 import {getPeople} from './webservice'
+import axios from "axios";
 
 
-export function submitPersonPicker(data) {
-    return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/data/submit-person-picker", {person:data}, result => {
-            result = JSON.parse(result);
-            resolve(result.personId);
-        });
-    });
+export async function submitPersonPicker(data) {
+ const result = await  axios.post("http://localhost:2020/data/people/submit-person-picker",{person:data});
+ return result.personId;
 }
 
 export class PersonPicker extends React.Component {
@@ -61,6 +58,7 @@ export class PersonPicker extends React.Component {
 
         // if the ID is -1, we'll need to create the person record
         if (this.state.personId === -1) {
+            console.log('HEHEHHEHEHEHEEEHEHEH')
             let personId = await submitPersonPicker({
                 firstName: this.state.firstName,
                 middleName: this.state.middleName,
