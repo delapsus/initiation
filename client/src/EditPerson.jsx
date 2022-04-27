@@ -33,14 +33,14 @@ export class EditPerson extends React.Component {
         });
     }
 
-    onSave() {
+    async onSave() {
         // send save request
-        submitEditPerson(this.state.live).then(() => {
+        await submitEditPerson(this.state.live);
 
             // redirect to person page
             //setTimeout(() => {}, 1000);
             window.location = "index.html?personid=" + this.props.personId;
-        });
+        
 
         // set page to saving state
         this.setState({

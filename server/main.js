@@ -66,26 +66,6 @@ function getPort() {
 }
 app.use('/data/people', peopleRoutes);
 
-app.post('/data/merge-person', function (req, res) {
-  let masterPersonId = req.body.masterPersonId;
-  let slavePersonId = req.body.slavePersonId;
-
-  submit
-    .mergePerson(masterPersonId, slavePersonId)
-    .then(value => {
-      res.send(JSON.stringify(value));
-    })
-    .catch(console.error);
-});
-app.post('/data/submit-edit-person', async function (req, res) {
-  try {
-    const value = await submit.submitEditPerson(req.body);
-    res.send(JSON.stringify(value));
-  } catch (err) {
-    console.error(err);
-  }
-});
-
 app.post('/data/submit-location-picker', async function (req, res) {
   try {
     let locationId = await submit.submitLocationPicker(req.body);

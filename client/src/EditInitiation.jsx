@@ -1,6 +1,5 @@
 import React from 'react';
-import {getInitiation, submitEditPerson} from './webservice';
-import {formatDate, formatTime, putObjectInLines} from './common.js';
+import {getInitiation} from './webservice';
 import {PersonLink} from './PersonLink.jsx';
 import {LocationPicker} from './LocationPicker.jsx';
 import {PersonPicker} from "./PersonPicker.jsx";

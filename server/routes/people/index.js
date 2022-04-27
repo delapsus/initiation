@@ -47,24 +47,24 @@ router.post('/submit-person-picker', async function (req, res) {
   }
 });
 
-//   router.post('/data/merge-person', function (req, res) {
-//     let masterPersonId = req.body.masterPersonId;
-//     let slavePersonId = req.body.slavePersonId;
+router.post('/merge-person', function (req, res) {
+  let masterPersonId = req.body.masterPersonId;
+  let slavePersonId = req.body.slavePersonId;
 
-//     submit
-//       .mergePerson(masterPersonId, slavePersonId)
-//       .then(value => {
-//         res.send(JSON.stringify(value));
-//       })
-//       .catch(console.error);
-//   });
-//   router.post('/data/submit-edit-person', async function (req, res) {
-//     try {
-//       const value = await submit.submitEditPerson(req.body);
-//       res.send(JSON.stringify(value));
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   });
+  submit
+    .mergePerson(masterPersonId, slavePersonId)
+    .then(value => {
+      res.send(JSON.stringify(value));
+    })
+    .catch(console.error);
+});
+router.post('/submit-edit-person', async function (req, res) {
+  try {
+    const value = await submit.submitEditPerson(req.body);
+    res.send(JSON.stringify(value));
+  } catch (err) {
+    console.error(err);
+  }
+});
 
 module.exports = router;

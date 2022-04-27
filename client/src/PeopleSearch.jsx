@@ -89,16 +89,14 @@ export class PeopleSearch extends React.Component {
 
         this.setState(state);
     }
-    submitMerge() {
-        submitMergePerson(this.state.mergeMaster.personId, this.state.mergeSlave.personId).then(() => {
+    async submitMerge() {
+        await submitMergePerson(this.state.mergeMaster.personId, this.state.mergeSlave.personId)
             this.updatePeopleList().then(() => {
                 this.updateMergeMaster().then(() => {
                     // finally clear the current merge state
                     this.setState({submittingMerge: false, mergeSlave: null});
                 })
             });
-
-        });
         this.setState({submittingMerge: true});
     }
 
@@ -232,7 +230,8 @@ class PeopleDisplay extends React.Component {
 
             let maxDegree = "", maxDegreeDate = "", minDegreeDate = "";
 
-            if (person.initiations.length > 0) {
+
+             if(person.initiations.length > 0) {
                 let lastInit = person.initiations[person.initiations.length-1];
                 maxDegree = lastInit.degree.name;
                 maxDegreeDate = getInitiationDate(lastInit); //lastInit.data.actualDate === null ? "" : formatDate(new Date(lastInit.data.actualDate));
