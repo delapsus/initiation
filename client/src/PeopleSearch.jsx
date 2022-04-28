@@ -41,7 +41,7 @@ export class PeopleSearch extends React.Component {
 
     async updateMergeMaster () {
         if (this.state.mergeMaster === null) return;
-        const result =  getPersonWithData(this.state.mergeMaster.personId);
+        const result = await getPersonWithData(this.state.mergeMaster.personId);
         this.setState({mergeMaster: result});
     }
 
@@ -227,10 +227,7 @@ class PeopleDisplay extends React.Component {
         let slaveId = (!this.props.hasOwnProperty('slavePerson') || this.props.slavePerson === null) ? null : this.props.slavePerson.personId;
 
         this.props.people.forEach((person, i) => {
-
             let maxDegree = "", maxDegreeDate = "", minDegreeDate = "";
-
-
              if(person.initiations.length > 0) {
                 let lastInit = person.initiations[person.initiations.length-1];
                 maxDegree = lastInit.degree.name;

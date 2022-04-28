@@ -26,7 +26,6 @@ const submitMergePerson = async (masterPersonId, slavePersonId) => {
     "http://localhost:2020/data/people/merge-person",
     { masterPersonId: masterPersonId, slavePersonId: slavePersonId }
   );
-
   return result;
 };
 
