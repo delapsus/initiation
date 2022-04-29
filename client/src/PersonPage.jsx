@@ -1,5 +1,5 @@
 import React from 'react';
-import {getPersonWithData} from "./webservice";
+import {getPersonWithData} from "./data/people";
 import {formatDate, formatTime} from './common.js';
 import {InitiationDisplay, InitiationDisplayHeader} from './InitiationDisplay.jsx';
 

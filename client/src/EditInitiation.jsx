@@ -1,5 +1,5 @@
 import React from 'react';
-import {getInitiation} from './webservice';
+import {getInitiation} from './data/initiations';
 import {PersonLink} from './PersonLink.jsx';
 import {LocationPicker} from './LocationPicker.jsx';
 import {PersonPicker} from "./PersonPicker.jsx";

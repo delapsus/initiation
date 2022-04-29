@@ -7,6 +7,7 @@ let submit = require('./submit');
 let annualReport = require('./reports/yearly');
 let waitingForInitiationReport = require('./reports/waitingForInitiation');
 let peopleRoutes = require('./routes/people/index');
+let locationRoutes = require('./routes/locations/index');
 let express = require('express');
 let bodyParser = require('body-parser');
 let XLSX = require('xlsx');
@@ -65,50 +66,7 @@ function getPort() {
   else return 2020;
 }
 app.use('/data/people', peopleRoutes);
-
-app.post('/data/submit-location-picker', async function (req, res) {
-  try {
-    let locationId = await submit.submitLocationPicker(req.body);
-    res.send(JSON.stringify({locationId: locationId}));
-  } catch (err) {
-    console.error(err);
-  }
-});
-
-app.post('/data/locations', function (req, res) {
-  dataCache
-    .getLocations(req.body)
-    .then(value => {
-      res.send(JSON.stringify(value));
-    })
-    .catch(console.error);
-});
-
-app.post('/data/location', function (req, res) {
-  dataCache
-    .getLocation(req.body.locationId)
-    .then(value => {
-      res.send(JSON.stringify(value));
-    })
-    .catch(console.error);
-});
-
-app.post('/data/location-with-data', function (req, res) {
-  dataCache
-    .getLocationWithInitiations(req.body.locationId)
-    .then(value => {
-      res.send(JSON.stringify(value));
-    })
-    .catch(console.error);
-});
-app.post('/data/submit-edit-location', async function (req, res) {
-  try {
-    const value = await submit.submitEditLocation(req.body);
-    res.send(JSON.stringify(value));
-  } catch (err) {
-    console.error(err);
-  }
-});
+app.use('/data/locations', locationRoutes);
 
 app.post('/data/initiation', function (req, res) {
   dataCache

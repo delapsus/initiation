@@ -1,8 +1,7 @@
 import React from "react";
-import {postAjax} from "./http";
 import {getDegreeById} from "./degree";
 import {getInitiationDate} from './common.js';
-import {getPeople} from './webservice'
+import {getPeople} from './data/people'
 import axios from "axios";
 
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import {getInitiation} from './webservice';
+import {getInitiation} from './data/initiations';
 import {formatDate, formatTime, putObjectInLines} from './common.js';
 import {PersonLink} from './PersonLink.jsx';
 import {LocationLink} from './LocationLink.jsx';

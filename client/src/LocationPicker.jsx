@@ -1,24 +1,5 @@
 import React from "react";
-import {postAjax} from "./http";
-
-function getLocations(state) {
-    return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/data/locations", {pageSize:10, index: 0, textSearch: state.textSearch}, result => {
-            result = JSON.parse(result);
-            resolve(result);
-        });
-    });
-}
-
-export function submitLocationPicker(data) {
-    return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/data/submit-location-picker", {location:data}, result => {
-            result = JSON.parse(result);
-            resolve(result.locationId);
-        });
-    });
-}
-
+import {submitLocationPicker,getLocations} from './data/locations'
 export class LocationPicker extends React.Component {
 
     constructor(props) {
@@ -78,7 +59,7 @@ export class LocationPicker extends React.Component {
 
 
         let combined = this.state.name;
-        getLocations({textSearch:combined.trim()}).then(result => {
+        getLocations({pageSize:10, pageIndex:0, textSearch:combined.trim()}).then(result => {
 
             let locationId = this.state.locationId;
 

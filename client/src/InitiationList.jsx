@@ -1,7 +1,7 @@
 import React from 'react';
 import {postAjax} from './http';
-import {formatDate} from './common.js';
 import {InitiationDisplay, InitiationDisplayHeader} from './InitiationDisplay.jsx';
+import {getLocations} from './data/locations'
 
 function getInitiations(state) {
     return new Promise((resolve, reject) => {
@@ -20,14 +20,6 @@ function getInitiations(state) {
     });
 }
 
-function getLocations() {
-    return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/data/locations", {}, result => {
-            result = JSON.parse(result);
-            resolve(result);
-        });
-    });
-}
 
 export class InitiationList extends React.Component {
     constructor(props) {

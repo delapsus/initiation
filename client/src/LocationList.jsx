@@ -1,14 +1,6 @@
 import React from 'react';
-import {postAjax} from './http';
+import { getLocations } from './data/locations';
 
-function getLocations() {
-    return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/data/locations", {}, result => {
-            result = JSON.parse(result);
-            resolve(result);
-        });
-    });
-}
 
 export class LocationList extends React.Component {
     constructor(props) {
@@ -17,12 +9,11 @@ export class LocationList extends React.Component {
             locations: null
         };
     }
-    getData() {
-        getLocations().then(result => {
+    async getData() {
+        const locationData = await getLocations({pageSize:1000,pageIndex:0,textSearch:''});
             this.setState({
-                locations: result.locations
+                locations: locationData.locations
             });
-        });
     }
 
     componentDidMount() {

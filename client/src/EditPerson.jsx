@@ -1,5 +1,5 @@
 import React from 'react';
-import {getPerson, submitEditPerson} from "./webservice";
+import {getPerson, submitEditPerson} from "./data/people";
 import {formatDate, formatTime} from './common.js';
 
 export class EditPerson extends React.Component {

@@ -1,7 +1,7 @@
 import React from 'react';
 import {getDegreeById, getDegreeByName, allDegrees} from './degree';
 import {PersonPicker} from './PersonPicker.jsx';
-import {submitApplication} from "./webservice";
+import {submitApplication} from "./data/applications";
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 

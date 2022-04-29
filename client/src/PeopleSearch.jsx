@@ -1,8 +1,6 @@
 import React from 'react';
-import {postAjax} from './http';
-import axios from 'axios'
-import {formatDate, getInitiationDate} from './common.js';
-import {submitMergePerson, getPersonWithData,getPeople} from "./webservice";
+import { getInitiationDate} from './common.js';
+import {submitMergePerson, getPersonWithData,getPeople} from "./data/people";
 
 
 
