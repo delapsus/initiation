@@ -30,4 +30,13 @@ router.get('/all', function (req, res) {
         .catch(console.error);
 });
 
+router.post('/submit-edit-initiation', async function (req, res) {
+    try {
+        const value = await submit.submitEditInitiation(req.body);
+        res.send(JSON.stringify(value));
+    } catch (err) {
+        console.error(err);
+    }
+});
+
 module.exports = router;

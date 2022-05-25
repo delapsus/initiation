@@ -7,14 +7,11 @@ import { getOfficerByDegreeId } from "./officer";
 import DatePicker from 'react-datepicker';
 import moment from "moment";
 import { postAjax } from "./http";
+import axios from 'axios'
 
 async function submitEditInitiation(initiation) {
-    return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/data/submit-edit-initiation", { initiation: initiation }, result => {
-            result = JSON.parse(result);
-            resolve(result);
-        });
-    });
+    const result = await axios.post("http://localhost:2020/data/initiation/submit-edit-initiation", { initiation: initiation });
+    return result.data;
 }
 
 export class EditInitiation extends React.Component {

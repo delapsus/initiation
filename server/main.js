@@ -72,15 +72,6 @@ app.use('/data/locations', locationRoutes);
 app.use('/data/applications', applicationRoutes);
 app.use('/data/initiation', initiationRoutes);
 
-
-app.post('/data/submit-edit-initiation', async function (req, res) {
-  try {
-    const value = await submit.submitEditInitiation(req.body);
-    res.send(JSON.stringify(value));
-  } catch (err) {
-    console.error(err);
-  }
-});
 // index.html?page=report-form
 app.post('/data/submit-initiation-report', function (req, res) {
   submit
