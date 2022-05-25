@@ -1,17 +1,11 @@
-import { postAjax } from "../http";
 import axios from "axios";
 
-const submitApplication = (state) => {
-  return new Promise((resolve, reject) => {
-    postAjax(
-      "http://localhost:2020/data/submit-application",
-      { data: state },
-      (result) => {
-        result = JSON.parse(result);
-        resolve(result);
-      }
-    );
-  });
+const submitApplication = async (state) => {
+  const result = await axios.post(
+    "http://localhost:2020/data/applications/submit-application",
+    { data: state }
+  );
+  return result;
 };
 
 export { submitApplication };

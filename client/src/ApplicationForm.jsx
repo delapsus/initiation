@@ -138,10 +138,9 @@ export class ApplicationForm extends React.Component {
             this.setState({errors: errors});
         }
         else {
-            submitApplication(data).then(result => {
-                this.setState({message: "save complete, redirecting to initiation page..."});
-                window.location = "index.html?initiationid=" + result.initiationId;
-            });
+            const result = await submitApplication(data) 
+            this.setState({message: "save complete, redirecting to initiation page..."});
+            window.location = "index.html?initiationid=" + result.initiationId;
             this.setState({errors: errors, message: "saving..."});
         }
 

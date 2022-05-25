@@ -44,7 +44,7 @@ let userFields = {
 
 
 
-exports.submitApplication = async function(post) {
+exports.submitApplication = async function (post) {
 
     // get the person record from the cache
     let person = await dataCache.getPersonWithFullData(post.data.personId);
@@ -70,7 +70,7 @@ exports.submitApplication = async function(post) {
 
 
     // then save the initiation
-    let init = Initiation.create({data:post.data});
+    let init = Initiation.create({ data: post.data });
 
     await Initiation.save(init);
 
@@ -79,7 +79,7 @@ exports.submitApplication = async function(post) {
     return init;
 };
 
-exports.submitInitiationReport = async function(post) {
+exports.submitInitiationReport = async function (post) {
 
     let degreeId = post.data.degreeId;
     let candidates = post.data.candidates;
@@ -96,11 +96,13 @@ exports.submitInitiationReport = async function(post) {
 
         // if the person does not yet have the initiation, lets create it
         if (initiation === null) {
-            initiation = Initiation.create({data:{
+            initiation = Initiation.create({
+                data: {
                     degreeId: degreeId,
                     personId: person.personId,
                     performedAt_locationId: post.data.performedAt_locationId
-                }});
+                }
+            });
 
             await Initiation.save(initiation);
         }
@@ -120,8 +122,8 @@ exports.submitInitiationReport = async function(post) {
     let reportedDate = new Date(post.data.reportedDate);
 
     let officers = post.data.officers
-        .filter(o => {return o.personId !== null})
-        .map(o => { return {personId: o.personId, officerId: o.officerId}; });
+        .filter(o => { return o.personId !== null })
+        .map(o => { return { personId: o.personId, officerId: o.officerId }; });
 
     await Promise.all(initiations.map(async init => {
         init.data.actualDate = actualDate;
@@ -176,40 +178,40 @@ Cert Received:2003-08-28
 }
  */
 
-exports.submitPersonPicker = async function(post) {
-    let person = {data:post.person};
+exports.submitPersonPicker = async function (post) {
+    let person = { data: post.person };
     await Person.save(person);
     dataCache.clearCache();
     return person.personId;
 };
 
-exports.submitLocationPicker = async function(post) {
-    let location = {data:post.location};
+exports.submitLocationPicker = async function (post) {
+    let location = { data: post.location };
     await Location.save(location);
     dataCache.clearCache();
     return location.locationId;
 };
 
 
-exports.submitEditPerson = async function(post) {
+exports.submitEditPerson = async function (post) {
     await Person.save(post.person);
     dataCache.clearCache();
     return {};
 };
 
-exports.submitEditInitiation = async function(post) {
+exports.submitEditInitiation = async function (post) {
     await Initiation.save(post.initiation);
     dataCache.clearCache();
     return {};
 };
 
-exports.submitEditLocation = async function(post) {
+exports.submitEditLocation = async function (post) {
     await Location.save(post.location);
     dataCache.clearCache();
     return {};
 };
 
-exports.mergePerson = function(masterPersonId, slavePersonId) {
+exports.mergePerson = function (masterPersonId, slavePersonId) {
 
     return dataCache.getPersonWithFullData(slavePersonId).then(slave => {
         // first load up each initiation to check

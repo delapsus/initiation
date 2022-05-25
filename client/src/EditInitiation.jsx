@@ -1,16 +1,16 @@
 import React from 'react';
-import {getInitiation} from './data/initiations';
-import {PersonLink} from './PersonLink.jsx';
-import {LocationPicker} from './LocationPicker.jsx';
-import {PersonPicker} from "./PersonPicker.jsx";
-import {getOfficerByDegreeId} from "./officer";
+import { getInitiation } from './data/initiations';
+import { PersonLink } from './PersonLink.jsx';
+import { LocationPicker } from './LocationPicker.jsx';
+import { PersonPicker } from "./PersonPicker.jsx";
+import { getOfficerByDegreeId } from "./officer";
 import DatePicker from 'react-datepicker';
 import moment from "moment";
-import {postAjax} from "./http";
+import { postAjax } from "./http";
 
 async function submitEditInitiation(initiation) {
     return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/data/submit-edit-initiation", {initiation:initiation}, result => {
+        postAjax("http://localhost:2020/data/submit-edit-initiation", { initiation: initiation }, result => {
             result = JSON.parse(result);
             resolve(result);
         });
@@ -34,23 +34,24 @@ export class EditInitiation extends React.Component {
         this.sponsor2Picker = React.createRef();
         this.locationPicker = React.createRef();
         this.locationPickerSubmitted = React.createRef();
+        this.getInit();
 
+    }
+
+    async getInit() {
         // get the initiation, setup the pickers
-        getInitiation(this.props.initiationId).then(result => {
+        const initResult = await getInitiation(this.props.initiationId);
+        this.officers = getOfficerByDegreeId(initResult.degree.degreeId);
 
-            //init.data.officers.forEach()
-
-            this.officers = getOfficerByDegreeId(result.degree.degreeId);
-
-            // fix the pickers
-            this.officers.forEach(o => {
-                let key = o.officerId.toString();
-                this.officerPickers[key] = React.createRef();
-            });
-
-            let copy = JSON.parse(JSON.stringify(result));
-            this.setState({ prev: result, live: copy });
+        // fix the pickers
+        this.officers.forEach(o => {
+            let key = o.officerId.toString();
+            this.officerPickers[key] = React.createRef();
         });
+
+        let copy = JSON.parse(JSON.stringify(initResult));
+        this.setState({ prev: initResult, live: copy });
+
     }
 
     handleChange(event) {
@@ -69,7 +70,7 @@ export class EditInitiation extends React.Component {
     handleDateChange(e) {
         let name = e.name;
         // get a pure UTC date
-        let value = (e.value === null) ? null : new Date(`${e.value.year()}-${e.value.month()+1}-${e.value.date()}Z`);
+        let value = (e.value === null) ? null : new Date(`${e.value.year()}-${e.value.month() + 1}-${e.value.date()}Z`);
 
         this.state.live.data[name] = value;
 
@@ -93,7 +94,7 @@ export class EditInitiation extends React.Component {
 
             let personId = await picker.current.save();
 
-            this.state.live.data.officers.push({officerId: +officerId, personId: personId});
+            this.state.live.data.officers.push({ officerId: +officerId, personId: personId });
         }));
 
         // create the saving record
@@ -132,7 +133,7 @@ export class EditInitiation extends React.Component {
             {buttons}
         </div>;
     }
-    
+
     renderEditSection() {
 
         if (this.state.live === null) return <div></div>;
@@ -167,10 +168,10 @@ export class EditInitiation extends React.Component {
             </div>
 
             <div><div className="title">Person:</div><div><PersonLink person={init.person} /></div></div>
-            <div style={{marginBottom:"1em"}}><div className="title">Degree:</div><div>{init.degree.name}</div></div>
+            <div style={{ marginBottom: "1em" }}><div className="title">Degree:</div><div>{init.degree.name}</div></div>
 
-            <div className="formLine" style={{marginBottom:"1em"}}>
-                <div className="formItem" style={{marginBottom:"1em"}}>
+            <div className="formLine" style={{ marginBottom: "1em" }}>
+                <div className="formItem" style={{ marginBottom: "1em" }}>
                     <div className="formItemTitle">Sponsor 1:</div>
                     <PersonPicker ref={this.sponsor1Picker} name={"sponsor1_person"} savedPerson={init.sponsor1_person} />
                 </div>
@@ -180,13 +181,13 @@ export class EditInitiation extends React.Component {
                 </div>
             </div>
 
-            <div className="formLine" style={{marginTop:"1em"}}>
+            <div className="formLine" style={{ marginTop: "1em" }}>
                 <div className="formItem">
                     <div className="formItemTitle">Location:</div>
                     <div><LocationPicker ref={this.locationPicker} name={"locationPicker"} savedLocation={init.location} ></LocationPicker></div>
                 </div>
             </div>
-            <div className="formLine" style={{marginTop:"1em"}}>
+            <div className="formLine" style={{ marginTop: "1em" }}>
                 <div className="formItem">
                     <div className="formItemTitle">Submitted Through Body:</div>
                     <div><LocationPicker ref={this.locationPickerSubmitted} name={"locationPickerSubmitted"} savedLocation={init.submittedThroughLocation} ></LocationPicker></div>
@@ -197,46 +198,46 @@ export class EditInitiation extends React.Component {
                 {officerInput}
             </div>
 
-            <div style={{marginTop:"1em", fontWeight:"bold"}}><div>Application:</div></div>
+            <div style={{ marginTop: "1em", fontWeight: "bold" }}><div>Application:</div></div>
             <div>
                 <div className="title">localBodyDate:</div>
-                <div><DatePicker utcOffset={0} selected={init.data.localBodyDate === null ? null : moment.utc(init.data.localBodyDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'localBodyDate'})}} /></div>
+                <div><DatePicker utcOffset={0} selected={init.data.localBodyDate === null ? null : moment.utc(init.data.localBodyDate)} onChange={m => { this.handleDateChange({ type: 'DatePicker', value: m, name: 'localBodyDate' }) }} /></div>
             </div>
             <div>
                 <div className="title">signedDate:</div>
-                <div><DatePicker utcOffset={0} selected={init.data.signedDate === null ? null : moment.utc(init.data.signedDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'signedDate'})}} /></div>
+                <div><DatePicker utcOffset={0} selected={init.data.signedDate === null ? null : moment.utc(init.data.signedDate)} onChange={m => { this.handleDateChange({ type: 'DatePicker', value: m, name: 'signedDate' }) }} /></div>
             </div>
             <div>
                 <div className="title">approvedDate:</div>
-                <div><DatePicker utcOffset={0} selected={init.data.approvedDate === null ? null : moment.utc(init.data.approvedDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'approvedDate'})}} /></div>
+                <div><DatePicker utcOffset={0} selected={init.data.approvedDate === null ? null : moment.utc(init.data.approvedDate)} onChange={m => { this.handleDateChange({ type: 'DatePicker', value: m, name: 'approvedDate' }) }} /></div>
             </div>
 
-            <div style={{marginTop:"1em", fontWeight:"bold"}}><div>Initiation:</div></div>
+            <div style={{ marginTop: "1em", fontWeight: "bold" }}><div>Initiation:</div></div>
             <div>
                 <div className="title">proposedDate:</div>
-                <div><DatePicker utcOffset={0} selected={init.data.proposedDate === null ? null : moment.utc(init.data.proposedDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'proposedDate'})}} /></div>
+                <div><DatePicker utcOffset={0} selected={init.data.proposedDate === null ? null : moment.utc(init.data.proposedDate)} onChange={m => { this.handleDateChange({ type: 'DatePicker', value: m, name: 'proposedDate' }) }} /></div>
             </div>
             <div>
                 <div className="title">actualDate:</div>
-                <div><DatePicker utcOffset={0} selected={init.data.actualDate === null ? null : moment.utc(init.data.actualDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'actualDate'})}} /></div>
+                <div><DatePicker utcOffset={0} selected={init.data.actualDate === null ? null : moment.utc(init.data.actualDate)} onChange={m => { this.handleDateChange({ type: 'DatePicker', value: m, name: 'actualDate' }) }} /></div>
             </div>
             <div>
                 <div className="title">reportedDate:</div>
-                <div><DatePicker utcOffset={0} selected={init.data.reportedDate === null ? null : moment.utc(init.data.reportedDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'reportedDate'})}} /></div>
+                <div><DatePicker utcOffset={0} selected={init.data.reportedDate === null ? null : moment.utc(init.data.reportedDate)} onChange={m => { this.handleDateChange({ type: 'DatePicker', value: m, name: 'reportedDate' }) }} /></div>
             </div>
 
-            <div style={{marginTop:"1em", fontWeight:"bold"}}><div>Certificate:</div></div>
+            <div style={{ marginTop: "1em", fontWeight: "bold" }}><div>Certificate:</div></div>
             <div>
                 <div className="title">Received from body:</div>
-                <div><DatePicker utcOffset={0} selected={init.data.certReceivedDate === null ? null : moment.utc(init.data.certReceivedDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'certReceivedDate'})}} /></div>
+                <div><DatePicker utcOffset={0} selected={init.data.certReceivedDate === null ? null : moment.utc(init.data.certReceivedDate)} onChange={m => { this.handleDateChange({ type: 'DatePicker', value: m, name: 'certReceivedDate' }) }} /></div>
             </div>
             <div>
                 <div className="title">Sent Out For Signature:</div>
-                <div><DatePicker utcOffset={0} selected={init.data.certSentOutForSignatureDate === null ? null : moment.utc(init.data.certSentOutForSignatureDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'certSentOutForSignatureDate'})}} /></div>
+                <div><DatePicker utcOffset={0} selected={init.data.certSentOutForSignatureDate === null ? null : moment.utc(init.data.certSentOutForSignatureDate)} onChange={m => { this.handleDateChange({ type: 'DatePicker', value: m, name: 'certSentOutForSignatureDate' }) }} /></div>
             </div>
             <div>
                 <div className="title">Sent Out To Body:</div>
-                <div><DatePicker utcOffset={0} selected={init.data.certSentOutToBodyDate === null ? null : moment.utc(init.data.certSentOutToBodyDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'certSentOutToBodyDate'})}} /></div>
+                <div><DatePicker utcOffset={0} selected={init.data.certSentOutToBodyDate === null ? null : moment.utc(init.data.certSentOutToBodyDate)} onChange={m => { this.handleDateChange({ type: 'DatePicker', value: m, name: 'certSentOutToBodyDate' }) }} /></div>
             </div>
 
         </div>;

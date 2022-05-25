@@ -8,6 +8,8 @@ let annualReport = require('./reports/yearly');
 let waitingForInitiationReport = require('./reports/waitingForInitiation');
 let peopleRoutes = require('./routes/people/index');
 let locationRoutes = require('./routes/locations/index');
+let applicationRoutes = require('./routes/applications/index');
+let initiationRoutes = require('./routes/initiations/index')
 let express = require('express');
 let bodyParser = require('body-parser');
 let XLSX = require('xlsx');
@@ -55,7 +57,7 @@ app.use(function (req, res, next) {
   }
 });
 // post handlers
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 function getPort() {
@@ -67,43 +69,9 @@ function getPort() {
 }
 app.use('/data/people', peopleRoutes);
 app.use('/data/locations', locationRoutes);
+app.use('/data/applications', applicationRoutes);
+app.use('/data/initiation', initiationRoutes);
 
-app.post('/data/initiation', function (req, res) {
-  dataCache
-    .getInitiationWithData(req.body.initiationId)
-    .then(value => {
-      res.send(JSON.stringify(value));
-    })
-    .catch(console.error);
-});
-// used on the initiations page
-app.post('/data/initiations', function (req, res) {
-  dataCache
-    .getInitiations(req.body)
-    .then(value => {
-      res.send(JSON.stringify(value));
-    })
-    .catch(console.error);
-});
-
-app.post('/data/submit-application', function (req, res) {
-  submit
-    .submitApplication(req.body)
-    .then(value => {
-      res.send(JSON.stringify(value));
-    })
-    .catch(console.error);
-});
-
-// index.html?page=report-form
-app.post('/data/submit-initiation-report', function (req, res) {
-  submit
-    .submitInitiationReport(req.body)
-    .then(value => {
-      res.send(JSON.stringify(value));
-    })
-    .catch(console.error);
-});
 
 app.post('/data/submit-edit-initiation', async function (req, res) {
   try {
@@ -112,6 +80,15 @@ app.post('/data/submit-edit-initiation', async function (req, res) {
   } catch (err) {
     console.error(err);
   }
+});
+// index.html?page=report-form
+app.post('/data/submit-initiation-report', function (req, res) {
+  submit
+    .submitInitiationReport(req.body)
+    .then(value => {
+      res.send(JSON.stringify(value));
+    })
+    .catch(console.error);
 });
 
 app.get('/report/annual', async function (req, res) {
@@ -133,7 +110,7 @@ app.get('/report/annual', async function (req, res) {
   XLSX.utils.book_append_sheet(wb, ws, ws_name);
 
   // write the XLSX to response
-  let wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST: true, type: 'binary'});
+  let wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'binary' });
   let filename = `annual-report-${year}_${getDateTimeString()}.xlsx`;
   res.header('Content-Type', 'application/octet-stream');
   res.header('Content-disposition', 'attachment;filename=' + filename);
@@ -167,7 +144,7 @@ app.get('/report/waiting', async function (req, res) {
   XLSX.utils.book_append_sheet(wb, ws, ws_name);
 
   // write the XLSX to response
-  let wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST: true, type: 'binary'});
+  let wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'binary' });
   let filename = `waiting-for-initiation_${getDateTimeString()}.xlsx`;
   res.header('Content-Type', 'application/octet-stream');
   res.header('Content-disposition', 'attachment;filename=' + filename);
