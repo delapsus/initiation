@@ -1,23 +1,19 @@
 import React from 'react';
-import {postAjax} from './http';
-import {getDegreeById, getDegreeByName, allDegrees} from './degree';
-import {getOfficerByDegreeId} from './officer';
-import {PersonPicker} from './PersonPicker.jsx';
+import { getDegreeByName, allDegrees } from './degree';
+import { getOfficerByDegreeId } from './officer';
+import { PersonPicker } from './PersonPicker.jsx';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 
 import 'react-datepicker/dist/react-datepicker.css';
-import {LocationPicker} from "./LocationPicker.jsx";
+import { LocationPicker } from "./LocationPicker.jsx";
+import axios from 'axios';
 
 
 
-export function submitInitiationReport(state) {
-    return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/data/submit-initiation-report", {data:state}, result => {
-            result = JSON.parse(result);
-            resolve(result);
-        });
-    });
+export async function submitInitiationReport(state) {
+    const result = await axios.post("http://localhost:2020/data/reports/submit-initiation-report", { data: state });
+    return result.data;
 }
 
 // https://blog.logrocket.com/an-imperative-guide-to-forms-in-react-927d9670170a
@@ -32,7 +28,7 @@ export class InitiationReportForm extends React.Component {
         this.candidatePickers = [React.createRef()];
 
         this.state = {
-            errors:[],
+            errors: [],
             message: "",
 
             degreeId: getDegreeByName('0').degreeId,
@@ -47,7 +43,7 @@ export class InitiationReportForm extends React.Component {
 
     }
 
-    handleChange (event) {
+    handleChange(event) {
         const target = event.target;
         let value = (target.hasOwnProperty('type') && target.type === 'checkbox') ? target.checked : target.value;
         if (target.type === 'radio') value = value === 'true';
@@ -61,7 +57,7 @@ export class InitiationReportForm extends React.Component {
     handleDateChange(e) {
         let name = e.name;
         // get a pure UTC date
-        let value = (e.value === null) ? null : new Date(`${e.value.year()}-${e.value.month()+1}-${e.value.date()}Z`);
+        let value = (e.value === null) ? null : new Date(`${e.value.year()}-${e.value.month() + 1}-${e.value.date()}Z`);
 
         this.setState({
             [name]: value
@@ -69,15 +65,15 @@ export class InitiationReportForm extends React.Component {
     }
 
     handleDegreeChange(event) {
-        this.setState({degreeId: +event.target.value});
+        this.setState({ degreeId: +event.target.value });
     }
 
     handleChangeCert(index, event) {
         this.state.candidateCertificate[index] = !this.state.candidateCertificate[index];
-        this.setState({candidateCertificate: this.state.candidateCertificate});
+        this.setState({ candidateCertificate: this.state.candidateCertificate });
     }
 
-    async handleSubmit (event) {
+    async handleSubmit(event) {
 
         let errors = [];
 
@@ -118,14 +114,14 @@ export class InitiationReportForm extends React.Component {
         }
 
         if (errors.length > 0) {
-            this.setState({errors: errors});
+            this.setState({ errors: errors });
         }
         else {
             submitInitiationReport(data).then(result => {
-                this.setState({message: "save complete. (this should redirect to the initiation page?)"});
+                this.setState({ message: "save complete. (this should redirect to the initiation page?)" });
                 //window.location = "index.html?initiationid=" + result.initiationId;
             });
-            this.setState({errors: errors, message: "saving..."});
+            this.setState({ errors: errors, message: "saving..." });
         }
 
     }
@@ -210,9 +206,9 @@ export class InitiationReportForm extends React.Component {
             let o = <div className="formLine" key={i}>
                 <div className="formItem">
                     <div className="formItemTitle">Candidate {cCount}</div>
-                    <div style={{display: "inline-block", verticalAlign: 'top'}}><input type="button" value="X" style={{padding: '0 6px'}} onClick={this.removeCandidate.bind(this, i)} /></div>
-                    <div style={{display: "inline-block"}}><PersonPicker ref={this.candidatePickers[i]} name={"candidate" + i.toString()} index={i} /></div>
-                    <div style={{display: "inline-block", verticalAlign: "top", marginTop: "1.2em"}}><input type="checkbox" name="status" value="" checked={this.state.candidateCertificate[i]} onChange={this.handleChangeCert.bind(this, i)} index={i} /> Certificate Received</div>
+                    <div style={{ display: "inline-block", verticalAlign: 'top' }}><input type="button" value="X" style={{ padding: '0 6px' }} onClick={this.removeCandidate.bind(this, i)} /></div>
+                    <div style={{ display: "inline-block" }}><PersonPicker ref={this.candidatePickers[i]} name={"candidate" + i.toString()} index={i} /></div>
+                    <div style={{ display: "inline-block", verticalAlign: "top", marginTop: "1.2em" }}><input type="checkbox" name="status" value="" checked={this.state.candidateCertificate[i]} onChange={this.handleChangeCert.bind(this, i)} index={i} /> Certificate Received</div>
                 </div>
             </div>;
 
@@ -227,11 +223,11 @@ export class InitiationReportForm extends React.Component {
             </div>
 
 
-            <div className="formLine indent" style={{marginTop:'1em'}}>
+            <div className="formLine indent" style={{ marginTop: '1em' }}>
 
                 {this.createFormItem('Degree Initiated', false, <select value={this.state.degreeId} onChange={this.handleDegreeChange.bind(this)}>{degrees}</select>)}
-                {this.createFormItem('Date of Initiation', false, <DatePicker utcOffset={0} selected={this.state.initiationDate === null ? null : moment.utc(this.state.initiationDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'initiationDate'})}} />)}
-                {this.createFormItem('Reported Date', false, <DatePicker utcOffset={0} selected={this.state.reportedDate === null ? null : moment.utc(this.state.reportedDate)} onChange={m => {this.handleDateChange({type:'DatePicker', value:m, name:'reportedDate'})}} />)}
+                {this.createFormItem('Date of Initiation', false, <DatePicker utcOffset={0} selected={this.state.initiationDate === null ? null : moment.utc(this.state.initiationDate)} onChange={m => { this.handleDateChange({ type: 'DatePicker', value: m, name: 'initiationDate' }) }} />)}
+                {this.createFormItem('Reported Date', false, <DatePicker utcOffset={0} selected={this.state.reportedDate === null ? null : moment.utc(this.state.reportedDate)} onChange={m => { this.handleDateChange({ type: 'DatePicker', value: m, name: 'reportedDate' }) }} />)}
 
             </div>
 

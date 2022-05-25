@@ -1,5 +1,5 @@
 import React from 'react';
-import {getDegreeById, getDegreeByName, allDegrees} from './degree';
+import { allDegrees } from './degree';
 
 export class Reports extends React.Component {
 
@@ -18,10 +18,10 @@ export class Reports extends React.Component {
     }
 
     onGenerateYearly() {
-        window.location.href = `/report/annual?year=${this.state.year.toString()}`;
+        window.location.href = `/data/reports/annual?year=${this.state.year.toString()}`;
     }
     onChangeYear(event) {
-        this.setState({year: +event.target.value});
+        this.setState({ year: +event.target.value });
     }
 
     onGenerateWaitingForInitiation() {
@@ -33,21 +33,21 @@ export class Reports extends React.Component {
             `maxYears=${this.state.maxYears.toString()}`
         ];
 
-        window.location.href = `/report/waiting?${qs.join('&')}`;
+        window.location.href = `/data/reports/waiting?${qs.join('&')}`;
     }
     onChangeYearMin(event) {
-        this.setState({minYears: +event.target.value});
+        this.setState({ minYears: +event.target.value });
     }
     onChangeYearMax(event) {
-        this.setState({maxYears: +event.target.value});
+        this.setState({ maxYears: +event.target.value });
     }
 
 
     onChangeDegreeIdMin(event) {
-        this.setState({minDegreeId: +event.target.value});
+        this.setState({ minDegreeId: +event.target.value });
     }
     onChangeDegreeIdMax(event) {
-        this.setState({maxDegreeId: +event.target.value});
+        this.setState({ maxDegreeId: +event.target.value });
     }
 
     render() {
@@ -66,13 +66,13 @@ export class Reports extends React.Component {
 
         return <div>
             <div>Reports:</div>
-            <hr/>
+            <hr />
             <div>
                 <div className='reportTitle'>Annual Report Data:</div>
                 <div className='reportSub'>Year: <select value={this.state.year} onChange={this.onChangeYear.bind(this)}>{years}</select></div>
                 <div className='reportSub'><button onClick={this.onGenerateYearly.bind(this)}>Generate</button></div>
             </div>
-            <hr/>
+            <hr />
             <div>
                 <div className='reportTitle'>Waiting for Initiation:</div>
                 <div className='reportSub'>Min Degree: <select value={this.state.minDegreeId} onChange={this.onChangeDegreeIdMin.bind(this)}>{minDegrees}</select></div>
