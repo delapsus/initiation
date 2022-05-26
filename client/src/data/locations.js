@@ -30,7 +30,7 @@ const submitLocationPicker = async (data) => {
 
     { location: data }
   );
-  return result.locationId;
+  return result.data.locationId;
 };
 
 export { getLocations, getLocation, getLocationWithData, submitLocationPicker };

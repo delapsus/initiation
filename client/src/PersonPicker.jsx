@@ -1,13 +1,13 @@
 import React from "react";
-import {getDegreeById} from "./degree";
-import {getInitiationDate} from './common.js';
-import {getPeople} from './data/people'
+import { getDegreeById } from "./degree";
+import { getInitiationDate } from './common.js';
+import { getPeople } from './data/people'
 import axios from "axios";
 
 
 export async function submitPersonPicker(data) {
- const result = await  axios.post("http://localhost:2020/data/people/submit-person-picker",{person:data});
- return result.personId;
+    const result = await axios.post("http://localhost:2020/data/people/submit-person-picker", { person: data });
+    return result.data.personId;
 }
 
 export class PersonPicker extends React.Component {
@@ -44,7 +44,7 @@ export class PersonPicker extends React.Component {
         this.setState({ [name]: value });
     }
 
-    handleSelectChange (event) {
+    handleSelectChange(event) {
         const target = event.target;
         let value = (target.type === 'checkbox' ? target.checked : target.value).trim();
         value = +value;
@@ -57,7 +57,6 @@ export class PersonPicker extends React.Component {
 
         // if the ID is -1, we'll need to create the person record
         if (this.state.personId === -1) {
-            console.log('HEHEHHEHEHEHEEEHEHEH')
             let personId = await submitPersonPicker({
                 firstName: this.state.firstName,
                 middleName: this.state.middleName,
@@ -73,12 +72,12 @@ export class PersonPicker extends React.Component {
     async getData() {
 
         if (this.state.firstName.length === 0 && this.state.lastName.length === 0) {
-            this.setState({suggestions: null});
+            this.setState({ suggestions: null });
             return;
         }
 
         let combined = this.state.firstName + " " + this.state.lastName; // + " " + this.state.middleName
-        const result = await getPeople({pageSize:10, index:0, searchText:combined.trim()});
+        const result = await getPeople({ pageSize: 10, index: 0, searchText: combined.trim() });
         let personId = this.state.personId;
         if (personId !== null && personId !== -1) {
             // if personId is not in the new result set, reset it
@@ -87,11 +86,11 @@ export class PersonPicker extends React.Component {
                 if (person.personId === personId) found = true;
             });
             let newPersonId = this.state.savedPersonId;
-            this.setState({suggestions: result, personId: found ? personId : newPersonId});
+            this.setState({ suggestions: result, personId: found ? personId : newPersonId });
         }
         else {
-            this.setState({suggestions: result});
-        }   
+            this.setState({ suggestions: result });
+        }
     }
 
     componentDidMount() {
@@ -102,7 +101,7 @@ export class PersonPicker extends React.Component {
 
         // sometimes parent will change the lookupDegreeId
         if (prevProps.lookupDegreeId !== this.props.lookupDegreeId) {
-            this.setState({lookupDegreeId: this.props.lookupDegreeId});
+            this.setState({ lookupDegreeId: this.props.lookupDegreeId });
         }
 
         // don't do an update if nothing changed
@@ -179,17 +178,17 @@ export class PersonPicker extends React.Component {
         }
 
         return <div className="personPicker">
-            <input type="hidden" value="something"/>
+            <input type="hidden" value="something" />
 
             <table className="noPad">
                 <thead>
-                <tr>
-                    <th></th>
-                    <th className="formItemTitle">First</th>
-                    <th className="formItemTitle">Middle</th>
-                    <th className="formItemTitle">Last</th>
-                    {degreeHeader}
-                </tr>
+                    <tr>
+                        <th></th>
+                        <th className="formItemTitle">First</th>
+                        <th className="formItemTitle">Middle</th>
+                        <th className="formItemTitle">Last</th>
+                        {degreeHeader}
+                    </tr>
                 </thead>
                 <tbody>{picks}</tbody>
             </table>

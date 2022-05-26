@@ -5,7 +5,7 @@ const submitApplication = async (state) => {
     "http://localhost:2020/data/applications/submit-application",
     { data: state }
   );
-  return result;
+  return result.data;
 };
 
 export { submitApplication };

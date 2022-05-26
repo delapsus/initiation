@@ -12,7 +12,7 @@ const submitMergePerson = async (masterPersonId, slavePersonId) => {
     "http://localhost:2020/data/people/merge-person",
     { masterPersonId: masterPersonId, slavePersonId: slavePersonId }
   );
-  return result;
+  return result.data;
 };
 
 const getPerson = async (personId) => {
@@ -34,7 +34,7 @@ const submitEditPerson = async (person) => {
     "http://localhost:2020/data/people/submit-edit-person",
     { person: person }
   );
-  return result;
+  return result.data;
 };
 
 export {
