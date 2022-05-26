@@ -24,3 +24,5 @@ install\.zip
 client/js/bundle\.js
 
 *.db
+
+package-lock.json
