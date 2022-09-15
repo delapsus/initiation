@@ -1,5 +1,5 @@
 import React from 'react';
-import {getLocation, submitEditLocation} from "./webservice";
+import {getLocation, submitEditLocation} from "./data/locations";
 
 export class EditLocation extends React.Component {
 

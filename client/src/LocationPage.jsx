@@ -1,7 +1,7 @@
 import React from 'react';
 import {formatDate, formatTime, putObjectInLines} from './common.js';
 import {InitiationDisplay} from './InitiationDisplay.jsx';
-import {getLocationWithData} from "./webservice";
+import {getLocationWithData} from "./data/locations";
 
 export class LocationPage extends React.Component {
     constructor(props) {

@@ -1,27 +1,9 @@
 import React from 'react';
-import {postAjax} from './http';
-import {formatDate, getInitiationDate} from './common.js';
-import {submitMergePerson, getPersonWithData} from "./webservice";
+import { getInitiationDate} from './common.js';
+import {submitMergePerson, getPersonWithData,getPeople} from "./data/people";
 
 
-function getPeople(state) {
-    return new Promise((resolve, reject) => {
 
-        let args = {
-            pageSize:state.pageSize,
-            index: state.pageIndex,
-            textSearch: state.searchText,
-            degreeId:state.degreeId,
-            sortBy: state.sortBy
-        };
-
-        postAjax("http://localhost:2020/data/people", args, result => {
-            result = JSON.parse(result);
-            resolve(result);
-        });
-
-    });
-}
 
 export class PeopleSearch extends React.Component {
     constructor(props) {
@@ -45,22 +27,20 @@ export class PeopleSearch extends React.Component {
     }
 
 
-    updatePeopleList() {
-        return getPeople(this.state).then(result => {
-            this.setState({
-                people: result.people,
-                pageCount: Math.ceil(result.count / this.state.pageSize),
-                recordCount: result.count
-            });
-
+    async updatePeopleList() {
+        const peopleResult = await getPeople(this.state);
+        this.setState({
+            people: peopleResult.people,
+            pageCount: Math.ceil(peopleResult.count / this.state.pageSize),
+            recordCount: peopleResult.count
         });
+    
     }
 
-    updateMergeMaster() {
+    async updateMergeMaster () {
         if (this.state.mergeMaster === null) return;
-        return getPersonWithData(this.state.mergeMaster.personId).then(result => {
-            this.setState({mergeMaster: result});
-        });
+        const result = await getPersonWithData(this.state.mergeMaster.personId);
+        this.setState({mergeMaster: result});
     }
 
     componentDidMount() {
@@ -107,16 +87,14 @@ export class PeopleSearch extends React.Component {
 
         this.setState(state);
     }
-    submitMerge() {
-        submitMergePerson(this.state.mergeMaster.personId, this.state.mergeSlave.personId).then(() => {
+    async submitMerge() {
+        await submitMergePerson(this.state.mergeMaster.personId, this.state.mergeSlave.personId)
             this.updatePeopleList().then(() => {
                 this.updateMergeMaster().then(() => {
                     // finally clear the current merge state
                     this.setState({submittingMerge: false, mergeSlave: null});
                 })
             });
-
-        });
         this.setState({submittingMerge: true});
     }
 
@@ -247,10 +225,8 @@ class PeopleDisplay extends React.Component {
         let slaveId = (!this.props.hasOwnProperty('slavePerson') || this.props.slavePerson === null) ? null : this.props.slavePerson.personId;
 
         this.props.people.forEach((person, i) => {
-
             let maxDegree = "", maxDegreeDate = "", minDegreeDate = "";
-
-            if (person.initiations.length > 0) {
+             if(person.initiations.length > 0) {
                 let lastInit = person.initiations[person.initiations.length-1];
                 maxDegree = lastInit.degree.name;
                 maxDegreeDate = getInitiationDate(lastInit); //lastInit.data.actualDate === null ? "" : formatDate(new Date(lastInit.data.actualDate));

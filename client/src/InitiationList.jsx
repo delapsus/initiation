@@ -1,33 +1,17 @@
 import React from 'react';
-import {postAjax} from './http';
-import {formatDate} from './common.js';
-import {InitiationDisplay, InitiationDisplayHeader} from './InitiationDisplay.jsx';
+import { postAjax } from './http';
+import { InitiationDisplay, InitiationDisplayHeader } from './InitiationDisplay.jsx';
+import { getLocations } from './data/locations'
+import axios from "axios";
 
-function getInitiations(state) {
-    return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/data/initiations", {
-            pageSize:state.pageSize,
-            index: state.pageIndex,
-            degreeId: state.degreeId,
-            status: state.status,
-            sort: state.sort,
-            maxDays: state.maxDays,
-            locationId: state.locationId
-        }, result => {
-            result = JSON.parse(result);
-            resolve(result);
-        });
-    });
+async function getInitiations(state) {
+
+    const initiationResult = await axios.get(
+        `http://localhost:2020/data/initiation/all?pageSize=${state.pageSize}&index=${state.pageIndex}&degreeId=${state.degreeId}&status=${state.status}&sort=${state.sort}&maxDays=${state.maxDays}&locationId=${state.locationId}`
+    );
+    return initiationResult.data;
 }
 
-function getLocations() {
-    return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/data/locations", {}, result => {
-            result = JSON.parse(result);
-            resolve(result);
-        });
-    });
-}
 
 export class InitiationList extends React.Component {
     constructor(props) {
@@ -57,13 +41,12 @@ export class InitiationList extends React.Component {
     }
 
 
-    getData() {
-        getInitiations(this.state).then(result => {
-            this.setState({
-                initiations: result.initiations,
-                pageCount: Math.ceil(result.count / this.state.pageSize),
-                recordCount: result.count
-            });
+    async getData() {
+        const result = await getInitiations(this.state)
+        this.setState({
+            initiations: result.initiations,
+            pageCount: Math.ceil(result.count / this.state.pageSize),
+            recordCount: result.count
         });
     }
 
@@ -81,25 +64,25 @@ export class InitiationList extends React.Component {
         this.getData();
     }
     onClickPrev() {
-        this.setState({pageIndex: this.state.pageIndex - 1});
+        this.setState({ pageIndex: this.state.pageIndex - 1 });
     }
     onClickNext() {
-        this.setState({pageIndex: this.state.pageIndex + 1});
+        this.setState({ pageIndex: this.state.pageIndex + 1 });
     }
     handleDegreeChange(event) {
-        this.setState({degreeId: +event.target.value, pageIndex:0});
+        this.setState({ degreeId: +event.target.value, pageIndex: 0 });
     }
     handleStatusChange(event) {
-        this.setState({status: event.target.value, pageIndex:0});
+        this.setState({ status: event.target.value, pageIndex: 0 });
     }
     handleSortChange(event) {
-        this.setState({sort: event.target.value, pageIndex:0});
+        this.setState({ sort: event.target.value, pageIndex: 0 });
     }
     handleMaxDaysChange(event) {
-        this.setState({maxDays: +event.target.value, pageIndex:0});
+        this.setState({ maxDays: +event.target.value, pageIndex: 0 });
     }
     handleLocationChange(event) {
-        this.setState({locationId: +event.target.value, pageIndex:0});
+        this.setState({ locationId: +event.target.value, pageIndex: 0 });
     }
 
 
@@ -132,32 +115,32 @@ export class InitiationList extends React.Component {
 
                 <div className="item">
                     Degree: <select value={this.state.degreeId || 0} onChange={this.handleDegreeChange}>
-                    <option value="0"></option>
-                    <option value="-1">none</option>
-                    <option value="1">0</option>
-                    <option value="2">1</option>
-                    <option value="3">2</option>
-                    <option value="4">3</option>
-                    <option value="5">4</option>
-                    <option value="6">PI</option>
-                    <option value="7">KEW</option>
-                    <option value="8">5</option>
-                    <option value="9">KRE</option>
-                    <option value="10">6</option>
-                    <option value="11">GIC</option>
-                    <option value="12">PRS</option>
-                    <option value="13">7</option>
-                    <option value="14">8</option>
-                    <option value="15">9</option>
-                    <option value="16">10</option>
-                </select>
+                        <option value="0"></option>
+                        <option value="-1">none</option>
+                        <option value="1">0</option>
+                        <option value="2">1</option>
+                        <option value="3">2</option>
+                        <option value="4">3</option>
+                        <option value="5">4</option>
+                        <option value="6">PI</option>
+                        <option value="7">KEW</option>
+                        <option value="8">5</option>
+                        <option value="9">KRE</option>
+                        <option value="10">6</option>
+                        <option value="11">GIC</option>
+                        <option value="12">PRS</option>
+                        <option value="13">7</option>
+                        <option value="14">8</option>
+                        <option value="15">9</option>
+                        <option value="16">10</option>
+                    </select>
                 </div>
 
                 <div className="item">
                     Sort: <select value={this.state.sort} onChange={this.handleSortChange.bind(this)}>
-                    <option value="actualDateDesc">Date (desc)</option>
-                    <option value="actualDateAsc">Date (asc)</option>
-                </select>
+                        <option value="actualDateDesc">Date (desc)</option>
+                        <option value="actualDateAsc">Date (asc)</option>
+                    </select>
                 </div>
 
                 <div className="item">
@@ -176,18 +159,18 @@ export class InitiationList extends React.Component {
                         <option value={30}>30 Days</option>
                         <option value={90}>90 Days</option>
                         <option value={365}>1 Year</option>
-                        <option value={365*2}>2 Years</option>
-                        <option value={365*3}>3 Years</option>
-                        <option value={365*4}>4 Years</option>
-                        <option value={365*5}>5 Years</option>
+                        <option value={365 * 2}>2 Years</option>
+                        <option value={365 * 3}>3 Years</option>
+                        <option value={365 * 4}>4 Years</option>
+                        <option value={365 * 5}>5 Years</option>
                     </select>
                 </div>
 
-                <div className="item" style={{marginTop: '1em'}}>
+                <div className="item" style={{ marginTop: '1em' }}>
                     Location: <select value={this.state.locationId} onChange={this.handleLocationChange.bind(this)}>
-                    <option value="0">All</option>
-                    {locationOptions}
-                </select>
+                        <option value="0">All</option>
+                        {locationOptions}
+                    </select>
                 </div>
 
             </div>

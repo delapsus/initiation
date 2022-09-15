@@ -1,24 +1,13 @@
 import React from "react";
-import {postAjax} from "./http";
-import {getDegreeById} from "./degree";
-import {getInitiationDate} from './common.js';
+import { getDegreeById } from "./degree";
+import { getInitiationDate } from './common.js';
+import { getPeople } from './data/people'
+import axios from "axios";
 
-function getPeople(state) {
-    return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/data/people", {pageSize:10, index: 0, textSearch: state.textSearch}, result => {
-            result = JSON.parse(result);
-            resolve(result);
-        });
-    });
-}
 
-export function submitPersonPicker(data) {
-    return new Promise((resolve, reject) => {
-        postAjax("http://localhost:2020/data/submit-person-picker", {person:data}, result => {
-            result = JSON.parse(result);
-            resolve(result.personId);
-        });
-    });
+export async function submitPersonPicker(data) {
+    const result = await axios.post("http://localhost:2020/data/people/submit-person-picker", { person: data });
+    return result.data.personId;
 }
 
 export class PersonPicker extends React.Component {
@@ -55,7 +44,7 @@ export class PersonPicker extends React.Component {
         this.setState({ [name]: value });
     }
 
-    handleSelectChange (event) {
+    handleSelectChange(event) {
         const target = event.target;
         let value = (target.type === 'checkbox' ? target.checked : target.value).trim();
         value = +value;
@@ -80,35 +69,28 @@ export class PersonPicker extends React.Component {
         return this.state.personId;
     }
 
-    getData() {
+    async getData() {
 
         if (this.state.firstName.length === 0 && this.state.lastName.length === 0) {
-            this.setState({suggestions: null});
+            this.setState({ suggestions: null });
             return;
         }
 
         let combined = this.state.firstName + " " + this.state.lastName; // + " " + this.state.middleName
-        getPeople({textSearch:combined.trim()}).then(result => {
-
-            let personId = this.state.personId;
-
-            if (personId !== null && personId !== -1) {
-
-                // if personId is not in the new result set, reset it
-                let found = false;
-                result.people.forEach(person => {
-                    if (person.personId === personId) found = true;
-                });
-
-                let newPersonId = this.state.savedPersonId;
-
-                this.setState({suggestions: result, personId: found ? personId : newPersonId});
-            }
-            else {
-                this.setState({suggestions: result});
-            }
-
-        });
+        const result = await getPeople({ pageSize: 10, index: 0, searchText: combined.trim() });
+        let personId = this.state.personId;
+        if (personId !== null && personId !== -1) {
+            // if personId is not in the new result set, reset it
+            let found = false;
+            result.people.forEach(person => {
+                if (person.personId === personId) found = true;
+            });
+            let newPersonId = this.state.savedPersonId;
+            this.setState({ suggestions: result, personId: found ? personId : newPersonId });
+        }
+        else {
+            this.setState({ suggestions: result });
+        }
     }
 
     componentDidMount() {
@@ -119,7 +101,7 @@ export class PersonPicker extends React.Component {
 
         // sometimes parent will change the lookupDegreeId
         if (prevProps.lookupDegreeId !== this.props.lookupDegreeId) {
-            this.setState({lookupDegreeId: this.props.lookupDegreeId});
+            this.setState({ lookupDegreeId: this.props.lookupDegreeId });
         }
 
         // don't do an update if nothing changed
@@ -196,17 +178,17 @@ export class PersonPicker extends React.Component {
         }
 
         return <div className="personPicker">
-            <input type="hidden" value="something"/>
+            <input type="hidden" value="something" />
 
             <table className="noPad">
                 <thead>
-                <tr>
-                    <th></th>
-                    <th className="formItemTitle">First</th>
-                    <th className="formItemTitle">Middle</th>
-                    <th className="formItemTitle">Last</th>
-                    {degreeHeader}
-                </tr>
+                    <tr>
+                        <th></th>
+                        <th className="formItemTitle">First</th>
+                        <th className="formItemTitle">Middle</th>
+                        <th className="formItemTitle">Last</th>
+                        {degreeHeader}
+                    </tr>
                 </thead>
                 <tbody>{picks}</tbody>
             </table>

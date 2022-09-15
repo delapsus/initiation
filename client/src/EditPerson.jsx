@@ -1,5 +1,5 @@
 import React from 'react';
-import {getPerson, submitEditPerson} from "./webservice";
+import {getPerson, submitEditPerson} from "./data/people";
 import {formatDate, formatTime} from './common.js';
 
 export class EditPerson extends React.Component {
@@ -12,10 +12,12 @@ export class EditPerson extends React.Component {
             saving: false
         };
 
-        getPerson(this.props.personId).then(result => {
-            let copy = JSON.parse(JSON.stringify(result));
-            this.setState({ prev: result, live: copy });
-        });
+
+    }
+    async componentDidMount(){
+        const personResult = await getPerson(this.props.personId);
+        let copy = JSON.parse(JSON.stringify(personResult));
+        this.setState({ prev: personResult, live: copy });
     }
 
     handleChange (event) {
@@ -31,14 +33,14 @@ export class EditPerson extends React.Component {
         });
     }
 
-    onSave() {
+    async onSave() {
         // send save request
-        submitEditPerson(this.state.live).then(() => {
+        await submitEditPerson(this.state.live);
 
             // redirect to person page
             //setTimeout(() => {}, 1000);
             window.location = "index.html?personid=" + this.props.personId;
-        });
+        
 
         // set page to saving state
         this.setState({
